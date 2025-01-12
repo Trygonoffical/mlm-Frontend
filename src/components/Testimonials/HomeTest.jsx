@@ -60,7 +60,7 @@ const TestimonialSection = () => {
       <div 
         className="absolute inset-0"
         style={{
-          backgroundImage: `url('/images/about.png')`,
+          backgroundImage: `url('/Images/about.png')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -73,7 +73,7 @@ const TestimonialSection = () => {
         <div 
           className="absolute inset-0 opacity-20"
           style={{
-            backgroundImage: `url("/images/about.png")`,
+            backgroundImage: `url("/Images/about.png")`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}

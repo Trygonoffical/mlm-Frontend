@@ -29,10 +29,10 @@ const SuccessAndReviews = () => {
   ];
 
   const reviews = [
-    { id: 1, videoUrl: 'https://youtube.com/shorts/L1La3xIrHlA?si=4alGCUiH0yBWs2Gz', thumbnail: '/images/thumbnale.png', username: 'John Doe' },
-    { id: 2, videoUrl: 'https://youtube.com/shorts/L1La3xIrHlA?si=4alGCUiH0yBWs2Gz', thumbnail: '/images/thumbnale.png', username: 'Jane Smith' },
-    { id: 3, videoUrl: 'https://youtube.com/shorts/L1La3xIrHlA?si=4alGCUiH0yBWs2Gz', thumbnail: '/images/thumbnale.png', username: 'Mike Johnson' },
-    { id: 4, videoUrl: 'https://youtube.com/shorts/L1La3xIrHlA?si=4alGCUiH0yBWs2Gz', thumbnail: '/images/thumbnale.png', username: 'Sarah Williams' },
+    { id: 1, videoUrl: 'https://youtube.com/shorts/L1La3xIrHlA?si=4alGCUiH0yBWs2Gz', thumbnail: '/Images/thumbnale.png', username: 'John Doe' },
+    { id: 2, videoUrl: 'https://youtube.com/shorts/L1La3xIrHlA?si=4alGCUiH0yBWs2Gz', thumbnail: '/Images/thumbnale.png', username: 'Jane Smith' },
+    { id: 3, videoUrl: 'https://youtube.com/shorts/L1La3xIrHlA?si=4alGCUiH0yBWs2Gz', thumbnail: '/Images/thumbnale.png', username: 'Mike Johnson' },
+    { id: 4, videoUrl: 'https://youtube.com/shorts/L1La3xIrHlA?si=4alGCUiH0yBWs2Gz', thumbnail: '/Images/thumbnale.png', username: 'Sarah Williams' },
   ];
 
   useEffect(() => {
