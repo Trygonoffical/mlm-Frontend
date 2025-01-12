@@ -8,9 +8,24 @@ import { ShoppingBagIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { ToastContainer , toast} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
+
 const Account = () => {
-  
+    const router = useRouter();
+
+    const dispatch = useDispatch();
+    const {
+      userInfo,
+      token,
+      } = useSelector((state) => state.auth); 
+
+      useEffect(()=>{
+        if (!token) {
+            router.push('/');
+        }
+      }, [token])
   return (
     <>
         <section className='mx-auto max-w-7xl lg:px-8 py-8'>

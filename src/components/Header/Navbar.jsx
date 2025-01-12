@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogPanel,
@@ -25,6 +25,10 @@ import { ChevronDownIcon, MagnifyingGlassCircleIcon, MagnifyingGlassIcon, PhoneI
 import Link from 'next/link'
 import Image from 'next/image'
 import CartArea from '../Cart/ShopingCart'
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import UserArea from './UserArea'
+
 
 const products = [
   { name: 'Analytics', description: 'Get a better understanding of your traffic', href: '#', icon: ChartPieIcon },
@@ -40,6 +44,11 @@ const callsToAction = [
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const {
+    userInfo,
+    } = useSelector((state) => state.auth); 
 
   return (
     <>
@@ -57,13 +66,10 @@ export default function Navbar() {
         <div className="flex lg:hidden space-x-3">
             <div className='flex space-x-3'>
                 <div className="flex items-center cursor-pointer">
-                <UserIcon className="w-7 h-7 text-gray-600" />
+                  <UserArea />
                 </div>
                 <div className="flex items-center relative cursor-pointer">
-                <ShoppingCartIcon className="w-7 h-7 text-gray-600" />
-                <span className="absolute -top-2 -right-2 bg-[#8B6D4D] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    0
-                </span>
+                  <CartArea />
                 </div>
             </div>
           <button
@@ -119,7 +125,7 @@ export default function Navbar() {
               </div>
             </div>
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end space-x-6">
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end space-x-3">
             <div className="flex items-center cursor-pointer">
               {/* <TruckIcon className="w-7 h-7 text-gray-600" /> */}
                 <Link href='/OrderTracking'>
@@ -127,9 +133,7 @@ export default function Navbar() {
                 </Link>
             </div>
             <div className="flex items-center cursor-pointer">
-                <Link href='/account'>
-                        <Image src='/images/user.png' alt='User Icon' width={30} height={30} />
-                </Link>
+              <UserArea />
             </div>
             <div className="flex items-center relative cursor-pointer">
               {/* <ShoppingCartIcon className="w-7 h-7 text-gray-600" /> */}
