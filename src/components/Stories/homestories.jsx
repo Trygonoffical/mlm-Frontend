@@ -22,10 +22,10 @@ const SuccessAndReviews = () => {
 
   // Sample data
   const successStories = [
-    { id: 1, image: '/images/thumbnale.png', title: 'Weight Loss Journey', description: 'Lost 30kg in 6 months' },
-    { id: 2, image: '/images/thumbnale.png', title: 'Fitness Achievement', description: 'Marathon runner' },
-    { id: 3, image: '/images/thumbnale.png', title: 'Health Transformation', description: 'Overcame health issues' },
-    { id: 4, image: '/images/thumbnale.png', title: 'Business Success', description: 'Built successful team' },
+    { id: 1, image: '/Images/thumbnale.png', title: 'Weight Loss Journey', description: 'Lost 30kg in 6 months' },
+    { id: 2, image: '/Images/thumbnale.png', title: 'Fitness Achievement', description: 'Marathon runner' },
+    { id: 3, image: '/Images/thumbnale.png', title: 'Health Transformation', description: 'Overcame health issues' },
+    { id: 4, image: '/Images/thumbnale.png', title: 'Business Success', description: 'Built successful team' },
   ];
 
   const reviews = [
