@@ -11,21 +11,21 @@ const TestimonialSection = () => {
       id: 1,
       name: 'Name',
       designation: 'Desgination',
-      image: '/images/te.jpeg',
+      image: '/Images/te.jpeg',
       content: 'On the sports field, Kristina Tomic pursues ultimate strength and technique. In this world full of challenges and passion, TIENS products have become her trusted choice.'
     },
     {
       id: 2,
       name: 'Vikas',
       designation: 'Desgination',
-      image: '/images/te.jpeg',
+      image: '/Images/te.jpeg',
       content: 'On the sports field, Kristina Tomic pursues ultimate strength and technique. In this world full of challenges and passion, TIENS products have become her trusted choice.'
     },
     {
       id: 3,
       name: 'rahul',
       designation: 'Desgination',
-      image: '/images/te.jpeg',
+      image: '/Images/te.jpeg',
       content: 'On the sports field, Kristina Tomic pursues ultimate strength and technique. In this world full of challenges and passion, TIENS products have become her trusted choice.'
     },
   ];
