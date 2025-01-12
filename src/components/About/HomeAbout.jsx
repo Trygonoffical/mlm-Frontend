@@ -53,7 +53,7 @@ const HomeAbout = () => {
         {/* Image Section */}
         <div className="relative h-[400px] lg:h-auto">
           <img
-            src="/images/about.png"
+            src="/Images/about.png"
             alt="Herbal supplements with yellow flowers"
             className="w-full h-full object-cover rounded-lg"
           />
