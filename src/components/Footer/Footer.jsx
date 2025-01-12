@@ -6,24 +6,24 @@ const Footer = () => {
 
     const socialLinks = [
         {
-            icon: '/images/facebook-logo.png',
+            icon: '/Images/facebook-logo.png',
             link: '#',
             name: 'facebook'
         },
         {
-            icon: '/images/instagram.png',
+            icon: '/Images/instagram.png',
             link: '#',
             name: 'instagram'
 
         },
         {
-            icon: '/images/youtube.png',
+            icon: '/Images/youtube.png',
             link: '#',
             name: 'youtube'
 
         },
         {
-            icon: '/images/twitter.png',
+            icon: '/Images/twitter.png',
             link: '#',
             name: 'twitter'
 
