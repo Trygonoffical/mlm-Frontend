@@ -58,7 +58,7 @@ export default function Navbar() {
             <span className="sr-only">Your Company</span>
             <img
               alt="Logo"
-              src="/images/logo.png"
+              src="/Images/logo.png"
               className="h-16 w-auto"
             />
           </a>
@@ -129,7 +129,7 @@ export default function Navbar() {
             <div className="flex items-center cursor-pointer">
               {/* <TruckIcon className="w-7 h-7 text-gray-600" /> */}
                 <Link href='/OrderTracking'>
-                        <Image src='/images/tracking.png' alt='tracking Icon' width={35} height={35} />
+                        <Image src='/Images/tracking.png' alt='tracking Icon' width={35} height={35} />
                 </Link>
             </div>
             <div className="flex items-center cursor-pointer">
@@ -153,7 +153,7 @@ export default function Navbar() {
               <span className="sr-only">Your Company</span>
               <img
                 alt=""
-                src="/images/logo.png"
+                src="/Images/logo.png"
                 className="h-8 w-auto"
               />
             </a>
