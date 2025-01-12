@@ -55,7 +55,7 @@ export default function CartArea() {
             <span className="ml-2 text-sm font-medium text-gray-200 group-hover:text-gray-400">{cartCount}</span>
             <span className="sr-only">items in cart, view bag</span> */}
 
-            <Image src='/images/shopping-cart.png' alt='shoppingCart Icon' width={30} height={30} />
+            <Image src='/Images/shopping-cart.png' alt='shoppingCart Icon' width={30} height={30} />
               <span className="absolute -top-2 -right-2 bg-[#8B6D4D] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 0
               </span>
