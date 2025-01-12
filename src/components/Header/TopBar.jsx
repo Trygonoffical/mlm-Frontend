@@ -12,13 +12,13 @@ export default function TopBar() {
         </div>
         <div className='flex justify-center space-x-2'>
             <Link href='#'>
-                <Image src='/images/facebook-logo.png' width={20} height={20}  alt='facebook' />
+                <Image src='/Images/facebook-logo.png' width={20} height={20}  alt='facebook' />
             </Link><Link href='#'>
-                <Image src='/images/instagram.png' width={20} height={20}  alt='instagram' />
+                <Image src='/Images/instagram.png' width={20} height={20}  alt='instagram' />
             </Link><Link href='#'>
-                <Image src='/images/youtube.png' width={20} height={20}  alt='youtube' />
+                <Image src='/Images/youtube.png' width={20} height={20}  alt='youtube' />
             </Link><Link href='#'>
-                <Image src='/images/twitter.png' width={20} height={20}  alt='twitter' />
+                <Image src='/Images/twitter.png' width={20} height={20}  alt='twitter' />
             </Link>
         </div>
       </div>
