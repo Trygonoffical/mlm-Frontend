@@ -1,15 +1,26 @@
 "use client"
 // components/MobileSidebar.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Bell, Menu, Home, ShoppingCart, UserPlus, Wallet, 
   Network, FileText, User, TicketPercent, X 
 } from 'lucide-react';
 import { sidebarItems } from './NavItems';
+import { sidebarItemsAdmin } from './AdminNavItem'; 
+import Link from 'next/link';
 
-const MobileSidebar = () => {
+
+const MobileSidebar = ({admin=false}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [sideItems , setSideItems] = useState([])
 
+  useEffect(()=>{
+        if(admin){
+          setSideItems(sidebarItemsAdmin)
+        }else{
+          setSideItems(sidebarItems)
+        }
+      } , [admin])
 
   return (
     <>
@@ -43,17 +54,19 @@ const MobileSidebar = () => {
           </button>
 
           <div className="pt-16">
-            {sidebarItems.map((item, index) => (
-              <div 
+            {sideItems.map((item, index) => (
+              <Link 
                 key={index} 
                 className={`
                   flex items-center px-4 py-3 text-white hover:bg-[#34495E] cursor-pointer
-                  ${item.active ? item.bgColor || 'bg-[#34495E]' : ''}
-                `}
+                  ${item.active ? item.bgColor || 'bg-[#34495E]' : ''}`
+                }
+                href={`/auth/dashboard/${item.href}`}
+                onClick={() => setIsOpen(false)}
               >
                 <item.icon className="w-6 h-6" />
                 <span className="ml-3">{item.label}</span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

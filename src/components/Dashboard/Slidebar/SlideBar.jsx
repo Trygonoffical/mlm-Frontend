@@ -1,12 +1,22 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { sidebarItems } from './NavItems';
+import { sidebarItemsAdmin } from './AdminNavItem'; 
 import { ChevronLeft } from 'lucide-react';
+import Link from 'next/link';
 
-const SlideBar = () => {
+const SlideBar = ({admin=false}) => {
     const [isSidebarOpen, setSidebarOpen] = useState(true);
+    const [sideItems , setSideItems] = useState([])
+    
 
-  
+    useEffect(()=>{
+      if(admin){
+        setSideItems(sidebarItemsAdmin)
+      }else{
+        setSideItems(sidebarItems)
+      }
+    } , [admin])
 
 
   return (
@@ -22,17 +32,21 @@ const SlideBar = () => {
 
         {/* Sidebar Items */}
         <div className="flex flex-col pt-16">
-          {sidebarItems.map((item, index) => (
-            <div 
+          {sideItems.map((item, index) => (
+            <Link 
               key={index} 
               className={`flex items-center px-4 py-3 text-white hover:bg-[#D9D9D9] hover:text-black cursor-pointer
                 ${item.active ? item.bgColor || 'bg-[#34495E]' : ''}`}
+                href={`/auth/dashboard/${item.href}`}
             >
-              <item.icon className="w-6 h-6 min-w-[24px]" />
-              {isSidebarOpen && (
-                <span className="ml-3 whitespace-nowrap">{item.label}</span>
-              )}
-            </div>
+              {/* <Link href={`${item.href}`}> */}
+                <item.icon className="w-6 h-6 min-w-[24px]" />
+                {isSidebarOpen && (
+                  <span className="ml-3 whitespace-nowrap">{item.label}</span>
+                )}
+              {/* </Link> */}
+              
+            </Link>
           ))}
         </div>
       </div>

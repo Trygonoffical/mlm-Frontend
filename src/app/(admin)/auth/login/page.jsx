@@ -3,17 +3,70 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { setTokens } from '@/utils/cookies';
+import { toast } from 'react-hot-toast';
+import Cookies from 'js-cookie';
 
 const LoginPage = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    userId: '',
+    username: '',
     password: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt:', formData);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setTokens(data.token ,data.refresh )
+        // Set cookies
+        // Cookies.set('token', data.token, {
+        //   secure: process.env.NODE_ENV === 'production',
+        //   sameSite: 'strict',
+        //   expires: 1 // 1 day
+        // });
+        // Cookies.set('refresh', data.refresh, {
+        //   secure: process.env.NODE_ENV === 'production',
+        //   sameSite: 'strict',
+        //   expires: 7 // 7 days
+        // });
+
+        // Redirect based on role
+        let redirectPath = '/';
+        if (data.role === 'MLM_MEMBER') {
+          redirectPath = '/mu/dashboard';
+        } else if (data.role === 'ADMIN') {
+          redirectPath = '/auth/dashboard';
+        } else {
+          toast.error('Please use phone number login for customer access');
+          return;
+        }
+
+        toast.success('Login successful!');
+        router.push(redirectPath);
+      } else {
+        toast.error(data.message || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -30,7 +83,7 @@ const LoginPage = () => {
       <div className="w-full md:w-1/2 bg-[#517B54]">
         <div className="relative w-full h-full min-h-[200px] md:min-h-screen">
           <Image
-            src="/images/aboutbg.png"
+            src="/Images/aboutbg.png"
             alt="Login Background"
             layout="fill"
             objectFit="cover"
@@ -46,7 +99,7 @@ const LoginPage = () => {
           {/* Logo */}
           <div className="flex justify-center mb-8">
             <Image
-              src="/images/logo.png"
+              src="/Images/logo.png"
               alt="Herbal Power Logo"
               width={80}
               height={80}
@@ -56,18 +109,28 @@ const LoginPage = () => {
 
           {/* Title */}
           <h1 className="text-2xl font-bold text-center mb-8">
-            Sign in to your account
+            MLM Member/Admin Login
           </h1>
+
+          {/* Customer Login Link */}
+          <div className="text-center mb-6">
+            <Link 
+              href="/" 
+              className="text-[#517B54] hover:text-[#446a47]"
+            >
+              Click here for Customer Login
+            </Link>
+          </div>
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <input
                 type="text"
-                name="userId"
-                value={formData.userId}
+                name="username"
+                value={formData.username}
                 onChange={handleChange}
-                placeholder="UserID"
+                placeholder="Username"
                 className="w-full px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
                 required
               />
@@ -87,7 +150,7 @@ const LoginPage = () => {
 
             <div className="text-right">
               <Link 
-                href="/forgot-password"
+                href="/auth/forgot-password"
                 className="text-red-500 hover:text-red-600 text-sm"
               >
                 Forgot your password?
@@ -96,28 +159,19 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="w-full py-3 bg-[#517B54] text-white rounded-md hover:bg-[#446a47] transition-colors duration-200"
+              disabled={isLoading}
+              className={`w-full py-3 bg-[#517B54] text-white rounded-md hover:bg-[#446a47] transition-colors duration-200 ${
+                isLoading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
-              Login Now
+              {isLoading ? 'Logging in...' : 'Login Now'}
             </button>
-
-            <div className="text-center mt-4">
-              <p className="text-sm text-gray-600">
-                New to Herbal Power?{' '}
-                <Link 
-                  href="/register"
-                  className="text-[#517B54] hover:text-[#446a47] font-medium"
-                >
-                  Create new account
-                </Link>
-              </p>
-            </div>
           </form>
 
           {/* Footer */}
           <div className="mt-16 text-center space-y-2">
             <p className="text-sm text-gray-600">
-              Herbal Power © 2023 All rights reserved.
+              Herbal Power © {new Date().getFullYear()} All rights reserved.
             </p>
             <div className="text-xs text-gray-500 space-x-2">
               <Link href="/privacy-policy" className="hover:text-gray-700">

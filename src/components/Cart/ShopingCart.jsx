@@ -48,17 +48,17 @@ export default function CartArea() {
     <>
         
         <button className="group flex items-center p-2"  onClick={()=>showCartSidebarStatus()}>
-            {/* <ShoppingBagIcon
-                className="h-6 w-6 flex-shrink-0 text-gray-300 group-hover:text-gray-400"
+            <ShoppingBagIcon
+                className="h-6 w-6 flex-shrink-0  group-hover:text-gray-600"
                 aria-hidden="true"
             />
-            <span className="ml-2 text-sm font-medium text-gray-200 group-hover:text-gray-400">{cartCount}</span>
-            <span className="sr-only">items in cart, view bag</span> */}
+            <span className="ml-1 text-sm font-medium  group-hover:text-gray-600">{0}</span>
+            <span className="sr-only">items in cart, view bag</span>
 
-            <Image src='/Images/shopping-cart.png' alt='shoppingCart Icon' width={30} height={30} />
+            {/* <Image src='/Images/shopping-cart.png' alt='shoppingCart Icon' width={30} height={30} />
               <span className="absolute -top-2 -right-2 bg-[#8B6D4D] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 0
-              </span>
+              </span> */}
         </button>
         <Transition show={isCartSidebarVisible} as={Fragment}>
         <Dialog className="relative z-[9999]" onClose={()=>hideCartSidebarStatus()}>

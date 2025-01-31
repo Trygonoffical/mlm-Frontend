@@ -7,18 +7,31 @@ import Link from 'next/link';
 const HomeCats = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [slidesToShow, setSlidesToShow] = useState(5);
+  const [categories, setCategories] = useState([]);
 
-  const categories = [
-    { id: 1, link:'#', name: 'Nutrition', productCount: '120+ Product', image: '/Products/Cats/1.webp' },
-    { id: 2, link:'#', name: 'Beauty', productCount: '120+ Product', image: '/Products/Cats/2.webp' },
-    { id: 3, link:'#', name: 'Home & Living 1', productCount: '120+ Product', image: '/Products/Cats/3.webp' },
-    { id: 4, link:'#', name: 'Personal Care', productCount: '120+ Product', image: '/Products/Cats/4.webp' },
-    { id: 5, link:'#', name: 'Category 1', productCount: '120+ Product', image: '/Products/Cats/1.webp' },
-    { id: 6, link:'#', name: 'Category 2', productCount: '120+ Product', image: '/Products/Cats/2.webp' },
-  ];
+  const fetchCategories = async () => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`);
+        const data = await res.json();
+        console.log('cats -- ', data)
+        setCategories(data);
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+    }
+};
+
+  // const categories = [
+  //   { id: 1, link:'#', name: 'Nutrition', productCount: '120+ Product', image: '/Products/Cats/1.webp' },
+  //   { id: 2, link:'#', name: 'Beauty', productCount: '120+ Product', image: '/Products/Cats/2.webp' },
+  //   { id: 3, link:'#', name: 'Home & Living 1', productCount: '120+ Product', image: '/Products/Cats/3.webp' },
+  //   { id: 4, link:'#', name: 'Personal Care', productCount: '120+ Product', image: '/Products/Cats/4.webp' },
+  //   { id: 5, link:'#', name: 'Category 1', productCount: '120+ Product', image: '/Products/Cats/1.webp' },
+  //   { id: 6, link:'#', name: 'Category 2', productCount: '120+ Product', image: '/Products/Cats/2.webp' },
+  // ];
 
   // Update slides to show based on window width
   useEffect(() => {
+    fetchCategories();
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 640) {
@@ -62,7 +75,7 @@ const HomeCats = () => {
           {categories.map((category) => (
             
             <Link
-              href={category.link} key={category.id}
+              href={`/categories/${category.slug}`} key={category.id}
               className="flex-none w-1/2 sm:w-1/5 px-2"
               style={{ flex: `0 0 ${100 / slidesToShow}%` }}>
               <div className="text-center cursor-pointer group">
@@ -76,7 +89,7 @@ const HomeCats = () => {
                   />
                 {/* </div> */}
                 <h3 className="text-lg font-semibold mb-1">{category.name}</h3>
-                <p className="text-gray-600 text-sm">{category.productCount}</p>
+                <p className="text-gray-600 text-sm">{category.products?.length || 0}</p>
               </div>
             </Link>
             

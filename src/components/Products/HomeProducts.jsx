@@ -1,20 +1,37 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import ProductCard from './ProductCard';
 
 const BestSelling = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [slidesToShow, setSlidesToShow] = useState(4);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const products = [
-    { id: 1, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
-    { id: 2, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
-    { id: 3, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
-    { id: 4, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
-    { id: 5, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
-  ];
+
+const fetchproducts = async () => {
+  try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/?bestseller=true`);
+      const data = await response.json();
+      console.log('products - ' , data)
+      setProducts(data);
+  } catch (error) {
+      console.error('Error fetching advertisements:', error);
+  } finally {
+      setLoading(false);
+  }  
+};
+  // const products = [
+  //   { id: 1, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
+  //   { id: 2, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
+  //   { id: 3, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
+  //   { id: 4, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
+  //   { id: 5, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
+  // ];
 
   useEffect(() => {
+    fetchproducts();
     const handleResize = () => {
       setSlidesToShow(window.innerWidth < 640 ? 2 : 4);
     };
@@ -52,39 +69,40 @@ const BestSelling = () => {
               transform: `translateX(-${currentIndex * (100 / slidesToShow)}%)`,
             }}
           >
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="flex-none w-1/2 sm:w-1/4 px-3"
-                style={{ flex: `0 0 ${100 / slidesToShow}%` }}
-              >
-                <div className="bg-gray-50 rounded-lg p-4 cursor-pointer group hover:shadow-lg transition-shadow duration-300">
-                  <div className="relative aspect-square mb-4">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
+            {products && products.map((product) => (
+              // <div
+              //   key={product.id}
+              //   className="flex-none w-1/2 sm:w-1/4 px-3"
+              //   style={{ flex: `0 0 ${100 / slidesToShow}%` }}
+              // >
+              //   <div className="bg-gray-50 rounded-lg p-4 cursor-pointer group hover:shadow-lg transition-shadow duration-300">
+              //     <div className="relative aspect-square mb-4">
+              //       <img
+              //         src={product.images[0].image}
+              //         alt={product.name}
+              //         className="w-full h-full object-contain"
+              //       />
+              //     </div>
                   
-                  {/* Rating Stars */}
-                  <div className="flex mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i}
-                        className="w-4 h-4 fill-yellow-400 text-yellow-400" 
-                      />
-                    ))}
-                  </div>
+              //     {/* Rating Stars */}
+              //     <div className="flex mb-2">
+              //       {[...Array(5)].map((_, i) => (
+              //         <Star 
+              //           key={i}
+              //           className="w-4 h-4 fill-yellow-400 text-yellow-400" 
+              //         />
+              //       ))}
+              //     </div>
                   
-                  <h3 className="font-semibold mb-2">{product.name}</h3>
+              //     <h3 className="font-semibold mb-2">{product.name}</h3>
                   
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-400 line-through">₹{product.oldPrice}</span>
-                    <span className="font-bold text-lg">₹{product.price}</span>
-                  </div>
-                </div>
-              </div>
+              //     <div className="flex items-center gap-2">
+              //       <span className="text-gray-400 line-through">₹{product.regular_price}</span>
+              //       <span className="font-bold text-lg">₹{product.selling_price}</span>
+              //     </div>
+              //   </div>
+              // </div>
+              <ProductCard product={product} key={product.id}  />
             ))}
           </div>
         </div>

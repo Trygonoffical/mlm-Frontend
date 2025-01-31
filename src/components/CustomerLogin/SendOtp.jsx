@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { showCartSidebar, hideCartSidebar, removeItemFromCart } from '@/redux/slices/cartSlice'; // Import actions
 import { useRouter } from 'next/navigation';
 import { Phone , User} from 'lucide-react';
-import { setUserLogin } from '@/redux/slices/authSlice';
+import { updateUserInfo } from '@/redux/slices/authSlice';
 import { setTokens } from '@/utils/cookies';
 import toast from 'react-hot-toast';
 
@@ -22,7 +22,7 @@ export default function SendOtp() {
     const [error, setError] = useState('');
     const [resendTimeout, setResendTimeout] = useState(0);
     const dispatch = useDispatch();
- 
+    const { userInfo } = useSelector((state) => state.auth);
 
     const startResendTimer = () => {
         setResendTimeout(30);
@@ -86,14 +86,22 @@ export default function SendOtp() {
         console.log('data console - ' , data);
         if (data.status) {
             // Store tokens in cookies
-            setTokens(data.token, data.refresh_token);
+            setTokens(data.token, data.refresh);
             console.log('after token set ' , );
+            dispatch(updateUserInfo({
+            ...data.userinfo
+            }));
+            // Clear form state
+            setPhoneNumber('');
+            setOtp('');
+            setIsOtpSent(false);
+            setResendTimeout(0);
 
-            router.push('/');
-            console.log('after push set ' , );
+            // Close the sidebar
+            setisCartSidebarVisible(false);
 
+            // Show success message
             toast.success('Login successful');
-            console.log('after toast set ' , );
 
             // Store user info and token in Redux
             // dispatch(setUserLogin({
@@ -122,16 +130,21 @@ export default function SendOtp() {
         }
     };
       const showverifyNumber = () =>{
-        setisCartSidebarVisible(true);
+        // setisCartSidebarVisible(true);
+        if (!userInfo) { // Only show if user is not logged in
+            setisCartSidebarVisible(true);
+        }
       }
     //   // hide CartSidebar 
       const hideOtpSidebarStatus = ()=>{
         // console.log('vvvv')
         setisCartSidebarVisible(false);
-        setPhoneNumber('')
-        setOtp('')
+        // Reset all form state
+        setPhoneNumber('');
+        setOtp('');
         setIsOtpSent(false);
         setResendTimeout(0);
+        setError('');
       }
 
     // Add this useEffect to manage the resend timer
@@ -146,6 +159,16 @@ export default function SendOtp() {
         if (timer) clearInterval(timer);
         };
     }, [resendTimeout]);
+
+    // Add this useEffect
+    useEffect(() => {
+        // If user is logged in and sidebar is open, close it
+        if (userInfo && isCartSidebarVisible) {
+            setisCartSidebarVisible(false);
+        }
+    }, [userInfo]);
+
+
   return (
     <>
         

@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Field, Label, Switch } from '@headlessui/react'
 
@@ -9,6 +9,7 @@ function classNames(...classes) {
 
 export default function ContactForm() {
   const [agreed, setAgreed] = useState(false)
+
 
   return (
     <div className=" bg-white px-6 py-8 sm:py-8 lg:px-8">

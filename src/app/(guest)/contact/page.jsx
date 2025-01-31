@@ -1,10 +1,45 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Mail, Phone, Truck, Send, MapPin } from 'lucide-react';
 import PageHead from '@/components/Pagehead/PageHead';
 
 const ContactUs = () => {
+  const [companyInfo, setCompanyInfo] = useState({
+      email : '',
+      mob1 : '',
+      mob2: '',
+      address: '',
+  });
+  
+  const fetchCompanyInfo = async () => {
+      try {
+          
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/company-info/`);
+          
+          if (!response.ok) throw new Error('Failed to fetch company info');
+          
+          const data = await response.json();
+          console.log('compnay info - ' , data)
+          setCompanyInfo({
+            email : data.email,
+            mob1 : data.mobile_1,
+            mob2: data.mobile_2,
+            address: data.full_address,
+          })
+      } catch (error) {
+          console.error('Error:', error);
+          toast.error('Failed to load company information');
+      } finally {
+          setLoading(false);
+      }
+  };
+  useEffect(() => {
+          fetchCompanyInfo();
+      }, []);
+
+
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -76,11 +111,11 @@ const ContactUs = () => {
                   <Mail className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <a href="mailto:Email@emailaddress.com" className="block text-lg hover:text-green-600 transition-colors">
-                    Email@emailaddress.com
-                  </a>
-                  <a href="mailto:Email@emailaddress.com" className="block text-lg hover:text-green-600 transition-colors">
-                    Email@emailaddress.com
+                  {/* <a href="mailto:Email@emailaddress.com" className="block text-lg hover:text-green-600 transition-colors">
+                    Email
+                  </a> */}
+                  <a href={`mailto:${companyInfo.email}`} className="block text-lg hover:text-green-600 transition-colors">
+                    {companyInfo.email}
                   </a>
                 </div>
               </div>
@@ -91,12 +126,18 @@ const ContactUs = () => {
                   <Phone className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <a href="tel:+919999999999" className="block text-lg hover:text-green-600 transition-colors">
-                    +91 9999999999
+                {companyInfo.mob1 && (
+                  <a href={`tel:${companyInfo.mob1}`} className="block text-lg hover:text-green-600 transition-colors">
+                    {companyInfo.mob1}
                   </a>
-                  <a href="tel:+919999999999" className="block text-lg hover:text-green-600 transition-colors">
-                    +91 9999999999
-                  </a>
+                )}
+                  {companyInfo.mob2 && (
+                    <a href={`tel:${companyInfo.mob2}`} className="block text-lg hover:text-green-600 transition-colors">
+                      {companyInfo.mob2}
+
+                    </a>
+                  )}
+                  
                 </div>
               </div>
 
@@ -107,7 +148,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <p className="text-lg">
-                    123 Business Street, New Delhi, India
+                  {companyInfo.address}
                   </p>
                 </div>
               </div>

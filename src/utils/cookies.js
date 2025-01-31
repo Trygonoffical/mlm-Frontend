@@ -5,27 +5,43 @@ export const TOKEN_NAME = 'token';
 export const REFRESH_TOKEN_NAME = 'refreshToken';
 
 export const setTokens = (token, refreshToken) => {
-  Cookies.set(TOKEN_NAME, token, {
-    expires: 1, // 1 day
+  // Remove duplicate sameSite property and fix cookie options
+  const commonOptions = {
+    path: '/',
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict'
+    sameSite: 'lax'  // Use single sameSite definition
+  };
+
+  // Set access token
+  Cookies.set(TOKEN_NAME, token, {
+    ...commonOptions,
+    expires: 1 // 1 day
   });
 
+  // Set refresh token
   Cookies.set(REFRESH_TOKEN_NAME, refreshToken, {
-    expires: 7, // 7 days
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict'
+    ...commonOptions,
+    expires: 7 // 7 days
+  });
+
+  // Verify tokens were set
+  console.log('Tokens after setting:', {
+    token: Cookies.get(TOKEN_NAME),
+    refreshToken: Cookies.get(REFRESH_TOKEN_NAME)
   });
 };
 
 export const getTokens = () => {
-  return {
+  const tokens = {
     token: Cookies.get(TOKEN_NAME),
     refreshToken: Cookies.get(REFRESH_TOKEN_NAME)
   };
+  console.log('Retrieved tokens:', tokens);
+  return tokens;
 };
 
 export const removeTokens = () => {
-  Cookies.remove(TOKEN_NAME);
-  Cookies.remove(REFRESH_TOKEN_NAME);
+  const options = { path: '/' };  // Need to specify path when removing
+  Cookies.remove(TOKEN_NAME, options);
+  Cookies.remove(REFRESH_TOKEN_NAME, options);
 };

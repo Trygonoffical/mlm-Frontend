@@ -20,7 +20,7 @@ const UserArea = () => {
   useEffect(() => {
     const token = Cookies.get('token');
     setIsAuthenticated(!!token);
-  }, []);
+  }, [userInfo]);
 
   const handleLogout = () => {
     try {
@@ -36,8 +36,9 @@ const UserArea = () => {
       // Update authentication state
       setIsAuthenticated(false);
       
-      // Redirect to home page
       router.push('/');
+      // Redirect to home page
+      window.location.reload(); // Force reload to update all states
       
     } catch (error) {
       console.error('Logout error:', error);
@@ -67,11 +68,11 @@ const UserArea = () => {
         onClick={() => setShowProfileDropdown(!showProfileDropdown)}
       >
         <User className="w-6 h-6" />
-        {userInfo?.firstName && (
+        {/* {userInfo?.firstName && (
           <span className="text-sm font-medium hidden md:block">
             {userInfo.firstName}
           </span>
-        )}
+        )} */}
       </div>
 
       {showProfileDropdown && (
@@ -88,7 +89,7 @@ const UserArea = () => {
 
           {/* Menu Items */}
           <ul className="py-1">
-            {userInfo?.role === 'CUSTOMER' ? (
+            {userInfo && userInfo?.role === 'CUSTOMER' ? (
               <>
                 <li>
                   <Link 
