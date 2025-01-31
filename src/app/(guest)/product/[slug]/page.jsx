@@ -1,27 +1,86 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Star, ChevronDown, ShoppingCart, Truck, Shield } from 'lucide-react';
+import ProductCard from '@/components/Products/ProductCard';
+import { useDispatch } from 'react-redux';
+import { addItemToCart } from '@/redux/slices/cartSlice';
 
-const ProductDetail = () => {
-  const [mainImage, setMainImage] = useState('/Products/p4.jpeg');
+const ProductDetail = ({params}) => {
+  const slug = use(params).slug;
+
+    const [product, setProduct] = useState([]);
+    const [thumbnails, setThumbnails] = useState([]);
+    const [featuredProducts, setFeaturedProducts] = useState([]);
+
+  const fetchProduct = async () => {
+          try {
+              const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/?slug=${slug}`);
+              const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/?featured=true`);
+              const data = await res.json();
+              const data2 = await res2.json();
+              console.log('cat data - ',data )
+              console.log('featuredProducts data - ',data2 )
+              setFeaturedProducts(data2)
+              console.log('cat data - ',data[0] )
+              setProduct(data[0]);
+              setMainImage(data[0].images[0].image)
+              setThumbnails(extractThumbnails(data))
+          } catch (error) {
+              console.error('Error fetching categories:', error);
+          }
+      };
+  
+      useEffect(() => {
+        fetchProduct();
+      }, []);
+  
+      const extractThumbnails = (products) => {
+        return products.flatMap(product => 
+            product.images.map(image => image.image) // Extract image URLs
+        );
+    };
+
+    const dispatch = useDispatch();
+
+    const handleAddToCart = () => {
+      if (!product || quantity <= 0) return;
+  
+      if (quantity > product.stock) {
+        toast.error('Quantity exceeds available stock');
+        return;
+      }
+  
+      const cartItem = {
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        image: product.images[0].image,
+        regular_price: parseFloat(product.regular_price),
+        selling_price: parseFloat(product.selling_price),
+        gst_percentage: parseFloat(product.gst_percentage),
+        bp_value: product.bp_value,
+        stock: product.stock,
+        qnt: quantity,
+        selectedAttributes: {},
+        // Calculate GST amount and total price
+        gst_amount: parseFloat(
+          ((parseFloat(product.selling_price) * quantity * product.gst_percentage) / 100).toFixed(2)
+        ),
+        total_price: parseFloat(
+          (parseFloat(product.selling_price) * quantity * (1 + product.gst_percentage / 100)).toFixed(2)
+        ),
+      };
+  
+      dispatch(addItemToCart(cartItem));
+      toast.success('Added to cart successfully');
+    };
+
+
+  const [mainImage, setMainImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedFaq, setSelectedFaq] = useState(null);
 
-  const thumbnails = [
-    '/Products/p4.jpeg',
-    '/Products/p3.jpeg',
-    '/Products/p2.jpeg',
-    '/Products/p1.jpeg',
-    '/Products/p1.jpeg'
-  ];
-
-  const featuredProducts = [
-    { id: 1, name: 'Test Product', rating: 5, image: '/Products/p4.jpeg' },
-    { id: 2, name: 'Test Product', rating: 5, image: '/Products/p4.jpeg' },
-    { id: 3, name: 'Test Product', rating: 5, image: '/Products/p4.jpeg' },
-    { id: 4, name: 'Test Product', rating: 5, image: '/Products/p4.jpeg' }
-  ];
 
   const faqs = [
     { id: 1, question: "What is Herbal Power for AESTHETICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
@@ -33,6 +92,12 @@ const ProductDetail = () => {
 
   const toggleFaq = (id) => {
     setSelectedFaq(selectedFaq === id ? null : id);
+  };
+
+  const handleBuyNow = () => {
+    handleAddToCart();
+    // Navigate to cart/checkout page
+    router.push('/checkout');
   };
 
   return (
@@ -49,7 +114,7 @@ const ProductDetail = () => {
             />
           </div>
           <div className="grid grid-cols-5 gap-2">
-            {thumbnails.map((thumb, index) => (
+            {thumbnails && thumbnails.map((thumb, index) => (
               <button
                 key={index}
                 onClick={() => setMainImage(thumb)}
@@ -69,7 +134,7 @@ const ProductDetail = () => {
 
         {/* Product Info */}
         <div className="space-y-6">
-          <h1 className="text-3xl font-bold">Test Product</h1>
+          <h1 className="text-3xl font-bold">{product.name}</h1>
           
           {/* Rating */}
           <div className="flex items-center gap-1">
@@ -77,14 +142,26 @@ const ProductDetail = () => {
               <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
             ))}
           </div>
+          {/* Desciption */}
+          <div className="space-y-2">
+            <div className="flex items-baseline gap-2">
+             <span dangerouslySetInnerHTML={{ __html: product.description }} />
+            </div>
+            
+          </div>
 
           {/* Price */}
           <div className="space-y-2">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold">₹1000</span>
-              <span className="text-gray-500 line-through">₹2000</span>
+              <span className="text-2xl font-bold">₹{product.selling_price}</span>
+              <span className="text-gray-500 line-through">₹{product.regular_price}</span>
             </div>
-            <span className="text-green-600">50% OFF</span>
+            {/* <span className="text-green-600">50% OFF</span> */}
+            {product.regular_price > product.selling_price && (
+            <span className="text-green-600">
+              {Math.round(((product.regular_price - product.selling_price) / product.regular_price) * 100)}% OFF
+            </span>
+          )}
           </div>
 
           {/* Benefits */}
@@ -101,58 +178,68 @@ const ProductDetail = () => {
 
           {/* Quantity and Add to Cart */}
           <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <span>Qty:</span>
-              <input
-                type="number"
-                min="1"
-                value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value)))}
-                className="w-20 px-3 py-2 border rounded-lg"
-              />
-            </div>
-            <button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors">
+          <div className="flex items-center gap-4">
+            <span>Qty:</span>
+            <input
+              type="number"
+              min="1"
+              max={product.stock}
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, Math.min(product.stock, parseInt(e.target.value) || 1)))}
+              className="w-20 px-3 py-2 border rounded-lg"
+            />
+            {product.stock > 0 && (
+              <span className="text-sm text-gray-500">
+                Available: {product.stock}
+              </span>
+            )}
+          </div>
+          {product.stock > 0 ? (
+          <>
+            <button
+              onClick={handleAddToCart}
+              className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 
+                       transition-colors flex items-center justify-center gap-2"
+            >
+              <ShoppingCart className="w-5 h-5" />
               ADD TO CART
             </button>
-            <button className="w-full bg-[#8B6D4D] text-white py-3 rounded-lg hover:opacity-90 transition-opacity">
+            <button
+              onClick={handleBuyNow}
+              className="w-full bg-[#8B6D4D] text-white py-3 rounded-lg hover:opacity-90 
+                       transition-opacity"
+            >
               BUY NOW
             </button>
+          </>
+        ) : (
+          <div className="text-red-600 font-medium text-center py-2">
+            Out of Stock
+          </div>
+        )}
           </div>
 
           {/* Description & Specifications Tabs */}
           <div className="space-y-4 border-t pt-6">
-            <div className="border rounded-lg">
+            {product.features && product.features.map(item =>(
+
+            <div className="border rounded-lg" key={item.id}>
               <button
-                onClick={() => toggleFaq('description')}
+                onClick={() => toggleFaq(item.title)}
                 className="flex justify-between items-center w-full p-4"
               >
-                <span className="font-semibold">Description</span>
+                <span className="font-semibold">{item.title}</span>
                 <ChevronDown className={`w-5 h-5 transition-transform ${
-                  selectedFaq === 'description' ? 'rotate-180' : ''
+                  selectedFaq === item.title ? 'rotate-180' : ''
                 }`} />
               </button>
-              {selectedFaq === 'description' && (
+              {selectedFaq === item.title && (
                 <div className="p-4 border-t">
-                  Product description goes here...
+                  {item.content}
                 </div>
               )}
             </div>
-            <div className="border rounded-lg">
-              <button
-                onClick={() => toggleFaq('specifications')}
-                className="flex justify-between items-center w-full p-4"
-              >
-                <span className="font-semibold">Specifications</span>
-                <ChevronDown className={`w-5 h-5 transition-transform ${
-                  selectedFaq === 'specifications' ? 'rotate-180' : ''
-                }`} />
-              </button>
-              {selectedFaq === 'specifications' && (
-                <div className="p-4 border-t">
-                  Product specifications go here...
-                </div>
-              )}
-            </div>
+            ))}
           </div>
         </div>
       </div>
@@ -162,21 +249,7 @@ const ProductDetail = () => {
         <h2 className="text-2xl font-bold mb-6">Feature Products</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {featuredProducts.map((product) => (
-            <div key={product.id} className="space-y-2">
-              <div className="aspect-square">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              </div>
-              <div className="flex items-center gap-1">
-                {[...Array(product.rating)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <h3 className="font-semibold">{product.name}</h3>
-            </div>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>

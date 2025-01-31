@@ -1,27 +1,36 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChevronLeft, CreditCard, Truck, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
+import Cookies from 'js-cookie';
+import UserArea from '@/components/Header/UserArea';
 
 const CheckoutPage = () => {
-  // Sample cart items - in real app, would come from cart state/context
-  const cartItems = [
-    {
-      id: 1,
-      name: 'Collagen Herbal Blend Powder',
-      price: 1000,
-      image: '/Products/p4.jpeg',
-      quantity: 1
-    },
-    {
-      id: 2,
-      name: 'Herbal Supplement',
-      price: 800,
-      image: '/Products/p4.jpeg',
-      quantity: 2
-    }
-  ];
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { userInfo } = useSelector((state) => state.auth);
+// Check authentication status on mount and when token changes
+  useEffect(() => {
+    const token = Cookies.get('token');
+    setIsAuthenticated(!!token);
+  }, [userInfo]);
+
+  const router = useRouter();
+  const { 
+    cartItems, 
+    subTotal, 
+    totalGST,
+    total,
+    totalBPPoints 
+  } = useSelector((state) => state.cart);
+
+  // Calculate shipping and final total
+  const shipping = subTotal > 1000 ? 0 : 100;
+  const finalTotal = total + shipping;
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -37,11 +46,6 @@ const CheckoutPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // Calculate totals
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = subtotal > 1000 ? 0 : 100;
-  const total = subtotal + shipping;
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -53,17 +57,65 @@ const CheckoutPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setLoading(false);
-    // Handle checkout logic here
-    console.log('Checkout data:', formData);
+
+    try {
+      // Create order payload
+      const orderData = {
+        ...formData,
+        items: cartItems.map(item => ({
+          id: item.id,
+          quantity: item.qnt,
+          price: item.selling_price,
+          gst_amount: item.gst_amount,
+          total_price: item.total_price
+        })),
+        subtotal: subTotal,
+        gst: totalGST,
+        shipping,
+        total: finalTotal,
+        bp_points: totalBPPoints
+      };
+
+      // Make API call to create order
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${Cookies.get('token')}`
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create order');
+      }
+
+      const data = await response.json();
+      
+      // Handle different payment methods
+      if (formData.paymentMethod === 'cod') {
+        router.push(`/order-confirmation/${data.id}`);
+      } else {
+        // Redirect to payment gateway
+        router.push(data.payment_url);
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error('Failed to process checkout');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Redirect if cart is empty
+  if (cartItems.length === 0) {
+    router.push('/cart');
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
-        {/* Back to Cart */}
         <Link 
           href="/cart" 
           className="inline-flex items-center text-gray-600 hover:text-gray-800 mb-8"
@@ -81,7 +133,7 @@ const CheckoutPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      First Name
+                      First Name *
                     </label>
                     <input
                       type="text"
@@ -94,7 +146,7 @@ const CheckoutPage = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Last Name
+                      Last Name *
                     </label>
                     <input
                       type="text"
@@ -107,52 +159,53 @@ const CheckoutPage = () => {
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Shipping Address
-                    </label>
-                    <textarea
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      required
-                      rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                    pattern="[0-9]{10}"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Shipping Address *
+                  </label>
+                  <textarea
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    required
+                    rows={3}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      City
+                      City *
                     </label>
                     <input
                       type="text"
@@ -165,7 +218,7 @@ const CheckoutPage = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      State
+                      State *
                     </label>
                     <input
                       type="text"
@@ -180,7 +233,7 @@ const CheckoutPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    PIN Code
+                    PIN Code *
                   </label>
                   <input
                     type="text"
@@ -188,6 +241,7 @@ const CheckoutPage = () => {
                     value={formData.pincode}
                     onChange={handleInputChange}
                     required
+                    pattern="[0-9]{6}"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
                 </div>
@@ -195,10 +249,10 @@ const CheckoutPage = () => {
             </div>
 
             {/* Payment Method */}
-            <div className="bg-white rounded-lg shadow-md p-6">
+            {/* <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Payment Method</h2>
               <div className="space-y-4">
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer">
+                <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -209,7 +263,7 @@ const CheckoutPage = () => {
                   />
                   <span className="ml-2">Credit/Debit Card</span>
                 </label>
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer">
+                <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -220,7 +274,7 @@ const CheckoutPage = () => {
                   />
                   <span className="ml-2">UPI Payment</span>
                 </label>
-                <label className="flex items-center p-4 border rounded-lg cursor-pointer">
+                <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
                   <input
                     type="radio"
                     name="paymentMethod"
@@ -232,7 +286,7 @@ const CheckoutPage = () => {
                   <span className="ml-2">Cash on Delivery</span>
                 </label>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Order Summary */}
@@ -244,16 +298,26 @@ const CheckoutPage = () => {
               <div className="space-y-4 mb-6">
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex items-center gap-4">
-                    <img
+                    <Image
                       src={item.image}
                       alt={item.name}
-                      className="w-16 h-16 object-cover rounded-lg"
+                      width={64}
+                      height={64}
+                      className="rounded-lg object-cover"
                     />
                     <div className="flex-1">
                       <h3 className="font-medium">{item.name}</h3>
-                      <p className="text-gray-500">Quantity: {item.quantity}</p>
+                      <p className="text-gray-500">Quantity: {item.qnt}</p>
+                      <p className="text-sm text-gray-500">
+                        GST ({item.gst_percentage}%): ₹{item.gst_amount}
+                      </p>
+                      {item.bp_value > 0 && (
+                        <p className="text-sm text-blue-600">
+                          BP Points: {item.bp_value * item.qnt}
+                        </p>
+                      )}
                     </div>
-                    <span className="font-semibold">₹{item.price * item.quantity}</span>
+                    <span className="font-semibold">₹{item.total_price}</span>
                   </div>
                 ))}
               </div>
@@ -262,16 +326,26 @@ const CheckoutPage = () => {
               <div className="space-y-4">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>₹{subtotal}</span>
+                  <span>₹{subTotal}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>GST</span>
+                  <span>₹{totalGST}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
                   <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
                 </div>
+                {totalBPPoints > 0 && (
+                  <div className="flex justify-between text-blue-600">
+                    <span>Total BP Points</span>
+                    <span>{totalBPPoints}</span>
+                  </div>
+                )}
                 <div className="border-t pt-4">
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>
-                    <span>₹{total}</span>
+                    <span>₹{finalTotal}</span>
                   </div>
                 </div>
               </div>
@@ -289,10 +363,12 @@ const CheckoutPage = () => {
               </div>
 
               {/* Place Order Button */}
-              <button
+              {isAuthenticated ? (
+                <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 
+                         transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {loading ? (
                   'Processing...'
@@ -303,6 +379,10 @@ const CheckoutPage = () => {
                   </>
                 )}
               </button>
+              ):(
+                <UserArea checkoutpage={true} />
+              )}
+              
             </div>
           </div>
         </div>

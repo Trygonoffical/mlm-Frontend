@@ -133,7 +133,7 @@ export default function Navbar() {
                 </Link>
             </div>
             <div className="flex items-center cursor-pointer">
-              <UserArea />
+              <UserArea checkoutpage={false} />
             </div>
             <div className="flex items-center relative cursor-pointer">
               {/* <ShoppingCartIcon className="w-7 h-7 text-gray-600" /> */}

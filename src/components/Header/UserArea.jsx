@@ -2,13 +2,13 @@
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { User } from 'lucide-react';
+import { KeyIcon, User } from 'lucide-react';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 import { setUserLogout } from '@/redux/slices/authSlice';
 import SendOtp from '../CustomerLogin/SendOtp';
 import { removeTokens } from '@/utils/cookies'; 
-const UserArea = () => {
+const UserArea = ( {checkoutpage = false}) => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const dispatch = useDispatch();
@@ -18,6 +18,7 @@ const UserArea = () => {
 
   // Check authentication status on mount and when token changes
   useEffect(() => {
+    console.log('checkoutbtn val -' , checkoutpage)
     const token = Cookies.get('token');
     setIsAuthenticated(!!token);
   }, [userInfo]);
@@ -58,22 +59,19 @@ const UserArea = () => {
   }, [showProfileDropdown]);
 
   if (!isAuthenticated) {
-    return <SendOtp />;
+    return <SendOtp checkoutpage={checkoutpage} />;
   }
 
   return (
     <div className="relative" onClick={(e) => e.stopPropagation()}>
-      <div 
+        <div 
         className="flex items-center gap-2 cursor-pointer"
         onClick={() => setShowProfileDropdown(!showProfileDropdown)}
       >
         <User className="w-6 h-6" />
-        {/* {userInfo?.firstName && (
-          <span className="text-sm font-medium hidden md:block">
-            {userInfo.firstName}
-          </span>
-        )} */}
       </div>
+  
+      
 
       {showProfileDropdown && (
         <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-50 py-1">

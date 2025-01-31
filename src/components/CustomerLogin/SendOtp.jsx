@@ -7,12 +7,12 @@ import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { showCartSidebar, hideCartSidebar, removeItemFromCart } from '@/redux/slices/cartSlice'; // Import actions
 import { useRouter } from 'next/navigation';
-import { Phone , User} from 'lucide-react';
+import { Phone , User , KeyIcon} from 'lucide-react';
 import { updateUserInfo } from '@/redux/slices/authSlice';
 import { setTokens } from '@/utils/cookies';
 import toast from 'react-hot-toast';
 
-export default function SendOtp() {
+export default function SendOtp({checkoutpage}) {
     const router = useRouter();
     const [isCartSidebarVisible , setisCartSidebarVisible]  = useState(false)
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -162,6 +162,7 @@ export default function SendOtp() {
 
     // Add this useEffect
     useEffect(() => {
+        console.log('in sendotp - checkoutpage val', checkoutpage)
         // If user is logged in and sidebar is open, close it
         if (userInfo && isCartSidebarVisible) {
             setisCartSidebarVisible(false);
@@ -171,10 +172,22 @@ export default function SendOtp() {
 
   return (
     <>
-        
+        {checkoutpage ? (
+             <button
+             onClick={()=>showverifyNumber()}
+             className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 
+                      transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+           >
+
+                 <KeyIcon className="w-5 h-5" />
+                login
+           </button>
+        ):(
         <button className="group flex items-center p-2"  onClick={()=>showverifyNumber()}>
             <User className="w-6 h-6 cursor-pointer" />
         </button>
+        )}
+        
         <Transition show={isCartSidebarVisible} as={Fragment}>
         <Dialog className="relative z-[9999]" onClose={()=>hideOtpSidebarStatus()}>
             <TransitionChild

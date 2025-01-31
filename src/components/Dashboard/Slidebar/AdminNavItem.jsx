@@ -25,4 +25,5 @@ import {
     { icon: TicketPercent, label: 'Customer Pick' , href : 'customerpick' },
     { icon: FileText, label: 'About' , href : 'about' },
     { icon: FileText, label: 'Home Section' , href : 'homesection' },
+    { icon: FileText, label: 'Menu' , href : 'menu' },
   ];
