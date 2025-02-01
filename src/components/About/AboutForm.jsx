@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { Editor } from '@tinymce/tinymce-react';
-import { DocumentTextIcon, EyeIcon, PhotoIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
+import {  EyeIcon, PhotoIcon, RocketLaunchIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { TargetIcon } from 'lucide-react';
 
 
