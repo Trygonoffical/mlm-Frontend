@@ -22,14 +22,6 @@ const fetchproducts = async () => {
       setLoading(false);
   }  
 };
-  // const products = [
-  //   { id: 1, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
-  //   { id: 2, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
-  //   { id: 3, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
-  //   { id: 4, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
-  //   { id: 5, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg' },
-  // ];
-
   useEffect(() => {
     fetchproducts();
     const handleResize = () => {
@@ -102,7 +94,7 @@ const fetchproducts = async () => {
               //     </div>
               //   </div>
               // </div>
-              <ProductCard product={product} key={product.id}  />
+              <ProductCard product={product} key={product.id} style={{ flex: `0 0 ${100 / slidesToShow}%` }} />
             ))}
           </div>
         </div>

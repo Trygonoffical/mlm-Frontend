@@ -5,6 +5,7 @@ import { Star, ChevronDown, ShoppingCart, Truck, Shield } from 'lucide-react';
 import ProductCard from '@/components/Products/ProductCard';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '@/redux/slices/cartSlice';
+import SuccessAndReviews from '@/components/Stories/homestories';
 
 const ProductDetail = ({params}) => {
   const slug = use(params).slug;
@@ -73,7 +74,7 @@ const ProductDetail = ({params}) => {
       };
   
       dispatch(addItemToCart(cartItem));
-      toast.success('Added to cart successfully');
+      // toast.success('Added to cart successfully');
     };
 
 
@@ -255,14 +256,15 @@ const ProductDetail = ({params}) => {
       </div>
 
       {/* Success Stories */}
-      <div className="mb-16">
+      {/* <div className="mb-16">
         <h2 className="text-2xl font-bold mb-6">Success Stories</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="aspect-square bg-gray-100 rounded-lg"></div>
           ))}
         </div>
-      </div>
+      </div> */}
+      <SuccessAndReviews />
 
       {/* FAQs */}
       <div className="bg-[#8B6D4D] text-white p-8 rounded-lg">

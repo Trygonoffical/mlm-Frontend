@@ -26,4 +26,5 @@ import {
     { icon: FileText, label: 'About' , href : 'about' },
     { icon: FileText, label: 'Home Section' , href : 'homesection' },
     { icon: FileText, label: 'Menu' , href : 'menu' },
+    { icon: FileText, label: 'Pages' , href : 'customPage' },
   ];

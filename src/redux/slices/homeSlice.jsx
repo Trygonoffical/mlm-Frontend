@@ -1,68 +1,122 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';  // Using axios for API requests (or you can use fetch)
+// homeSlice.js
+import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-const initialState = {
-  homeSlider: [],
-  homeAds: [],
-  categories: [],
-  featureProduct: [],
-  homeCatVals: [],
-  businessInfo: {},
-  topHeadData: {},
-  popupData: {},
-  tabProducts: {},
-  mainMenu: [],
-  aboutPage: {},
-  loading: false,        // To handle loading states
-  error: null,           // To handle errors
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+// Configuration for API endpoints and their states
+const endpointConfig = {
+    sliders: '/home-sliders/',
+    advertisements: '/advertisements/',
+    categories: '/categories/',
+    testimonials: '/testimonials/',
+    customPages: '/custom-pages/',
+    sections: '/home-sections/',
+    successStorie: '/success-story/',
+    customerPick: '/customer-pick/',
+    menu: '/menu/',
+    products: '/products/',
+    about: '/about/',
+    companyInfo: '/company-info/'
 };
 
-// Thunks for async API calls
-// export const fetchRemoteConfig = createAsyncThunk('home/remoteConfig', async () => {
-//   const response = await axios.get('http://127.0.0.1:8000/api/v1/config/');  // Replace with your API URL
-//   console.log('remoteconfigdata - ', response.data)
-//   return response.data;
-// });
+// Create a generic fetch function
+export const initializeData = createAsyncThunk(
+  'home/initializeData',
+  async (_, { dispatch }) => {
+      // Fetch all data in parallel
+      const promises = Object.keys(endpointConfig).map(key => 
+          dispatch(fetchData({ endpoint: endpointConfig[key] }))
+      );
+      await Promise.all(promises);
+  }
+);
 
-// Slice
+const fetchData = createAsyncThunk(
+  'home/fetchData',
+  async ({ endpoint, params = {} }, { rejectWithValue }) => {
+      try {
+          const response = await axios.get(`${API_URL}${endpoint}`, { params });
+          return { key: endpoint, data: response.data };
+      } catch (error) {
+          return rejectWithValue({ key: endpoint, error: error.message });
+      }
+  }
+);
+
+// Create initial state based on configuration
+const createInitialState = () => {
+    const state = {};
+    Object.keys(endpointConfig).forEach(key => {
+        state[key] = {
+            data: [],
+            loading: false,
+            error: null
+        };
+    });
+    return state;
+};
+
 const homeSlice = createSlice({
-  name: 'home',
-  initialState,
-  reducers: {
-    // Synchronous actions here if needed
-    // updateTopHeadReducers: (state, action) => {
-    //   state.topHeadData = action.payload
-    // }
-  },
-  // extraReducers: (builder) => {
-  //   // Handle async actions
-  //   builder
-  //     .addCase(fetchRemoteConfig.pending, (state) => {
-  //       state.loading = true;
-  //     })
-  //     .addCase(fetchRemoteConfig.fulfilled, (state, action) => {
-  //       state.loading = false;
-  //       state.homeSlider = action.payload.Homesliders;
-  //       state.homeAds = action.payload.adbans;
-  //       state.categories = action.payload.categories;
-  //       state.featureProduct = action.payload.featureProducts;
-  //       state.homeCatVals = action.payload.categories.filter(option => action.payload.homecatsval.includes(option.id))
-  //       // state.homeCatVals = action.payload.homeCatVals;
-  //       state.businessInfo = action.payload.companyData;
-  //       state.topHeadData = action.payload.topHeadData;
-  //       state.popupData = action.payload.popUpData;
-  //       state.tabProducts = action.payload.HomeTabs;
-  //       state.mainMenu = action.payload.homeMenu;
-  //       state.aboutPage = action.payload.about;
-
-  //       console.log('remote fetch data -', action.payload)
-  //     })
-  //     .addCase(fetchRemoteConfig.rejected, (state, action) => {
-  //       state.loading = false;
-  //       state.error = action.error.message;
-  //     })
-  // },
+    name: 'home',
+    initialState: createInitialState(),
+    reducers: {
+        resetState: (state, action) => {
+            const key = action.payload;
+            if (key && state[key]) {
+                state[key] = createInitialState()[key];
+            }
+        }
+    },
+    extraReducers: (builder) => {
+        // Generic handlers for all endpoints
+        Object.keys(endpointConfig).forEach(key => {
+            builder
+                .addMatcher(
+                    (action) => action.type.startsWith(`home/fetchData/pending`) && action.meta.arg.endpoint === endpointConfig[key],
+                    (state, action) => {
+                        const endpointKey = Object.keys(endpointConfig).find(k => endpointConfig[k] === action.meta.arg.endpoint);
+                        if (endpointKey) {
+                            state[endpointKey].loading = true;
+                            state[endpointKey].error = null;
+                        }
+                    }
+                )
+                .addMatcher(
+                    (action) => action.type.startsWith(`home/fetchData/fulfilled`) && action.payload.key === endpointConfig[key],
+                    (state, action) => {
+                        const endpointKey = Object.keys(endpointConfig).find(k => endpointConfig[k] === action.payload.key);
+                        if (endpointKey) {
+                            state[endpointKey].loading = false;
+                            state[endpointKey].data = action.payload.data;
+                            state[endpointKey].error = null;
+                        }
+                    }
+                )
+                .addMatcher(
+                    (action) => action.type.startsWith(`home/fetchData/rejected`) && action.payload?.key === endpointConfig[key],
+                    (state, action) => {
+                        const endpointKey = Object.keys(endpointConfig).find(k => endpointConfig[k] === action.payload.key);
+                        if (endpointKey) {
+                            state[endpointKey].loading = false;
+                            state[endpointKey].error = action.payload.error;
+                        }
+                    }
+                );
+        });
+    }
 });
 
-// export const { updateTopHeadReducers } = homeSlice.actions;
+// Export actions and selectors
+export const { resetState } = homeSlice.actions;
+
+// Create selectors
+export const selectData = (state, key) => state.home[key];
+
+// Create action creator helpers
+export const fetchHomeData = (key, params) => {
+    return fetchData({ endpoint: endpointConfig[key], params });
+};
+
 export default homeSlice.reducer;

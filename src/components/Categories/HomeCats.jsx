@@ -20,14 +20,6 @@ const HomeCats = () => {
     }
 };
 
-  // const categories = [
-  //   { id: 1, link:'#', name: 'Nutrition', productCount: '120+ Product', image: '/Products/Cats/1.webp' },
-  //   { id: 2, link:'#', name: 'Beauty', productCount: '120+ Product', image: '/Products/Cats/2.webp' },
-  //   { id: 3, link:'#', name: 'Home & Living 1', productCount: '120+ Product', image: '/Products/Cats/3.webp' },
-  //   { id: 4, link:'#', name: 'Personal Care', productCount: '120+ Product', image: '/Products/Cats/4.webp' },
-  //   { id: 5, link:'#', name: 'Category 1', productCount: '120+ Product', image: '/Products/Cats/1.webp' },
-  //   { id: 6, link:'#', name: 'Category 2', productCount: '120+ Product', image: '/Products/Cats/2.webp' },
-  // ];
 
   // Update slides to show based on window width
   useEffect(() => {
@@ -75,7 +67,7 @@ const HomeCats = () => {
           {categories.map((category) => (
             
             <Link
-              href={`/categories/${category.slug}`} key={category.id}
+              href={`/category/${category.slug}`} key={category.id}
               className="flex-none w-1/2 sm:w-1/5 px-2"
               style={{ flex: `0 0 ${100 / slidesToShow}%` }}>
               <div className="text-center cursor-pointer group">

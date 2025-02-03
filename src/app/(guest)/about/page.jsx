@@ -1,34 +1,17 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
 import { Target, Eye } from 'lucide-react';
+import { useHomeData } from '@/hooks/useHomeData';
 
 const AboutUs = () => {
-  const [homeAbout, setHomeAbout] = useState([]);
-    const [loading, setLoading] = useState(true);
-          
-      const fetchAbout = async () => {
-        try {
-            
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/about/2/`, {
-            });
-            
-            if (!response.ok) throw new Error('Failed to fetch about content');
-            
-            const data = await response.json();
-            setHomeAbout(data);
-            console.log('about - ' , data)
-        } catch (error) {
-            console.error('Error:', error);
-            
-        } finally {
-            setLoading(false);
+    const about = useHomeData('about');
+    
+        if (about.loading) {
+            return <div>Loading...</div>;
         }
-    };
-          
-     useEffect(() => {
-      fetchAbout();
-        }, []);
+        // Find the specific page with matching slug
+        const homeAbout = about.data.find(page => page.type === 'MAIN');
+       
   return (
     <div className="min-h-screen">
       {/* Hero Section */}

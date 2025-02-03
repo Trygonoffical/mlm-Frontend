@@ -1,11 +1,16 @@
 'use client'
 import { Phone, Mail } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 const Footer = () => {
 
     const [companyInfo, setCompanyInfo] = useState({});
+    const [categories, setCategories] = useState([]);
+    const [pages, setPages] = useState([]);
+      
+    
     const [loading, setLoading] = useState(false);
     
     const fetchCompanyInfo = async () => {
@@ -25,8 +30,37 @@ const Footer = () => {
             setLoading(false);
         }
     };
+    const fetchCategories = async () => {
+      try {
+          const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`);
+          const data2 = await res2.json();
+          console.log('cats -- ', data2)
+          setCategories(data2);
+      } catch (error) {
+          console.log('Error fetching categories:', error);
+      }
+  };
+
+  const fetchPages = async () => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/custom-pages/`);
+        const data = await response.json();
+        if (response.ok) {
+          console.log('page data - ' , data)
+          setPages(data);
+        }
+        
+    } catch (error) {
+        console.log('Error fetching pages:', error);
+    } finally {
+        setLoading(false);
+    }
+};
+  
     useEffect(() => {
             fetchCompanyInfo();
+            fetchCategories();
+            fetchPages();
         }, []);
 
     const socialLinks = [
@@ -117,24 +151,35 @@ const Footer = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
               {/* Organization Column */}
               <div>
-                <h4 className="font-semibold mb-4">Organization</h4>
+                <h4 className="font-semibold mb-4">Usefull Links</h4>
                 <ul className="space-y-2">
                   <li><a href="/about" className="hover:text-gray-300">About Us</a></li>
                   <li><a href="/contact" className="hover:text-gray-300">Contact Us</a></li>
                   <li><a href="/shop" className="hover:text-gray-300">Shop</a></li>
-                  {Array(4).fill(0).map((_, i) => (
-                    <li key={i}><a href="#" className="hover:text-gray-300">Menu</a></li>
+                  {pages && pages.map(page=>(
+                    <li key={page.id}>
+                      {page.show_in_footer && (
+                        <Link href={`/${page.slug}`}  className="hover:text-gray-300">{page.title}</Link>
+                      )}
+                    </li>
                   ))}
+
+                  {/* {Array(4).fill(0).map((_, i) => (
+                    <li key={i}><a href="#" className="hover:text-gray-300">Menu</a></li>
+                  ))} */}
                 </ul>
               </div>
 
               {/* Userfull Tools Column */}
               <div>
-                <h4 className="font-semibold mb-4">Userfull Tools</h4>
+                <h4 className="font-semibold mb-4">Categories</h4>
                 <ul className="space-y-2">
-                  {Array(6).fill(0).map((_, i) => (
-                    <li key={i}><a href="#" className="hover:text-gray-300">Menu</a></li>
+                  {categories && categories.map(cats=>(
+                    <li key={cats.id}><Link href={`/category/${cats.slug}`}  className="hover:text-gray-300">{cats.name}</Link></li>
                   ))}
+                  {/* {Array(6).fill(0).map((_, i) => (
+                    <li key={i}><a href="#" className="hover:text-gray-300">Menu</a></li>
+                  ))} */}
                 </ul>
               </div>
 

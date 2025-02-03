@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { addItemToCart } from '@/redux/slices/cartSlice';
 import Image from 'next/image';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product , style}) => {
     const dispatch = useDispatch();
 
     const handleAddToCart = () => {
@@ -36,7 +36,7 @@ const ProductCard = ({ product }) => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow" style={style}>
             <div className="aspect-square relative">
                 <Link href={`/product/${product.slug}`}>
                     <Image
