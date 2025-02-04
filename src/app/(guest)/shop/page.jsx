@@ -3,32 +3,50 @@
 import React, { useState, useEffect } from 'react';
 import { Star, Search, Filter, X, ShoppingCart } from 'lucide-react';
 import PageHead from '@/components/Pagehead/PageHead';
+import { useHomeData } from '@/hooks/useHomeData';
+import ProductCard from '@/components/Products/ProductCard';
 
 const ShopPage = () => {
-  // Initial product data
-  const initialProducts = [
-    { id: 1, name: 'Collagen Herbal Blend Powder', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg', category: 'Herbal' },
-    { id: 2, name: 'Collagen Herbal Blend Powder2', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg', category: 'Powder' },
-    { id: 3, name: 'Collagen Herbal Blend Powder3', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg', category: 'Herbal' },
-    { id: 4, name: 'Collagen Herbal Blend Powder4', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg', category: 'Powder' },
-    { id: 5, name: 'Collagen Herbal Blend Powder5', price: 1000, oldPrice: 2000, rating: 5, image: '/Products/p4.jpeg', category: 'Herbal' },
-    { id: 6, name: 'Collagen Herbal Blend Powder6', price: 1200, oldPrice: 2400, rating: 5, image: '/Products/p4.jpeg', category: 'Supplements' },
-    { id: 7, name: 'Collagen Herbal Blend Powder7', price: 800, oldPrice: 1600, rating: 5, image: '/Products/p4.jpeg', category: 'Wellness' },
-    { id: 8, name: 'Collagen Herbal Blend Powder8', price: 1500, oldPrice: 3000, rating: 5, image: '/Products/p4.jpeg', category: 'Herbal' },
-    { id: 9, name: 'Collagen Herbal Blend Powder9', price: 900, oldPrice: 1800, rating: 5, image: '/Products/p4.jpeg', category: 'Powder' },
-    { id: 10, name: 'Collagen Herbal Blend Powder10', price: 1100, oldPrice: 2200, rating: 5, image: '/Products/p4.jpeg', category: 'Supplements' },
-  ];
-
-  const [products] = useState(initialProducts);
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  // All useState hooks at the top
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [priceRange, setPriceRange] = useState([0, 3000]);
+  const [priceRange, setPriceRange] = useState([0, 10000]); // Increased range for actual prices
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [sortBy, setSortBy] = useState('default');
   const [cart, setCart] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState(['All']);
 
-  const categories = ['All', 'Herbal', 'Powder', 'Supplements', 'Wellness'];
+  // Fetch products data
+  const allProducts = useHomeData('products');
+
+  const fetchProducts = async () => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`);
+        const data = await res.json();
+        console.log('cats -- ', data)
+        setProducts(data);
+        setFilteredProducts(data)
+
+        // Extract unique categories from the products
+      const uniqueCategories = new Set(['All']);
+      data.forEach(product => {
+        product.category_details.forEach(category => {
+          uniqueCategories.add(category.name);
+        });
+      });
+      setCategories(Array.from(uniqueCategories));
+    } catch (error) {
+        console.error('Error fetching Products:', error);
+    }
+};
+
+
+  // Update products and categories when data is loaded
+  useEffect(() => {
+    fetchProducts()
+  }, []);
 
   // Filter and search function
   const filterProducts = () => {
@@ -43,21 +61,24 @@ const ShopPage = () => {
 
     // Apply category filter
     if (selectedCategory !== 'All') {
-      result = result.filter(product => product.category === selectedCategory);
+      result = result.filter(product =>
+        product.category_details.some(cat => cat.name === selectedCategory)
+      );
     }
 
-    // Apply price range filter
-    result = result.filter(product =>
-      product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
+    // Apply price range filter using selling_price
+    result = result.filter(product => {
+      const price = parseFloat(product.selling_price);
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
 
     // Apply sorting
     switch (sortBy) {
       case 'price-low-high':
-        result.sort((a, b) => a.price - b.price);
+        result.sort((a, b) => parseFloat(a.selling_price) - parseFloat(b.selling_price));
         break;
       case 'price-high-low':
-        result.sort((a, b) => b.price - a.price);
+        result.sort((a, b) => parseFloat(b.selling_price) - parseFloat(a.selling_price));
         break;
       case 'name-a-z':
         result.sort((a, b) => a.name.localeCompare(b.name));
@@ -75,22 +96,22 @@ const ShopPage = () => {
   // Effect to run filtering when any filter changes
   useEffect(() => {
     filterProducts();
-  }, [searchTerm, selectedCategory, priceRange, sortBy]);
+  }, [searchTerm, selectedCategory, priceRange, sortBy, products]);
 
   // Add to cart functionality
-  const addToCart = (product) => {
-    setCart(prevCart => {
-      const existingProduct = prevCart.find(item => item.id === product.id);
-      if (existingProduct) {
-        return prevCart.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prevCart, { ...product, quantity: 1 }];
-    });
-  };
+  // const addToCart = (product) => {
+  //   setCart(prevCart => {
+  //     const existingProduct = prevCart.find(item => item.id === product.id);
+  //     if (existingProduct) {
+  //       return prevCart.map(item =>
+  //         item.id === product.id
+  //           ? { ...item, quantity: item.quantity + 1 }
+  //           : item
+  //       );
+  //     }
+  //     return [...prevCart, { ...product, quantity: 1 }];
+  //   });
+  // };
 
   // Handle price range change
   const handlePriceRangeChange = (e, type) => {
@@ -108,9 +129,15 @@ const ShopPage = () => {
     filterProducts();
   };
 
+  // Get featured image for a product
+  const getFeatureImage = (product) => {
+    const featuredImage = product.images.find(img => img.is_feature);
+    return featuredImage ? featuredImage.image : product.images[0]?.image;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
-    <PageHead title={'Shop Now'} />
+      <PageHead title={'Shop Now'} />
       <div className="max-w-7xl mx-auto px-4 mt-10">
         {/* Header with search */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -166,7 +193,7 @@ const ShopPage = () => {
                   <input
                     type="range"
                     min="0"
-                    max="3000"
+                    max="10000"
                     value={priceRange[0]}
                     onChange={(e) => handlePriceRangeChange(e, 'min')}
                     className="w-full"
@@ -178,7 +205,7 @@ const ShopPage = () => {
                   <input
                     type="range"
                     min="0"
-                    max="3000"
+                    max="10000"
                     value={priceRange[1]}
                     onChange={(e) => handlePriceRangeChange(e, 'max')}
                     className="w-full"
@@ -210,36 +237,49 @@ const ShopPage = () => {
 
           {/* Product Grid */}
           <div className="flex-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
               {filteredProducts.map((product) => (
-                <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="aspect-square relative">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <div className="flex mb-2">
-                      {[...Array(product.rating)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      ))}
-                    </div>
-                    <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-gray-400 line-through">₹{product.oldPrice}</span>
-                      <span className="font-bold text-lg">₹{product.price}</span>
-                    </div>
-                    <button
-                      onClick={() => addToCart(product)}
-                      className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <ShoppingCart className="w-5 h-5" />
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
+                // <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                //   <div className="aspect-square relative">
+                //     <img
+                //       src={getFeatureImage(product)}
+                //       alt={product.name}
+                //       className="w-full h-full object-cover"
+                //     />
+                //     {product.is_featured && (
+                //       <span className="absolute top-2 right-2 bg-yellow-400 text-xs text-black px-2 py-1 rounded">
+                //         Featured
+                //       </span>
+                //     )}
+                //   </div>
+                //   <div className="p-4">
+                //     <div className="flex justify-between items-start mb-2">
+                //       <h3 className="font-semibold line-clamp-2 flex-1">{product.name}</h3>
+                //       <div className="flex flex-col items-end ml-2">
+                //         {product.category_details.map(cat => (
+                //           <span key={cat.id} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                //             {cat.name}
+                //           </span>
+                //         ))}
+                //       </div>
+                //     </div>
+                //     <div className="flex items-center gap-2 mb-3">
+                //       <span className="text-gray-400 line-through">₹{product.regular_price}</span>
+                //       <span className="font-bold text-lg">₹{product.selling_price}</span>
+                //     </div>
+                //     <button
+                //       onClick={() => addToCart(product)}
+                //       className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                //     >
+                //       <ShoppingCart className="w-5 h-5" />
+                //       Add to Cart
+                //     </button>
+                //   </div>
+                // </div>
+
+              <ProductCard key={product.id} product={product} />
+
+
               ))}
             </div>
 
@@ -264,6 +304,7 @@ const ShopPage = () => {
                   <X className="w-6 h-6" />
                 </button>
               </div>
+              
               {/* Mobile Filters Content */}
               <div className="space-y-6">
                 {/* Price Range Filter */}
@@ -275,7 +316,7 @@ const ShopPage = () => {
                       <input
                         type="range"
                         min="0"
-                        max="3000"
+                        max="10000"
                         value={priceRange[0]}
                         onChange={(e) => handlePriceRangeChange(e, 'min')}
                         className="w-full"
@@ -287,7 +328,7 @@ const ShopPage = () => {
                       <input
                         type="range"
                         min="0"
-                        max="3000"
+                        max="10000"
                         value={priceRange[1]}
                         onChange={(e) => handlePriceRangeChange(e, 'max')}
                         className="w-full"

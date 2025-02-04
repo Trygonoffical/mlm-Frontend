@@ -1,5 +1,5 @@
 // src/hooks/useHomeData.js
-// 'use client'
+'use client'
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectData, initializeData } from '@/redux/slices/homeSlice';

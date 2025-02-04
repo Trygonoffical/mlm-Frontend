@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { addItemToCart } from '@/redux/slices/cartSlice';
 import Image from 'next/image';
 
-const ProductCard = ({ product , style}) => {
+const ProductCard = ({ product , styleval}) => {
     const dispatch = useDispatch();
 
     const handleAddToCart = () => {
@@ -36,7 +36,7 @@ const ProductCard = ({ product , style}) => {
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow" style={style}>
+        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow" style={styleval}>
             <div className="aspect-square relative">
                 <Link href={`/product/${product.slug}`}>
                     <Image
@@ -47,17 +47,32 @@ const ProductCard = ({ product , style}) => {
                         className="w-full h-full object-cover"
                     />
                 </Link>
+                     {product.is_featured && (
+                       <span className="absolute top-2 right-2 bg-yellow-400 text-xs text-black px-2 py-1 rounded">
+                      Featured
+                      </span>
+                   )}
             </div>
             <div className="p-4">
-                <div className="flex mb-2">
-                    {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
+                <div className="flex  justify-between">
+                    <div className="flex mb-2">
+                        {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        ))}
+                    </div>
+                    
+                    <div className="flex flex-col items-end ml-2">
+                        {product.category_details.map(cat => (
+                            <span key={cat.id} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                {cat.name}
+                            </span>
+                        ))}
+                    </div>
                 </div>
                 <Link href={`/product/${product.slug}`}>
                     <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
                 </Link>
-
+                
                 <div className="space-y-2">
                     {/* Price Display */}
                     <div className="flex items-center gap-2">
