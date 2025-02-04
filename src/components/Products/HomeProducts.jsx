@@ -94,7 +94,7 @@ const fetchproducts = async () => {
               //     </div>
               //   </div>
               // </div>
-              <ProductCard product={product} key={product.id} style={{ flex: `0 0 ${100 / slidesToShow}%` }} />
+              <ProductCard product={product} key={product.id} styleval={{ flex: `0 0 ${100 / slidesToShow}%` }} />
             ))}
           </div>
         </div>
