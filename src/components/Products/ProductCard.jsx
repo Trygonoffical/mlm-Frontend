@@ -5,10 +5,19 @@ import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '@/redux/slices/cartSlice';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 const ProductCard = ({ product , styleval}) => {
+    const [totlePrice , setTotalPrice] = useState(0)
     const dispatch = useDispatch();
 
+    const toatlAmount = ()=>{
+        const sellingPrice = parseFloat(product.selling_price);
+        const gstPercentage = parseFloat(product.gst_percentage);
+        const gstAmount = (sellingPrice * gstPercentage) / 100;
+        const totalPrice = parseFloat(sellingPrice + gstAmount);
+        setTotalPrice(totalPrice);
+    }
     const handleAddToCart = () => {
         // Calculate prices as numbers to ensure proper calculations
         const sellingPrice = parseFloat(product.selling_price);
@@ -34,6 +43,9 @@ const ProductCard = ({ product , styleval}) => {
 
         dispatch(addItemToCart(cartItem));
     };
+    useEffect(()=>{
+        toatlAmount();
+    },[product])
 
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow" style={styleval}>
@@ -76,8 +88,11 @@ const ProductCard = ({ product , styleval}) => {
                 <div className="space-y-2">
                     {/* Price Display */}
                     <div className="flex items-center gap-2">
+                        {product.regular_price <  product.sellingPrice && (
+                            <span className="text-gray-400 line-through">₹{product.sellingPrice}</span> 
+                        )}
                         {/* <span className="text-gray-400 line-through">₹{product.sellingPrice}</span> */}
-                        <span className="font-bold text-lg">₹{product.totalPrice}</span>
+                        <span className="font-bold text-lg">₹{totlePrice}</span>
                     </div>
 
                     {/* GST and BP Info */}
