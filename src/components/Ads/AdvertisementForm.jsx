@@ -19,6 +19,14 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
     });
     const [previewUrl, setPreviewUrl] = useState(advertisement?.image_url || null);
 
+    // In your AdvertisementForm component
+    const POSITIONS = [
+        { value: 'SIDEBAR', label: 'Sidebar' },
+        { value: 'FULL_WIDTH', label: 'Full Width' },
+        { value: 'PRODUCT_PAGE', label: 'Product Page' },
+        { value: 'CUSTOMER_PANEL', label: 'Customer Panel' },
+        { value: 'MLM_PANEL', label: 'MLM Panel' }
+    ];
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -160,7 +168,7 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
                                     </div>
                                 )}
                             </div>
-                            <div>
+                            {/* <div>
                                 <label className="block mb-1">Position</label>
                                 <input
                                 type="number"
@@ -168,6 +176,22 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
                                 onChange={(e) => setFormData({...formData, position: e.target.value})}
                                 className="w-full p-2 border rounded"
                                 />
+                            </div> */}
+                             {/* Replace the position input with: */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Position</label>
+                                <select
+                                    name="position"
+                                    value={formData.position}
+                                    onChange={handleChange}
+                                    className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2"
+                                >
+                                    {POSITIONS.map(pos => (
+                                        <option key={pos.value} value={pos.value}>
+                                            {pos.label}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="flex items-center">
                                 <input

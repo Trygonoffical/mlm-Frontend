@@ -11,7 +11,7 @@ import {
     { icon: Wallet, label: 'Level' ,  href : 'position' },
     { icon: Wallet, label: 'Wallet' ,  href : '#' },
     { icon: Network, label: 'Networks' ,  href : '#' },
-    { icon: FileText, label: 'KYC' ,  href : '#' },
+    { icon: FileText, label: 'KYC' ,  href : 'kyc' },
     { icon: FileText, label: 'Reports' ,  href : '#' },
     { icon: Bell, label: 'Notification'  ,  href : '#' },
     { icon: User, label: 'Profile' ,  href : 'profile' },
@@ -27,4 +27,5 @@ import {
     { icon: FileText, label: 'Home Section' , href : 'homesection' },
     { icon: FileText, label: 'Menu' , href : 'menu' },
     { icon: FileText, label: 'Pages' , href : 'customPage' },
+    { icon: FileText, label: 'Blogs' , href : 'blogs' },
   ];

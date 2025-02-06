@@ -14,7 +14,7 @@ const TopBar = ({shop=false , admin=false}) => {
               <MobileSidebar admin={admin} />
               <div className='flex items-center gap-2'>
                 <img src="/Images/logo.png" alt="Logo" className="h-auto w-8" />
-                <span className="text-green-600">Commission - ₹ 1000.00</span>
+                {/* <span className="text-green-600">Commission - ₹ 1000.00</span> */}
               </div>
               
             </div>

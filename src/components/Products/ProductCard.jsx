@@ -14,7 +14,7 @@ const ProductCard = ({ product , styleval}) => {
         const sellingPrice = parseFloat(product.selling_price);
         const gstPercentage = parseFloat(product.gst_percentage);
         const gstAmount = (sellingPrice * gstPercentage) / 100;
-        const totalPrice = sellingPrice + gstAmount;
+        const totalPrice = parseFloat(sellingPrice + gstAmount);
 
         const cartItem = {
             id: product.id,
@@ -76,13 +76,13 @@ const ProductCard = ({ product , styleval}) => {
                 <div className="space-y-2">
                     {/* Price Display */}
                     <div className="flex items-center gap-2">
-                        <span className="text-gray-400 line-through">₹{product.regular_price}</span>
-                        <span className="font-bold text-lg">₹{product.selling_price}</span>
+                        {/* <span className="text-gray-400 line-through">₹{product.sellingPrice}</span> */}
+                        <span className="font-bold text-lg">₹{product.totalPrice}</span>
                     </div>
 
                     {/* GST and BP Info */}
                     <div className="text-xs text-gray-500 space-y-1">
-                        <div>GST: {product.gst_percentage}%</div>
+                        {/* <div>GST: {product.gst_percentage}%</div> */}
                         {product.bp_value > 0 && (
                             <div className="text-blue-600 font-medium">
                                 BP Points: {product.bp_value}

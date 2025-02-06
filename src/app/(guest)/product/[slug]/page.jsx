@@ -6,13 +6,30 @@ import ProductCard from '@/components/Products/ProductCard';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '@/redux/slices/cartSlice';
 import SuccessAndReviews from '@/components/Stories/homestories';
+import FeatureProducts from '@/components/Products/FeatureProducts';
 
 const ProductDetail = ({params}) => {
   const slug = use(params).slug;
 
     const [product, setProduct] = useState([]);
+    const [producAds, setProductAds] = useState([]);
     const [thumbnails, setThumbnails] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [featuredProducts, setFeaturedProducts] = useState([]);
+
+    const fetchAdvertisements = async () => {
+      try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/advertisements/?position=PRODUCT_PAGE`, {
+          });
+          const data = await response.json();
+          console.log('Products ads' , data)
+          setProductAds(data[0]);
+      } catch (error) {
+          console.error('Error fetching advertisements:', error);
+      } finally {
+          setLoading(false);
+      }
+  };
 
   const fetchProduct = async () => {
           try {
@@ -33,6 +50,7 @@ const ProductDetail = ({params}) => {
       };
   
       useEffect(() => {
+        fetchAdvertisements()
         fetchProduct();
       }, []);
   
@@ -150,6 +168,15 @@ const ProductDetail = ({params}) => {
             </div>
             
           </div>
+          <div className="space-y-2">
+            <div className="flex items-baseline gap-2">
+             {/* <span dangerouslySetInnerHTML={{ __html: product.description }} /> */}
+             <img src={producAds.image} 
+              className='w-auto h-20'
+               />
+            </div>
+            
+          </div>
 
           {/* Price */}
           <div className="space-y-2">
@@ -246,15 +273,17 @@ const ProductDetail = ({params}) => {
       </div>
 
       {/* Featured Products */}
-      <div className="mb-16">
+      {/* <div className="mb-16">
         <h2 className="text-2xl font-bold mb-6">Feature Products</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <FeatureProducts key={product.id} products={featuredProducts} title='Feature Products' />
+             <ProductCard key={product.id} product={product} />
           ))}
         </div>
-      </div>
+      </div> */}
 
+      <FeatureProducts key={product.id} products={featuredProducts} title='Feature Products' />
       {/* Success Stories */}
       {/* <div className="mb-16">
         <h2 className="text-2xl font-bold mb-6">Success Stories</h2>

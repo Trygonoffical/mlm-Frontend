@@ -142,7 +142,7 @@ const CategoryPage = ({params}) => {
                 //     </button>
                 //   </div>
                 // </div>
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product}  />
               ))}
             </div>
 
