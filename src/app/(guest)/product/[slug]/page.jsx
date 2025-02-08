@@ -9,8 +9,7 @@ import SuccessAndReviews from '@/components/Stories/homestories';
 import FeatureProducts from '@/components/Products/FeatureProducts';
 
 const ProductDetail = ({params}) => {
-  const slug = use(params).slug;
-
+    const slug = use(params).slug;
     const [product, setProduct] = useState([]);
     const [producAds, setProductAds] = useState([]);
     const [thumbnails, setThumbnails] = useState([]);
@@ -29,9 +28,9 @@ const ProductDetail = ({params}) => {
       } finally {
           setLoading(false);
       }
-  };
+    };
 
-  const fetchProduct = async () => {
+    const fetchProduct = async () => {
           try {
               const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/?slug=${slug}`);
               const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/?featured=true`);
@@ -47,14 +46,14 @@ const ProductDetail = ({params}) => {
           } catch (error) {
               console.error('Error fetching categories:', error);
           }
-      };
+    };
   
-      useEffect(() => {
+    useEffect(() => {
         fetchAdvertisements()
         fetchProduct();
-      }, []);
+    }, []);
   
-      const extractThumbnails = (products) => {
+    const extractThumbnails = (products) => {
         return products.flatMap(product => 
             product.images.map(image => image.image) // Extract image URLs
         );
@@ -96,231 +95,232 @@ const ProductDetail = ({params}) => {
     };
 
 
-  const [mainImage, setMainImage] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [selectedFaq, setSelectedFaq] = useState(null);
+    const [mainImage, setMainImage] = useState(null);
+    const [quantity, setQuantity] = useState(1);
+    const [selectedFaq, setSelectedFaq] = useState(null);
 
 
-  const faqs = [
-    { id: 1, question: "What is Herbal Power for AESTHETICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-    { id: 2, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-    { id: 3, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-    { id: 4, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-    { id: 5, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." }
-  ];
+    const faqs = [
+      { id: 1, question: "What is Herbal Power for AESTHETICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+      { id: 2, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+      { id: 3, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+      { id: 4, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+      { id: 5, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." }
+    ];
 
-  const toggleFaq = (id) => {
-    setSelectedFaq(selectedFaq === id ? null : id);
-  };
+    const toggleFaq = (id) => {
+      setSelectedFaq(selectedFaq === id ? null : id);
+    };
 
-  const handleBuyNow = () => {
-    handleAddToCart();
-    // Navigate to cart/checkout page
-    router.push('/checkout');
-  };
+    const handleBuyNow = () => {
+      handleAddToCart();
+      // Navigate to cart/checkout page
+      router.push('/checkout');
+    };
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Product Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-        {/* Image Gallery */}
-        <div className="space-y-4">
-          <div className="aspect-square">
-            <img
-              src={mainImage}
-              alt="Product"
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </div>
-          <div className="grid grid-cols-5 gap-2">
-            {thumbnails && thumbnails.map((thumb, index) => (
-              <button
-                key={index}
-                onClick={() => setMainImage(thumb)}
-                className={`aspect-square rounded-lg overflow-hidden border-2 ${
-                  mainImage === thumb ? 'border-green-500' : 'border-transparent'
-                }`}
-              >
-                <img
-                  src={thumb}
-                  alt={`Thumbnail ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Product Info */}
-        <div className="space-y-6">
-          <h1 className="text-3xl font-bold">{product.name}</h1>
-          
-          {/* Rating */}
-          <div className="flex items-center gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-            ))}
-          </div>
-          {/* Desciption */}
-          <div className="space-y-2">
-            <div className="flex items-baseline gap-2">
-             <span dangerouslySetInnerHTML={{ __html: product.description }} />
-            </div>
-            
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-baseline gap-2">
-             {/* <span dangerouslySetInnerHTML={{ __html: product.description }} /> */}
-             <img src={producAds.image} 
-              className='w-auto h-20'
-               />
-            </div>
-            
-          </div>
-
-          {/* Price */}
-          <div className="space-y-2">
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold">₹{product.selling_price}</span>
-              <span className="text-gray-500 line-through">₹{product.regular_price}</span>
-            </div>
-            {/* <span className="text-green-600">50% OFF</span> */}
-            {product.regular_price > product.selling_price && (
-            <span className="text-green-600">
-              {Math.round(((product.regular_price - product.selling_price) / product.regular_price) * 100)}% OFF
-            </span>
-          )}
-          </div>
-
-          {/* Benefits */}
-          <div className="flex items-center gap-4 text-sm text-gray-600">
-            <div className="flex items-center gap-1">
-              <Truck className="w-4 h-4" />
-              <span>Free Shipping</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Shield className="w-4 h-4" />
-              <span>Secure Payment</span>
-            </div>
-          </div>
-
-          {/* Quantity and Add to Cart */}
+    return (
+      <div className="container mx-auto px-4 py-8">
+        {/* Product Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          {/* Image Gallery */}
           <div className="space-y-4">
-          <div className="flex items-center gap-4">
-            <span>Qty:</span>
-            <input
-              type="number"
-              min="1"
-              max={product.stock}
-              value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, Math.min(product.stock, parseInt(e.target.value) || 1)))}
-              className="w-20 px-3 py-2 border rounded-lg"
-            />
-            {product.stock > 0 && (
-              <span className="text-sm text-gray-500">
-                Available: {product.stock}
+            <div className="aspect-square">
+              <img
+                src={mainImage}
+                alt="Product"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            </div>
+            <div className="grid grid-cols-5 gap-2">
+              {thumbnails && thumbnails.map((thumb, index) => (
+                <button
+                  key={index}
+                  onClick={() => setMainImage(thumb)}
+                  className={`aspect-square rounded-lg overflow-hidden border-2 ${
+                    mainImage === thumb ? 'border-green-500' : 'border-transparent'
+                  }`}
+                >
+                  <img
+                    src={thumb}
+                    alt={`Thumbnail ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Product Info */}
+          <div className="space-y-6">
+            <h1 className="text-3xl font-bold">{product.name}</h1>
+            
+            {/* Rating */}
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+              ))}
+            </div>
+            {/* Desciption */}
+            <div className="space-y-2">
+              <div className="flex items-baseline gap-2">
+              <span dangerouslySetInnerHTML={{ __html: product.description }} />
+              </div>
+              
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-baseline gap-2">
+              {/* <span dangerouslySetInnerHTML={{ __html: product.description }} /> */}
+              {producAds.image.lenght > 0 && (
+                <img src={producAds.image} 
+                className='w-auto h-20'
+                />
+              )}
+              </div>
+            </div>
+
+            {/* Price */}
+            <div className="space-y-2">
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold">₹{product.selling_price}</span>
+                <span className="text-gray-500 line-through">₹{product.regular_price}</span>
+              </div>
+              {/* <span className="text-green-600">50% OFF</span> */}
+              {product.regular_price > product.selling_price && (
+              <span className="text-green-600">
+                {Math.round(((product.regular_price - product.selling_price) / product.regular_price) * 100)}% OFF
               </span>
             )}
-          </div>
-          {product.stock > 0 ? (
-          <>
-            <button
-              onClick={handleAddToCart}
-              className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 
-                       transition-colors flex items-center justify-center gap-2"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              ADD TO CART
-            </button>
-            <button
-              onClick={handleBuyNow}
-              className="w-full bg-[#8B6D4D] text-white py-3 rounded-lg hover:opacity-90 
-                       transition-opacity"
-            >
-              BUY NOW
-            </button>
-          </>
-        ) : (
-          <div className="text-red-600 font-medium text-center py-2">
-            Out of Stock
-          </div>
-        )}
-          </div>
+            </div>
 
-          {/* Description & Specifications Tabs */}
-          <div className="space-y-4 border-t pt-6">
-            {product.features && product.features.map(item =>(
+            {/* Benefits */}
+            <div className="flex items-center gap-4 text-sm text-gray-600">
+              <div className="flex items-center gap-1">
+                <Truck className="w-4 h-4" />
+                <span>Free Shipping</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Shield className="w-4 h-4" />
+                <span>Secure Payment</span>
+              </div>
+            </div>
 
-            <div className="border rounded-lg" key={item.id}>
-              <button
-                onClick={() => toggleFaq(item.title)}
-                className="flex justify-between items-center w-full p-4"
-              >
-                <span className="font-semibold">{item.title}</span>
-                <ChevronDown className={`w-5 h-5 transition-transform ${
-                  selectedFaq === item.title ? 'rotate-180' : ''
-                }`} />
-              </button>
-              {selectedFaq === item.title && (
-                <div className="p-4 border-t">
-                  {item.content}
-                </div>
+            {/* Quantity and Add to Cart */}
+            <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <span>Qty:</span>
+              <input
+                type="number"
+                min="1"
+                max={product.stock}
+                value={quantity}
+                onChange={(e) => setQuantity(Math.max(1, Math.min(product.stock, parseInt(e.target.value) || 1)))}
+                className="w-20 px-3 py-2 border rounded-lg"
+              />
+              {product.stock > 0 && (
+                <span className="text-sm text-gray-500">
+                  Available: {product.stock}
+                </span>
               )}
             </div>
+            {product.stock > 0 ? (
+            <>
+              <button
+                onClick={handleAddToCart}
+                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 
+                        transition-colors flex items-center justify-center gap-2"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                ADD TO CART
+              </button>
+              <button
+                onClick={handleBuyNow}
+                className="w-full bg-[#8B6D4D] text-white py-3 rounded-lg hover:opacity-90 
+                        transition-opacity"
+              >
+                BUY NOW
+              </button>
+            </>
+          ) : (
+            <div className="text-red-600 font-medium text-center py-2">
+              Out of Stock
+            </div>
+          )}
+            </div>
+
+            {/* Description & Specifications Tabs */}
+            <div className="space-y-4 border-t pt-6">
+              {product.features && product.features.map(item =>(
+
+              <div className="border rounded-lg" key={item.id}>
+                <button
+                  onClick={() => toggleFaq(item.title)}
+                  className="flex justify-between items-center w-full p-4"
+                >
+                  <span className="font-semibold">{item.title}</span>
+                  <ChevronDown className={`w-5 h-5 transition-transform ${
+                    selectedFaq === item.title ? 'rotate-180' : ''
+                  }`} />
+                </button>
+                {selectedFaq === item.title && (
+                  <div className="p-4 border-t">
+                    {item.content}
+                  </div>
+                )}
+              </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Featured Products */}
+        {/* <div className="mb-16">
+          <h2 className="text-2xl font-bold mb-6">Feature Products</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {featuredProducts.map((product) => (
+              <FeatureProducts key={product.id} products={featuredProducts} title='Feature Products' />
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div> */}
+
+        <FeatureProducts key={product.id} products={featuredProducts} title='Feature Products' />
+        {/* Success Stories */}
+        {/* <div className="mb-16">
+          <h2 className="text-2xl font-bold mb-6">Success Stories</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="aspect-square bg-gray-100 rounded-lg"></div>
+            ))}
+          </div>
+        </div> */}
+        <SuccessAndReviews />
+
+        {/* FAQs */}
+        <div className="bg-[#8B6D4D] text-white p-8 rounded-lg">
+          <h2 className="text-2xl font-bold mb-6">FAQ'S</h2>
+          <div className="space-y-4">
+            {faqs.map((faq) => (
+              <div key={faq.id} className="border-b border-white/20 last:border-0">
+                <button
+                  onClick={() => toggleFaq(faq.id)}
+                  className="flex justify-between items-center w-full py-4"
+                >
+                  <span className="font-semibold">{faq.question}</span>
+                  <ChevronDown className={`w-5 h-5 transition-transform ${
+                    selectedFaq === faq.id ? 'rotate-180' : ''
+                  }`} />
+                </button>
+                {selectedFaq === faq.id && (
+                  <div className="pb-4">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>
       </div>
-
-      {/* Featured Products */}
-      {/* <div className="mb-16">
-        <h2 className="text-2xl font-bold mb-6">Feature Products</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {featuredProducts.map((product) => (
-            <FeatureProducts key={product.id} products={featuredProducts} title='Feature Products' />
-             <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </div> */}
-
-      <FeatureProducts key={product.id} products={featuredProducts} title='Feature Products' />
-      {/* Success Stories */}
-      {/* <div className="mb-16">
-        <h2 className="text-2xl font-bold mb-6">Success Stories</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="aspect-square bg-gray-100 rounded-lg"></div>
-          ))}
-        </div>
-      </div> */}
-      <SuccessAndReviews />
-
-      {/* FAQs */}
-      <div className="bg-[#8B6D4D] text-white p-8 rounded-lg">
-        <h2 className="text-2xl font-bold mb-6">FAQ'S</h2>
-        <div className="space-y-4">
-          {faqs.map((faq) => (
-            <div key={faq.id} className="border-b border-white/20 last:border-0">
-              <button
-                onClick={() => toggleFaq(faq.id)}
-                className="flex justify-between items-center w-full py-4"
-              >
-                <span className="font-semibold">{faq.question}</span>
-                <ChevronDown className={`w-5 h-5 transition-transform ${
-                  selectedFaq === faq.id ? 'rotate-180' : ''
-                }`} />
-              </button>
-              {selectedFaq === faq.id && (
-                <div className="pb-4">
-                  {faq.answer}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ProductDetail;

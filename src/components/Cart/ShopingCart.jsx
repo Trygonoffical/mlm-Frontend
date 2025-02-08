@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { Dialog } from '@headlessui/react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { showCartSidebar, hideCartSidebar, removeItemFromCart, updateQuantity } from '@/redux/slices/cartSlice';
 import { XMarkIcon, ShoppingBagIcon, TrashIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 
@@ -21,8 +21,23 @@ function CartArea() {
         totalGST = 0,
         total = 0,
         isCartSidebarVisible = false,
+        regular_price = 0,
+
     } = useSelector((state) => state.cart);
 
+    // const calculateTotalAmount = (product) => {
+    //     // Make sure the values exist and are numbers
+    //     const sellingPrice = typeof product.selling_price === 'number' 
+    //         ? product.selling_price 
+    //         : parseFloat(product.selling_price) || 0;
+            
+    //     const gstPercentage = typeof product.gst_percentage === 'number'
+    //         ? product.gst_percentage
+    //         : parseFloat(product.gst_percentage) || 0;
+
+    //     const gstAmount = (sellingPrice * gstPercentage) / 100;
+    //     return parseFloat((sellingPrice + gstAmount).toFixed(2));
+    // }
     const handleRemoveItem = (itemId, selectedAttributes) => {
         dispatch(removeItemFromCart({ itemID: itemId, selectedAttributes }));
     };
@@ -63,13 +78,13 @@ function CartArea() {
                 <div className="fixed inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
                         <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
-                            <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
+                            <DialogPanel className="pointer-events-auto w-screen max-w-md">
                                 <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                                     {/* Header */}
                                     <div className="flex items-start justify-between p-4">
-                                        <Dialog.Title className="text-lg font-medium">
+                                        <DialogTitle className="text-lg font-medium">
                                             Shopping Cart ({cartCount} items)
-                                        </Dialog.Title>
+                                        </DialogTitle>
                                         <button
                                             className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
                                             onClick={() => dispatch(hideCartSidebar())}
@@ -172,7 +187,7 @@ function CartArea() {
                                         </div>
                                     </div>
                                 </div>
-                            </Dialog.Panel>
+                            </DialogPanel>
                         </div>
                     </div>
                 </div>

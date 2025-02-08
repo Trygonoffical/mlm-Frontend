@@ -11,13 +11,6 @@ const ProductCard = ({ product , styleval}) => {
     const [totlePrice , setTotalPrice] = useState(0)
     const dispatch = useDispatch();
 
-    const toatlAmount = ()=>{
-        const sellingPrice = parseFloat(product.selling_price);
-        const gstPercentage = parseFloat(product.gst_percentage);
-        const gstAmount = (sellingPrice * gstPercentage) / 100;
-        const totalPrice = parseFloat(sellingPrice + gstAmount);
-        setTotalPrice(totalPrice);
-    }
     const handleAddToCart = () => {
         // Calculate prices as numbers to ensure proper calculations
         const sellingPrice = parseFloat(product.selling_price);
@@ -43,10 +36,7 @@ const ProductCard = ({ product , styleval}) => {
 
         dispatch(addItemToCart(cartItem));
     };
-    useEffect(()=>{
-        toatlAmount();
-    },[product])
-
+    
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow" style={styleval}>
             <div className="aspect-square relative">
@@ -73,13 +63,13 @@ const ProductCard = ({ product , styleval}) => {
                         ))}
                     </div>
                     
-                    <div className="flex flex-col items-end ml-2">
+                    {/* <div className="flex flex-col items-end ml-2">
                         {product.category_details.map(cat => (
                             <span key={cat.id} className="text-xs bg-gray-100 px-2 py-1 rounded">
                                 {cat.name}
                             </span>
                         ))}
-                    </div>
+                    </div> */}
                 </div>
                 <Link href={`/product/${product.slug}`}>
                     <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
@@ -88,11 +78,16 @@ const ProductCard = ({ product , styleval}) => {
                 <div className="space-y-2">
                     {/* Price Display */}
                     <div className="flex items-center gap-2">
-                        {product.regular_price <  product.sellingPrice && (
-                            <span className="text-gray-400 line-through">₹{product.sellingPrice}</span> 
+                        {parseFloat(product.regular_price) > parseFloat(product.selling_price) ? (
+                            <>
+                                <span className="text-gray-400 line-through">₹{product.regular_price}</span> 
+                                <span className="font-bold text-lg">₹{product.selling_price}</span>
+                            </>
+                        ):(
+                            <span className="font-bold text-lg">₹{product.selling_price}</span>
                         )}
-                        {/* <span className="text-gray-400 line-through">₹{product.sellingPrice}</span> */}
-                        <span className="font-bold text-lg">₹{totlePrice}</span>
+                        {/* <span className="text-gray-400 line-through">₹{product.regular_price}</span>
+                        <span className="font-bold text-lg">₹{product.selling_price}</span> */}
                     </div>
 
                     {/* GST and BP Info */}

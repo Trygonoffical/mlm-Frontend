@@ -30,7 +30,6 @@ const EdfitPositionForm = ({setRefreshKey , data={}}) => {
       const hideSidebarStatus = ()=>{
         // console.log('vvvv')
         setisSidebarVisible(false);
-
       }
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -42,7 +41,7 @@ const EdfitPositionForm = ({setRefreshKey , data={}}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('udp[ated')
+        // console.log('udp[ated')
         try {
             const token = Cookies.get('token');
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/positions/${id}/`, {
@@ -97,9 +96,9 @@ const EdfitPositionForm = ({setRefreshKey , data={}}) => {
 
     return (
         <>
-            <button className="text-blue-600 hover:text-blue-900"  onClick={()=>showSidebarStatus()}>
-                <PencilIcon className="h-5 w-5" />
-            </button>
+        <button className="text-blue-600 hover:text-blue-900"  onClick={()=>showSidebarStatus()}>
+            <PencilIcon className="h-5 w-5" />
+        </button>
         <Transition show={isSidebarVisible} as={Fragment}>
         <Dialog className="relative z-[9999]" onClose={()=>hideSidebarStatus()}>
             <TransitionChild

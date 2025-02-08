@@ -88,16 +88,19 @@ const CartPage = () => {
                       </Link>
                       <div className="flex items-center justify-center sm:justify-start mt-1 space-x-2">
                         <span className="text-gray-400 line-through">₹{item.regular_price}</span>
+                        {item.regular_price >  item.sellingPrice && (
+                            <span className="text-gray-400 line-through">₹{item.regular_price}</span> 
+                        )}
                         <span className="text-lg font-bold">₹{item.selling_price}</span>
                       </div>
 
                       {/* GST and BP Points */}
-                      <div className="text-sm text-gray-500 mt-1">
+                      {/* <div className="text-sm text-gray-500 mt-1">
                         <p>GST: {item.gst_percentage}%</p>
                         {item.bp_value > 0 && (
                           <p className="text-blue-600">BP Points: {item.bp_value * item.qnt}</p>
                         )}
-                      </div>
+                      </div> */}
                       
                       {/* Quantity Controls */}
                       <div className="flex items-center justify-center sm:justify-start mt-4">

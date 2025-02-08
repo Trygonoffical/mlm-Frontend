@@ -8,6 +8,7 @@ const initialState = {
     totalGST: 0,
     totalBPPoints: 0,
     total: 0,
+    regular_price: 0,
     isCartSidebarVisible: false,
     coupon: null,
     shippingPincode: {

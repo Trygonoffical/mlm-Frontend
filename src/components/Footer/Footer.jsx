@@ -17,9 +17,7 @@ const Footer = () => {
         try {
             
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/company-info/`);
-            
             if (!response.ok) throw new Error('Failed to fetch company info');
-            
             const data = await response.json();
             console.log('compnay info - ' , data)
             setCompanyInfo(data)
@@ -31,31 +29,31 @@ const Footer = () => {
         }
     };
     const fetchCategories = async () => {
-      try {
-          const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`);
-          const data2 = await res2.json();
-          console.log('cats -- ', data2)
-          setCategories(data2);
-      } catch (error) {
-          console.log('Error fetching categories:', error);
-      }
-  };
-
-  const fetchPages = async () => {
-    try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/custom-pages/`);
-        const data = await response.json();
-        if (response.ok) {
-          console.log('page data - ' , data)
-          setPages(data);
+        try {
+            const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`);
+            const data2 = await res2.json();
+            console.log('cats -- ', data2)
+            setCategories(data2);
+        } catch (error) {
+            console.log('Error fetching categories:', error);
         }
-        
-    } catch (error) {
-        console.log('Error fetching pages:', error);
-    } finally {
-        setLoading(false);
-    }
-};
+    };
+
+    const fetchPages = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/custom-pages/`);
+            const data = await response.json();
+            if (response.ok) {
+              console.log('page data - ' , data)
+              setPages(data);
+            }
+            
+        } catch (error) {
+            console.log('Error fetching pages:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
   
     useEffect(() => {
             fetchCompanyInfo();

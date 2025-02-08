@@ -1,0 +1,30 @@
+/* Custom styles for the best-selling slider */
+.best-selling-slider {
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  .best-selling-slider .slick-track {
+    display: flex !important;
+    gap: 1rem;
+  }
+  
+  .best-selling-slider .slick-slide {
+    height: inherit !important;
+  }
+  
+  .best-selling-slider .slick-slide > div {
+    height: 100%;
+  }
+  
+  /* Fix arrow positioning */
+  .best-selling-slider .slick-prev,
+  .best-selling-slider .slick-next {
+    z-index: 10;
+  }
+  
+  /* Ensure product cards maintain height */
+  .best-selling-slider .slick-slide > div {
+    display: flex;
+    justify-content: center;
+  }
