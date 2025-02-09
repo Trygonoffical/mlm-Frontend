@@ -21,7 +21,7 @@ const ProductDetail = ({params}) => {
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/advertisements/?position=PRODUCT_PAGE`, {
           });
           const data = await response.json();
-          console.log('Products ads' , data)
+          console.log('Products ads' , data[0])
           setProductAds(data[0]);
       } catch (error) {
           console.error('Error fetching advertisements:', error);
@@ -170,10 +170,10 @@ const ProductDetail = ({params}) => {
             <div className="space-y-2">
               <div className="flex items-baseline gap-2">
               {/* <span dangerouslySetInnerHTML={{ __html: product.description }} /> */}
-              {producAds.image.lenght > 0 && (
-                <img src={producAds.image} 
-                className='w-auto h-20'
-                />
+              {producAds && (
+                    <img src={producAds.image} 
+                      className='w-auto h-20'
+                      />
               )}
               </div>
             </div>
