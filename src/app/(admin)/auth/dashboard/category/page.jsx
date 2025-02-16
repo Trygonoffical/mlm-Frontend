@@ -86,7 +86,7 @@
 //         console.log('Token from js-cookie:', Cookies.get('token'));
 //         console.log('All cookies from js-cookie:', Cookies.get());
     
-//         const token = Cookies.get('token');
+//         
 //         if (!token) {
 //             // Try alternate methods to get the token
 //             const allCookies = document.cookie.split(';');
@@ -105,7 +105,7 @@
 //         });
 
 //         try {
-//             const token = Cookies.get('token');
+//             
 //             console.log('token - ' , token)
 //             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`, {
 //                 method: 'POST',
@@ -142,7 +142,7 @@
 //         if (!confirm('Are you sure you want to delete this category?')) return;
 
 //         try {
-//             const token = Cookies.get('token');
+//             
 //             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${id}/`, {
 //                 method: 'DELETE',
 //                 headers: {
@@ -263,12 +263,14 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { toast } from 'react-hot-toast';
 import CreateCat from '@/components/Categories/CreateCat';
 import EditCat from '@/components/Categories/EditCat';
+import { getTokens } from '@/utils/cookies';
+
 const columnHelper = createColumnHelper();
 const CategoriesPage = () => {
     const [categories, setCategories] = useState([]);
     const [refreshKey, setRefreshKey] = useState(0); // Add refresh trigger
     const router = useRouter();
-
+    const {token} = getTokens()
     const columns = [
         columnHelper.accessor('name', {
             header: 'Name',
@@ -321,7 +323,7 @@ const CategoriesPage = () => {
         if (!confirm('Are you sure you want to delete this category?')) return;
 
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${id}/`, {
                 method: 'DELETE',
                 headers: {

@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import { getTokens } from '@/utils/cookies';
 
 const TestimonialForm = ({ testimonial, setRefreshKey, onClose }) => {
     const [isOpen, setIsOpen] = useState(!!testimonial);
@@ -19,7 +20,7 @@ const TestimonialForm = ({ testimonial, setRefreshKey, onClose }) => {
         image: null
     });
     const [previewUrl, setPreviewUrl] = useState(testimonial?.image_url || null);
-
+    const { token } = getTokens()
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -34,7 +35,7 @@ const TestimonialForm = ({ testimonial, setRefreshKey, onClose }) => {
         });
 
         try {
-            const token = Cookies.get('token');
+            
             const url = testimonial
                 ? `${process.env.NEXT_PUBLIC_API_URL}/testimonials/${testimonial.id}/`
                 : `${process.env.NEXT_PUBLIC_API_URL}/testimonials/`;

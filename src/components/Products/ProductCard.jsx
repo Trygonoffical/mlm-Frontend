@@ -31,11 +31,27 @@ const ProductCard = ({ product , styleval}) => {
             bp_value: product.bp_value,
             qnt: 1,
             stock: product.stock,
-            selectedAttributes: {} // For future use if needed
+            selectedAttributes: {}, // For future use if needed
+            
         };
 
         dispatch(addItemToCart(cartItem));
     };
+    const updatePrice = (product)=>{
+        const sellingPrice = parseFloat(product.selling_price);
+        const gstPercentage = parseFloat(product.gst_percentage);
+        const gstAmount = (sellingPrice * gstPercentage) / 100;
+        const totalPrice =  sellingPrice + gstAmount;
+        setTotalPrice(totalPrice);
+        console.log('total price - ' , parseFloat(gstAmount).toFixed(2))
+        console.log('total totalPrice - ' , totalPrice)
+        console.log('total gst_percentage - ' , gstPercentage)
+        console.log('total sellingPrice - ' , typeof(sellingPrice))
+        console.log('total gstAmount - ' , typeof(gstAmount))
+    }
+    useEffect(()=>{
+        updatePrice (product)
+    }, [product]);
     
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow" style={styleval}>
@@ -55,7 +71,9 @@ const ProductCard = ({ product , styleval}) => {
                       </span>
                    )}
             </div>
+
             <div className="p-4">
+
                 <div className="flex  justify-between">
                     <div className="flex mb-2">
                         {[...Array(5)].map((_, i) => (
@@ -71,6 +89,7 @@ const ProductCard = ({ product , styleval}) => {
                         ))}
                     </div> */}
                 </div>
+
                 <Link href={`/product/${product.slug}`}>
                     <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
                 </Link>
@@ -84,12 +103,12 @@ const ProductCard = ({ product , styleval}) => {
                                 <span className="font-bold text-lg">₹{product.selling_price}</span>
                             </>
                         ):(
-                            <span className="font-bold text-lg">₹{product.selling_price}</span>
+                            <span className="font-bold text-lg">₹{totlePrice}</span>
                         )}
                         {/* <span className="text-gray-400 line-through">₹{product.regular_price}</span>
                         <span className="font-bold text-lg">₹{product.selling_price}</span> */}
                     </div>
-
+                
                     {/* GST and BP Info */}
                     <div className="text-xs text-gray-500 space-y-1">
                         {/* <div>GST: {product.gst_percentage}%</div> */}
@@ -99,7 +118,7 @@ const ProductCard = ({ product , styleval}) => {
                             </div>
                         )}
                     </div>
-
+                
                     {/* Stock Info */}
                     <div className="text-sm">
                         {product.stock > 0 ? (
@@ -109,7 +128,7 @@ const ProductCard = ({ product , styleval}) => {
                         )}
                     </div>
                 </div>
-
+                
                 <button
                     onClick={handleAddToCart}
                     disabled={product.stock === 0}
@@ -120,6 +139,7 @@ const ProductCard = ({ product , styleval}) => {
                     <ShoppingCart className="w-5 h-5" />
                     {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                 </button>
+
             </div>
         </div>
     );

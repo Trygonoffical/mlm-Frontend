@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import BlogForm from './BlogForm';
+import { getTokens } from '@/utils/cookies';
 
 const BlogList = () => {
     const [blogs, setBlogs] = useState([]);
@@ -16,8 +17,8 @@ const BlogList = () => {
         is_active: '',  // Change from empty string to null
         show_in_slider: ''  // Change from empty string to null
     });
-
-    useEffect(() => {
+    const {token } = getTokens()
+     useEffect(() => {
         fetchBlogs();
     }, [filters]);
 
@@ -36,7 +37,7 @@ const BlogList = () => {
             //     is_active: filters.isActive,
             //     show_in_slider: filters.showInSlider
             // }).toString();
-            const token = Cookies.get('token');
+       
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/blogs/${queryParams ? `?${queryParams}` : ''}`,
                 {
@@ -67,7 +68,7 @@ const BlogList = () => {
         if (!confirm('Are you sure you want to delete this blog?')) return;
 
         try {
-            const token = Cookies.get('token');
+          
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/blogs/${id}/`,
                 {
@@ -93,7 +94,7 @@ const BlogList = () => {
 
     const handleToggleStatus = async (id) => {
         try {
-            const token = Cookies.get('token');
+         
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/blogs/${id}/toggle_status/`,
                 {
@@ -119,7 +120,7 @@ const BlogList = () => {
 
     const handleToggleSlider = async (id) => {
         try {
-            const token = Cookies.get('token');
+         
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/blogs/${id}/toggle_slider/`,
                 {
@@ -195,7 +196,7 @@ const BlogList = () => {
             </div>
 
             {/* Blog Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
                 {blogs.map(blog => (
                     <div key={blog.id} className="bg-white rounded-lg shadow-md overflow-hidden">
                         {blog.feature_image_url && (

@@ -12,6 +12,7 @@ import {
     createColumnHelper,
   } from '@tanstack/react-table';
 import { Input } from "@/components/ui/input"
+import { getTokens } from '@/utils/cookies';
 
 const columnHelper = createColumnHelper();
 
@@ -19,6 +20,7 @@ const HomeSliderManager = () => {
   const [sliders, setSliders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState('');
+  const {token} = getTokens()
   const [formData, setFormData] = useState({
     title: '',
     desktop_image: null,
@@ -48,16 +50,16 @@ const HomeSliderManager = () => {
     console.log('Token from js-cookie:', Cookies.get('token'));
     console.log('All cookies from js-cookie:', Cookies.get());
 
-    const token = Cookies.get('token');
-    if (!token) {
-        // Try alternate methods to get the token
-        const allCookies = document.cookie.split(';');
-        const tokenCookie = allCookies.find(cookie => cookie.trim().startsWith('token='));
-        if (tokenCookie) {
-            const token = tokenCookie.split('=')[1];
-            console.log('Found token through alternate method:', token);
-        }
-    }
+
+    // if (!token) {
+    //     // Try alternate methods to get the token
+    //     const allCookies = document.cookie.split(';');
+    //     const tokenCookie = allCookies.find(cookie => cookie.trim().startsWith('token='));
+    //     if (tokenCookie) {
+    //         const token = tokenCookie.split('=')[1];
+    //         console.log('Found token through alternate method:', token);
+    //     }
+    // }
     
     const form = new FormData();
     Object.keys(formData).forEach(key => {
@@ -67,8 +69,7 @@ const HomeSliderManager = () => {
     });
 
     try {
-        const token = Cookies.get('token');
-        console.log('Cookies - ' , Cookies)
+      
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home-sliders/`, {
             method: 'POST',
             headers: {
@@ -104,7 +105,7 @@ const HomeSliderManager = () => {
     if (!confirm('Are you sure you want to delete this slider?')) return;
 
     try {
-        const token = Cookies.get('token');
+        
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/home-sliders/${id}/`, {
         method: 'DELETE',
         headers: {

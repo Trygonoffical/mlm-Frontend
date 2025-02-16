@@ -11,6 +11,7 @@ import {
     MapPinIcon,
     DocumentTextIcon
 } from '@heroicons/react/24/outline';
+import { getTokens } from '@/utils/cookies';
 
 const CompanyInfoForm = () => {
     const [loading, setLoading] = useState(true);
@@ -44,14 +45,14 @@ const CompanyInfoForm = () => {
         footer_bg_image_url: null,
         testimonial_bg_image_url: null
     });
-
+    const {token} = getTokens()
     useEffect(() => {
         fetchCompanyInfo();
     }, []);
 
     const fetchCompanyInfo = async () => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/company-info/`, {
                 method: 'GET',
                 headers: {
@@ -125,7 +126,7 @@ const CompanyInfoForm = () => {
         setSaving(true);
 
         try {
-            const token = Cookies.get('token');
+            
             const form = new FormData();
 
             // Append all form fields

@@ -28,6 +28,7 @@ import CartArea from '../Cart/ShopingCart'
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import UserArea from './UserArea'
+import ProductSearch from './ProductSearch'
 
 
 const products = [
@@ -82,8 +83,9 @@ export default function Navbar() {
           </button>
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
-        <div className="flex h-12">
-              {/* Categories Dropdown */}
+          <ProductSearch />
+        {/* <div className="flex h-12">
+           
               <div className="relative">
                 <select 
                   className="h-full py-2 px-6 bg-[#8B6D4D] text-white text-sm font-medium rounded-l-md outline-none appearance-none cursor-pointer min-w-[160px]"
@@ -102,7 +104,7 @@ export default function Navbar() {
                 </select>
               </div>
 
-              {/* Search Input and Button */}
+              
               <div className="flex">
                 <input
                   type="text"
@@ -123,7 +125,7 @@ export default function Navbar() {
                      />
                 </button>
               </div>
-            </div>
+            </div> */}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end space-x-3">
             <div className="flex items-center cursor-pointer">

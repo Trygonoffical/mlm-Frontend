@@ -7,11 +7,16 @@ import Image from 'next/image';
 import { Editor } from '@tinymce/tinymce-react';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { getTokens } from '@/utils/cookies';
+
 
 const HomeSectionForm = ({ section = null, onClose, onSave }) => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [sectionTypes, setSectionTypes] = useState([]);
+    const { token } = getTokens()
+    
+
     const [formData, setFormData] = useState({
         section_type: '',
         title: '',
@@ -44,7 +49,7 @@ const HomeSectionForm = ({ section = null, onClose, onSave }) => {
 
     const fetchSectionTypes = async () => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${API_BASE_URL}/section_types/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -83,7 +88,7 @@ const HomeSectionForm = ({ section = null, onClose, onSave }) => {
         setSaving(true);
 
         try {
-            const token = Cookies.get('token');
+            
             const form = new FormData();
 
             // Append all form fields

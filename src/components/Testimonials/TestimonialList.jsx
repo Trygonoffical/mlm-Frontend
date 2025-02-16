@@ -6,20 +6,21 @@ import Cookies from 'js-cookie';
 import { PencilIcon, TrashIcon, StarIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import TestimonialForm from './CreateTest';
+import { getTokens } from '@/utils/cookies';
 
 const TestimonialList = () => {
     const [testimonials, setTestimonials] = useState([]);
     const [refreshKey, setRefreshKey] = useState(0);
     const [loading, setLoading] = useState(true);
     const [editingTestimonial, setEditingTestimonial] = useState(null);
-
+    const {token } = getTokens()
     useEffect(() => {
         fetchTestimonials();
     }, [refreshKey]);
 
     const fetchTestimonials = async () => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/testimonials/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -39,7 +40,7 @@ const TestimonialList = () => {
         if (!confirm('Are you sure you want to delete this testimonial?')) return;
 
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/testimonials/${id}/`, {
                 method: 'DELETE',
                 headers: {
@@ -61,7 +62,7 @@ const TestimonialList = () => {
 
     const handleToggleStatus = async (id) => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/testimonials/${id}/toggle_status/`,
                 {

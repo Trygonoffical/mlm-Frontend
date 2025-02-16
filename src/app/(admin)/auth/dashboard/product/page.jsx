@@ -10,6 +10,7 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { toast } from 'react-hot-toast';
 import EditCat from '@/components/Categories/EditCat';
 import Link from 'next/link';
+import { getTokens } from '@/utils/cookies';
 
 const columnHelper = createColumnHelper();
 
@@ -17,7 +18,7 @@ const ProductUpdatePage = () => {
     const [products, setProducts] = useState([]);
     const [refreshKey, setRefreshKey] = useState(0); // Add refresh trigger
     const router = useRouter();
-
+    const {token } = getTokens()
     const columns = [
         columnHelper.accessor('name', {
             header: 'Name',
@@ -87,8 +88,7 @@ const ProductUpdatePage = () => {
         if (!confirm('Are you sure you want to delete this category?')) return;
 
         try {
-            const token = Cookies.get('token');
-            console.log('token - ' , token)
+            
             console.log('id - - - - ' , slug)
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${slug}/`, {
                 method: 'DELETE',

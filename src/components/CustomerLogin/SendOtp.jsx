@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { showCartSidebar, hideCartSidebar, removeItemFromCart } from '@/redux/slices/cartSlice'; // Import actions
 import { useRouter } from 'next/navigation';
 import { Phone , User , KeyIcon} from 'lucide-react';
-import { updateUserInfo } from '@/redux/slices/authSlice';
+import { updateUserInfo , setUserInfo } from '@/redux/slices/authSlice';
 import { setTokens } from '@/utils/cookies';
 import toast from 'react-hot-toast';
 
@@ -91,6 +91,12 @@ export default function SendOtp({checkoutpage}) {
             dispatch(updateUserInfo({
             ...data.userinfo
             }));
+
+            // dispatch(setTokens({
+            //     token: data.token,
+            //     refreshToken: data.refresh
+            //   }));
+            //   dispatch(setUserInfo(data.userInfo));
             // Clear form state
             setPhoneNumber('');
             setOtp('');
@@ -102,22 +108,6 @@ export default function SendOtp({checkoutpage}) {
 
             // Show success message
             toast.success('Login successful');
-
-            // Store user info and token in Redux
-            // dispatch(setUserLogin({
-            // token: data.token,
-            // ...data.user_info
-            // }));
-
-            // Redirect to home or dashboard
-            // Redirect based on role
-            // if (data.role === 'CUSTOMER') {
-            //     router.push('/account');
-            // } else {
-            //     router.push('/auth/dashboard');
-            // }
-            
-            // router.push('/');
         } else {
             setError(data.message || 'Invalid OTP');
             // toast.error(data.message || 'Invalid OTP');

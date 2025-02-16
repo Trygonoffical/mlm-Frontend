@@ -34,7 +34,7 @@ const MobileSidebar = ({admin=false}) => {
 
       {/* Mobile Sidebar */}
       <div className={`
-        fixed inset-0 z-50 lg:hidden
+        fixed inset-0 z-[999] lg:hidden
         transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
@@ -45,7 +45,7 @@ const MobileSidebar = ({admin=false}) => {
         />
 
         {/* Sidebar Content */}
-        <div className="relative w-5/6 md:w-64 h-full bg-gradient-to-br from-[#204866] to-[#257449]">
+        <div className="relative w-5/6 md:w-64 h-full bg-gradient-to-br from-[#204866] to-[#257449] ">
           <button 
             onClick={() => setIsOpen(false)}
             className="absolute top-4 right-4 text-white"

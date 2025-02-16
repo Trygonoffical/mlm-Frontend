@@ -1,8 +1,13 @@
 'use client'
-import { useEffect } from 'react';
+import { CreditCard } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 // PaymentButton Component
 const PaymentButton = ({ amount, keyId }) => {
+    const [loading, setLoading] = useState(false);
+  
+
+
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -15,6 +20,7 @@ const PaymentButton = ({ amount, keyId }) => {
   }, []);
 
   const handlePayment = async () => {
+    setLoading(true);
     try {
 
       const Orderresponse = await fetch('/api/create-order', {
@@ -23,7 +29,7 @@ const PaymentButton = ({ amount, keyId }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: 1// amount in INR
+          amount: amount// amount in INR
         }),
       });
       const Orderdata = await Orderresponse.json();
@@ -54,12 +60,18 @@ const PaymentButton = ({ amount, keyId }) => {
           const result = await verifyData.json();
           if (result.success) {
             alert('Payment successful!');
+            console.log('logs - ', result)
           } else {
             alert('Payment verification failed');
+            console.log('Payment verification failed logs - ', result)
+
           }
+          console.log('result logs - ', result)
+
         } catch (err) {
           console.error(err);
           alert('Payment verification failed');
+          
         }
       },
       prefill: {
@@ -73,17 +85,37 @@ const PaymentButton = ({ amount, keyId }) => {
     };
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
+    console.log('payment object - ' , paymentObject)
+    if(paymentObject.open()){
+    console.log('payment object Open - ' )
+
+    }else{
+      console.log('payment object Closed - ' )
+
+    }
   }catch (error) {
       console.error('Error:', error);
+      setLoading(false);
     } 
   }
 
   return (
     <button 
       onClick={handlePayment}
-      className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      disabled={loading}
+      // className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 
+                  transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
     >
-      Pay Now
+      {loading ? (
+          'Processing...'
+        ) : (
+          <>
+            <CreditCard className="w-5 h-5" />
+            Place Order
+        </>
+        )}
+    {/* <CreditCard className="w-5 h-5" />  Pay Now */}
     </button>
   );
 };

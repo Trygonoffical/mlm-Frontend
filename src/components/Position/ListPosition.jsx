@@ -7,11 +7,14 @@ import Link from 'next/link';
 import { PencilIcon, TrashIcon } from 'lucide-react';
 import PositionForm from './Position';
 import EdfitPositionForm from './editPosition';
+import { getTokens } from '@/utils/cookies';
 
 const PositionList = () => {
     const [positions, setPositions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
+    const { token } = getTokens();
+
 
     useEffect(() => {
         fetchPositions();
@@ -19,7 +22,6 @@ const PositionList = () => {
 
     const fetchPositions = async () => {
         try {
-            const token = Cookies.get('token');
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/positions/`, {
                 method: 'GET',
                 headers: {
@@ -43,7 +45,6 @@ const PositionList = () => {
     };
     const deletePostions = async (id) => {
         try {
-            const token = Cookies.get('token');
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/positions/${id}/`, {
                 method: 'DELETE',
                 headers: {
@@ -66,7 +67,6 @@ const PositionList = () => {
 
     const handleToggleStatus = async (id) => {
         try {
-            const token = Cookies.get('token');
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/positions/${id}/toggle_status/`, {
                 method: 'POST',
                 headers: {
@@ -131,7 +131,7 @@ const PositionList = () => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {positions.map((position) => (
+                            {positions && positions.map((position) => (
                                 <tr key={position.id} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900">

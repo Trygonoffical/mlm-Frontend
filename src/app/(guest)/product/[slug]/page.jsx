@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { addItemToCart } from '@/redux/slices/cartSlice';
 import SuccessAndReviews from '@/components/Stories/homestories';
 import FeatureProducts from '@/components/Products/FeatureProducts';
-
+import { useRouter } from 'next/navigation';
 const ProductDetail = ({params}) => {
     const slug = use(params).slug;
     const [product, setProduct] = useState([]);
@@ -15,7 +15,8 @@ const ProductDetail = ({params}) => {
     const [thumbnails, setThumbnails] = useState([]);
     const [loading, setLoading] = useState(false);
     const [featuredProducts, setFeaturedProducts] = useState([]);
-
+    const [totlePrice , setTotalPrice] = useState(0)
+    const router = useRouter();
     const fetchAdvertisements = async () => {
       try {
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/advertisements/?position=PRODUCT_PAGE`, {
@@ -28,7 +29,7 @@ const ProductDetail = ({params}) => {
       } finally {
           setLoading(false);
       }
-    };
+    }
 
     const fetchProduct = async () => {
           try {
@@ -48,18 +49,28 @@ const ProductDetail = ({params}) => {
           }
     };
   
+    const updatePrice = (product)=>{
+      const sellingPrice = parseFloat(product.selling_price);
+      const gstPercentage = parseFloat(product.gst_percentage);
+      const gstAmount = (sellingPrice * gstPercentage) / 100;
+      const totalPrice =  sellingPrice + gstAmount;
+      setTotalPrice(totalPrice);
+  }
+  useEffect(()=>{
+    updatePrice(product)
+  },[product])
     useEffect(() => {
         fetchAdvertisements()
         fetchProduct();
-    }, []);
+    }, [])
   
     const extractThumbnails = (products) => {
         return products.flatMap(product => 
             product.images.map(image => image.image) // Extract image URLs
         );
-    };
+    }
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
     const handleAddToCart = () => {
       if (!product || quantity <= 0) return;
@@ -92,12 +103,12 @@ const ProductDetail = ({params}) => {
   
       dispatch(addItemToCart(cartItem));
       // toast.success('Added to cart successfully');
-    };
+    }
 
 
-    const [mainImage, setMainImage] = useState(null);
-    const [quantity, setQuantity] = useState(1);
-    const [selectedFaq, setSelectedFaq] = useState(null);
+    const [mainImage, setMainImage] = useState(null)
+    const [quantity, setQuantity] = useState(1)
+    const [selectedFaq, setSelectedFaq] = useState(null)
 
 
     const faqs = [
@@ -106,17 +117,17 @@ const ProductDetail = ({params}) => {
       { id: 3, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
       { id: 4, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
       { id: 5, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." }
-    ];
+    ]
 
     const toggleFaq = (id) => {
       setSelectedFaq(selectedFaq === id ? null : id);
-    };
+    }
 
     const handleBuyNow = () => {
       handleAddToCart();
       // Navigate to cart/checkout page
       router.push('/checkout');
-    };
+    }
 
     return (
       <div className="container mx-auto px-4 py-8">
@@ -181,8 +192,18 @@ const ProductDetail = ({params}) => {
             {/* Price */}
             <div className="space-y-2">
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold">₹{product.selling_price}</span>
-                <span className="text-gray-500 line-through">₹{product.regular_price}</span>
+              {parseFloat(product.regular_price) > parseFloat(product.sellingPrice) ? (
+                          <>
+                           <span className="text-2xl font-bold">₹{product.selling_price}</span>
+                           <span className="text-gray-500 line-through">₹{product.regular_price}</span>
+                          </>
+
+                        ):(
+                          <span className="text-2xl font-bold">₹{totlePrice}</span>
+                        )
+                        }
+                {/* <span className="text-2xl font-bold">₹{total}</span> */}
+                {/* <span className="text-gray-500 line-through">₹{product.regular_price}</span> */}
               </div>
               {/* <span className="text-green-600">50% OFF</span> */}
               {product.regular_price > product.selling_price && (

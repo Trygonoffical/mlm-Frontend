@@ -12,6 +12,7 @@ import {
     PlusIcon,
 } from '@heroicons/react/24/outline';
 import HomeSectionForm from './HomeSectionForm';
+import { getTokens } from '@/utils/cookies';
 
 const HomeSectionList = () => {
     const [sections, setSections] = useState([]);
@@ -19,7 +20,7 @@ const HomeSectionList = () => {
     const [editingSection, setEditingSection] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
-
+    const { token } = getTokens()
     const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/home-sections`;
 
     useEffect(() => {
@@ -28,7 +29,7 @@ const HomeSectionList = () => {
 
     const fetchSections = async () => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(API_BASE_URL, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -53,7 +54,7 @@ const HomeSectionList = () => {
         if (!window.confirm('Are you sure you want to delete this section?')) return;
 
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${API_BASE_URL}/${id}/`, {
                 method: 'DELETE',
                 headers: {
@@ -73,7 +74,7 @@ const HomeSectionList = () => {
 
     const handleToggleStatus = async (id) => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${API_BASE_URL}/${id}/toggle_status/`, {
                 method: 'POST',
                 headers: {
@@ -93,7 +94,7 @@ const HomeSectionList = () => {
 
     const handleUpdateOrder = async (section, newOrder) => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${API_BASE_URL}/${section.id}/update_display_order/`, {
                 method: 'POST',
                 headers: {

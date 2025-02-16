@@ -10,20 +10,21 @@ import {
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import SuccessStoryForm from './SuccessStoryForm'; // Make sure path is correct
+import { getTokens } from '@/utils/cookies';
 
 const SuccessStoryList = () => {
     const [successStories, setSuccessStories] = useState([]);
     const [refreshKey, setRefreshKey] = useState(0);
     const [loading, setLoading] = useState(true);
     const [editingStory, setEditingStory] = useState(null);
-
+    const { token} = getTokens();
     useEffect(() => {
         fetchSuccessStories();
     }, [refreshKey]);
 
     const fetchSuccessStories = async () => {
         try {
-            const token = Cookies.get('token');
+           
             if (!token) {
                 throw new Error('Authentication token not found');
             }
@@ -52,7 +53,7 @@ const SuccessStoryList = () => {
         if (!window.confirm('Are you sure you want to delete this success story?')) return;
 
         try {
-            const token = Cookies.get('token');
+           
             if (!token) {
                 throw new Error('Authentication token not found');
             }
@@ -78,7 +79,7 @@ const SuccessStoryList = () => {
 
     const handleToggleStatus = async (id) => {
         try {
-            const token = Cookies.get('token');
+           
             if (!token) {
                 throw new Error('Authentication token not found');
             }

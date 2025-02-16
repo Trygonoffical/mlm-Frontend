@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -22,9 +22,20 @@ function CartArea() {
         total = 0,
         isCartSidebarVisible = false,
         regular_price = 0,
-
+        mlmDiscount= 0,
+        discountedSubTotal= 0,
     } = useSelector((state) => state.cart);
 
+    const [isMember, setIsMember] = useState(false);
+    const { userInfo } = useSelector((state) => state.auth);
+
+    useEffect(()=>{
+        if(userInfo){
+            if(userInfo.role != "CUSTOMER"){
+                setIsMember(true);
+            }
+        }
+    },[userInfo]);
     // const calculateTotalAmount = (product) => {
     //     // Make sure the values exist and are numbers
     //     const sellingPrice = typeof product.selling_price === 'number' 
@@ -111,7 +122,7 @@ function CartArea() {
                                                         <div>
                                                             <h3 className="text-sm font-medium">{item.name}</h3>
                                                             <p className="mt-1 text-sm text-gray-500">
-                                                                ₹{item.selling_price}
+                                                                ₹{item.total_price}
                                                             </p>
                                                         </div>
 
@@ -153,12 +164,16 @@ function CartArea() {
                                                 <span>₹{subTotal}</span>
                                             </div>
                                             <div className="flex justify-between text-sm">
+                                                <span>Discout</span>
+                                                <span>₹{mlmDiscount}</span>
+                                            </div>
+                                            <div className="flex justify-between text-sm">
                                                 <span>GST</span>
                                                 <span>₹{totalGST}</span>
                                             </div>
                                             <div className="flex justify-between text-base font-medium">
                                                 <span>Total</span>
-                                                <span>₹{total}</span>
+                                                <span>₹{total.toFixed(2)}</span>
                                             </div>
                                         </div>
 
@@ -167,7 +182,11 @@ function CartArea() {
                                                 className="w-full rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
                                                 onClick={() => {
                                                     dispatch(hideCartSidebar());
-                                                    router.push('/cart');
+                                                    if(isMember){
+                                                        router.push('/mu/dashboard/cart');
+                                                    }else{
+                                                        router.push('/cart');
+                                                    }
                                                 }}
                                             >
                                                 Checkout
@@ -177,7 +196,7 @@ function CartArea() {
                                         <div className="mt-4 text-center text-sm text-gray-500">
                                             or {' '}
                                             <Link
-                                                href="/shop"
+                                                href={ isMember ? `/mu/dashboard/shop` : `/shop`} 
                                                 className="text-green-600 hover:text-green-500"
                                                 onClick={() => dispatch(hideCartSidebar())}
                                             >

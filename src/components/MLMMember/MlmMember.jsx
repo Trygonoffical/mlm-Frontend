@@ -3,15 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
-import { Dialog, DialogContent, DialogTitle } from '@headlessui/react';
+import { Dialog, DialogContent, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-
+import { getTokens } from '@/utils/cookies';
 const MLMMemberForm = ({ setRefreshKey }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [positions, setPositions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
-
+    const {token } = getTokens()
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -30,7 +30,6 @@ const MLMMemberForm = ({ setRefreshKey }) => {
 
     const fetchPositions = async () => {
         try {
-            const token = Cookies.get('token');
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/positions/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -59,7 +58,6 @@ const MLMMemberForm = ({ setRefreshKey }) => {
         setErrors({});
 
         try {
-            const token = Cookies.get('token');
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mlm-members/`, {
                 method: 'POST',
                 headers: {
@@ -132,9 +130,9 @@ const MLMMemberForm = ({ setRefreshKey }) => {
                 <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
                 <div className="fixed inset-0 flex items-center justify-center p-4">
-                    <Dialog.Panel className="mx-auto max-w-md rounded bg-white p-6 w-full">
+                    <DialogPanel className="mx-auto max-w-md rounded bg-white p-6 w-full">
                         <div className="flex justify-between items-center mb-4">
-                            <Dialog.Title className="text-lg font-medium">Create MLM Member</Dialog.Title>
+                            <DialogTitle className="text-lg font-medium">Create MLM Member</DialogTitle>
                             <button onClick={() => setIsOpen(false)}>
                                 <XMarkIcon className="h-6 w-6 text-gray-400" />
                             </button>
@@ -258,7 +256,7 @@ const MLMMemberForm = ({ setRefreshKey }) => {
                                         required
                                     >
                                         <option value="">Select Position</option>
-                                        {positions.map(position => (
+                                        {positions && positions.length > 0 && positions.map(position => (
                                             <option key={position.id} value={position.id}>
                                                 {position.name}
                                             </option>
@@ -303,7 +301,7 @@ const MLMMemberForm = ({ setRefreshKey }) => {
                                 </button>
                             </div>
                         </form>
-                    </Dialog.Panel>
+                    </DialogPanel>
                 </div>
             </Dialog>
         </>

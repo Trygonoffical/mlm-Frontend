@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { Editor } from '@tinymce/tinymce-react';
+import { getTokens } from '@/utils/cookies';
 
 const BlogForm = ({ blog, onSuccess, onClose }) => {
     const [open, setOpen] = useState(!!blog);
@@ -20,7 +21,7 @@ const BlogForm = ({ blog, onSuccess, onClose }) => {
         order: blog?.order || 0
     });
     const [previewUrl, setPreviewUrl] = useState(blog?.feature_image_url || null);
-
+    const { token } = getTokens()
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -35,7 +36,7 @@ const BlogForm = ({ blog, onSuccess, onClose }) => {
         });
 
         try {
-            const token = Cookies.get('token');
+            
             const url = blog
                 ? `${process.env.NEXT_PUBLIC_API_URL}/blogs/${blog.id}/`
                 : `${process.env.NEXT_PUBLIC_API_URL}/blogs/`;

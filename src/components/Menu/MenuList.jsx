@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { ArrowUpIcon, ArrowDownIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import MenuForm from './MenuForm';
+import { getTokens } from '@/utils/cookies';
 
 function MenuList() {
     const [menuItems, setMenuItems] = useState([]);
@@ -12,7 +13,6 @@ function MenuList() {
     const [editingItem, setEditingItem] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
-
     useEffect(() => {
         fetchMenuItems();
     }, [refreshKey]);

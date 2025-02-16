@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, CheckCircle, XCircle, FileText, Search, Eye, Download } from 'lucide-react';
 import Cookies from 'js-cookie';
+import { getTokens } from '@/utils/cookies';
+import { toast } from 'react-hot-toast';
+
 
 const KYCAdminDashboard = () => {
   const [documents, setDocuments] = useState([]);
@@ -18,6 +21,7 @@ const KYCAdminDashboard = () => {
   });
   const [previewUrl, setPreviewUrl] = useState(null);
 
+  const {token } = getTokens();
   useEffect(() => {
     fetchDocuments();
   }, [filters]);
@@ -29,7 +33,7 @@ const KYCAdminDashboard = () => {
         document_type: filters.documentType,
         search: filters.search
       }).toString();
-      const token = Cookies.get('token');
+      
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/kyc-documents/?${queryParams}`, {
         method: 'GET',
         headers: {
@@ -38,35 +42,52 @@ const KYCAdminDashboard = () => {
        
       });
       const data = await response.json();
+      // Ensure documents is always an array
+    setDocuments(Array.isArray(data) ? data : data.results || []);
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to fetch documents');
+    }
       setDocuments(data);
     } catch (error) {
       console.error('Error fetching documents:', error);
+      toast.error('Failed to fetch documents');
+      setDocuments([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleVerification = async () => {
-    if (!selectedDoc || !verificationData.status) return;
+    if (!selectedDoc || !verificationData.status) {
+      toast.error('Please select a verification status');
+      return;
+    }
     
     if (verificationData.status === 'REJECTED' && !verificationData.rejectionReason) {
-      alert('Please provide a rejection reason');
+      toast.error('Please provide a rejection reason');
       return;
     }
 
     try {
-         const token = Cookies.get('token');
+         
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/kyc-documents/${selectedDoc.id}/verify/`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(verificationData),
+        body: JSON.stringify({
+          status: verificationData.status,
+          rejection_reason: verificationData.rejectionReason
+        }),
       });
 
       if (response.ok) {
-        fetchDocuments();
+        // fetchDocuments();
+        // setSelectedDoc(null);
+        // setVerificationData({ status: '', rejectionReason: '' });
+        toast.success(`Document ${verificationData.status.toLowerCase()} successfully`);
+        await fetchDocuments();
         setSelectedDoc(null);
         setVerificationData({ status: '', rejectionReason: '' });
       } else {
@@ -75,6 +96,7 @@ const KYCAdminDashboard = () => {
       }
     } catch (error) {
       console.error('Error during verification:', error);
+      toast.error(error.message || 'Verification failed');
     }
   };
 
@@ -238,7 +260,7 @@ const KYCAdminDashboard = () => {
 
       {/* Document Review Modal */}
       {selectedDoc && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center pt-5 p-4 z-50 overflow-y-auto">
           <div className="bg-white rounded-lg max-w-2xl w-full p-6">
             <h2 className="text-xl font-bold mb-4">Review Document</h2>
             

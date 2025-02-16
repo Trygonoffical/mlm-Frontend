@@ -37,6 +37,8 @@ const MLMMemberDetails = ({params}) => {
             });
 
             const data = await response.json();
+
+            console.log('member data - ' , data)
             if (response.ok) {
                 setMemberData(data);
             } else {

@@ -7,12 +7,13 @@ import Image from 'next/image';
 import { Editor } from '@tinymce/tinymce-react';
 import {  EyeIcon, PhotoIcon, RocketLaunchIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { TargetIcon } from 'lucide-react';
-
+import { getTokens } from '@/utils/cookies';
 
 const AboutForm = ({ type = 'MAIN' }) => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [about, setAbout] = useState(null);
+    const { token } = getTokens()
     const [formData, setFormData] = useState({
         type: type,
         title: '',
@@ -67,7 +68,7 @@ const AboutForm = ({ type = 'MAIN' }) => {
 
     const fetchAbout = async () => {
         try {
-            const token = Cookies.get('token');
+
             const response = await fetch(`${API_BASE_URL}/?type=${type}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -121,7 +122,7 @@ const AboutForm = ({ type = 'MAIN' }) => {
         setSaving(true);
 
         try {
-            const token = Cookies.get('token');
+    
             const form = new FormData();
 
             // Append all form fields

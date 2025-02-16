@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { Dialog , DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Cookies from 'js-cookie';
+import { getTokens } from '@/utils/cookies';
 
 
 const MenuForm = ({ menuItem = null, onClose, onSave }) => {
@@ -16,6 +17,7 @@ const MenuForm = ({ menuItem = null, onClose, onSave }) => {
         position: 0,
         is_active: true
     });
+    const {token} = getTokens()
 
     useEffect(() => {
         fetchCategories();
@@ -47,7 +49,7 @@ const MenuForm = ({ menuItem = null, onClose, onSave }) => {
         setSaving(true);
 
         try {
-            const token = Cookies.get('token');
+            
             
             const url = menuItem 
                 ? `${process.env.NEXT_PUBLIC_API_URL}/menu/${menuItem.id}/`

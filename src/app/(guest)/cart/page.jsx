@@ -19,8 +19,8 @@ const CartPage = () => {
   } = useSelector((state) => state.cart);
 
   // Constants
-  const FREE_SHIPPING_THRESHOLD = 1000;
-  const shipping = subTotal > FREE_SHIPPING_THRESHOLD ? 0 : 100;
+  const FREE_SHIPPING_THRESHOLD = 0;
+  const shipping = subTotal > FREE_SHIPPING_THRESHOLD ? 0 : 0;
   const finalTotal = total + shipping;
 
   // Update quantity
@@ -87,11 +87,18 @@ const CartPage = () => {
                         <h3 className="font-semibold text-lg">{item.name}</h3>
                       </Link>
                       <div className="flex items-center justify-center sm:justify-start mt-1 space-x-2">
-                        <span className="text-gray-400 line-through">₹{item.regular_price}</span>
-                        {item.regular_price >  item.sellingPrice && (
+                        {/* <span className="text-gray-400 line-through">₹{item.regular_price}</span> */}
+                        {parseFloat(item.regular_price) > parseFloat(item.sellingPrice) ? (
+                          <>
                             <span className="text-gray-400 line-through">₹{item.regular_price}</span> 
-                        )}
-                        <span className="text-lg font-bold">₹{item.selling_price}</span>
+                            <span className="text-lg font-bold">₹{item.selling_price}</span>
+                          </>
+
+                        ):(
+                          <span className="text-lg font-bold">₹{item.total_price }</span>
+                        )
+                      }
+                        
                       </div>
 
                       {/* GST and BP Points */}

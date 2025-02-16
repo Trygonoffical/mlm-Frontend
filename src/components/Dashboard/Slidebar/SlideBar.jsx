@@ -21,7 +21,7 @@ const SlideBar = ({admin=false}) => {
 
   return (
     <>
-        <div className={`${isSidebarOpen ? 'w-64' : 'w-20'}  bg-gradient-to-r from-[#204866] to-[#257449] transition-all duration-300 relative hidden lg:block`}>
+        <div className={`${isSidebarOpen ? 'w-64' : 'w-20'}  bg-gradient-to-r from-[#204866] to-[#257449] transition-all duration-300 relative  hidden lg:block`}>
         {/* Toggle Button */}
         <button 
           onClick={() => setSidebarOpen(!isSidebarOpen)}
@@ -32,12 +32,13 @@ const SlideBar = ({admin=false}) => {
 
         {/* Sidebar Items */}
         <div className="flex flex-col pt-16">
+
           {sideItems.map((item, index) => (
             <Link 
               key={index} 
               className={`flex items-center px-4 py-3 text-white hover:bg-[#D9D9D9] hover:text-black cursor-pointer
                 ${item.active ? item.bgColor || 'bg-[#34495E]' : ''}`}
-                href={`/auth/dashboard/${item.href}`}
+                href={admin ? `/auth/dashboard/${item.href}` : `/mu/dashboard/${item.href}`}
             >
               {/* <Link href={`${item.href}`}> */}
                 <item.icon className="w-6 h-6 min-w-[24px]" />
@@ -48,6 +49,7 @@ const SlideBar = ({admin=false}) => {
               
             </Link>
           ))}
+
         </div>
       </div>
     </>

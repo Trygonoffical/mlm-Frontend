@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { Editor } from '@tinymce/tinymce-react';
 import { useRouter } from 'next/navigation';
+import { getTokens } from '@/utils/cookies';
 
 
 const ProductUpdate = ({productSlug}) => {
@@ -34,7 +35,7 @@ const ProductUpdate = ({productSlug}) => {
     const [features, setFeatures] = useState([{ title: '', content: '' }]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const {token } = getTokens()
     useEffect(() => {
         fetchCategories();
         if (productSlug) {
@@ -94,7 +95,7 @@ const ProductUpdate = ({productSlug}) => {
 
     const fetchProductData = async () => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${productSlug}/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -147,7 +148,7 @@ const ProductUpdate = ({productSlug}) => {
 
     const handleImageDelete = async (imageId) => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/products/${productSlug}/delete_image/`,
                 {
@@ -221,7 +222,7 @@ const ProductUpdate = ({productSlug}) => {
         }
 
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${productSlug}/`, {
                 method: 'PATCH',
                 headers: {

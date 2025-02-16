@@ -3,6 +3,7 @@ import StoreProvider from "@/redux/storeProvider";
 import SlideBar from '@/components/Dashboard/Slidebar/SlideBar';
 import TopBar from '@/components/Dashboard/Topbar/TopBar';
 import { Toaster } from 'react-hot-toast';
+import MLMCartBanner from "@/components/MLMMember/MLMCartBanner";
 export default function GuestLayout({ children }) {
   
   return (
@@ -23,6 +24,7 @@ export default function GuestLayout({ children }) {
                 <Toaster position="top-right" />
                 </div>
             </div>
+            <MLMCartBanner />
             </div>
       </StoreProvider>
     </>

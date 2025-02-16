@@ -6,20 +6,21 @@ import Cookies from 'js-cookie';
 import { PencilIcon, TrashIcon, LinkIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import AdvertisementForm from './AdvertisementForm';
+import { getTokens } from '@/utils/cookies';
 
 const AdvertisementList = () => {
     const [advertisements, setAdvertisements] = useState([]);
     const [refreshKey, setRefreshKey] = useState(0);
     const [loading, setLoading] = useState(true);
     const [editingAd, setEditingAd] = useState(null);
-
+    const { token } = getTokens();
     useEffect(() => {
         fetchAdvertisements();
     }, [refreshKey]);
 
     const fetchAdvertisements = async () => {
         try {
-            const token = Cookies.get('token');
+          
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/advertisements/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -39,7 +40,7 @@ const AdvertisementList = () => {
         if (!confirm('Are you sure you want to delete this advertisement?')) return;
 
         try {
-            const token = Cookies.get('token');
+          
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/advertisements/${id}/`, {
                 method: 'DELETE',
                 headers: {
@@ -61,7 +62,7 @@ const AdvertisementList = () => {
 
     const handleToggleStatus = async (id) => {
         try {
-            const token = Cookies.get('token');
+        
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/advertisements/${id}/toggle_status/`,
                 {

@@ -6,12 +6,13 @@ import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Editor } from '@tinymce/tinymce-react';
+import { getTokens } from '@/utils/cookies';
 
 const CustomPageForm = ({ page, setRefreshKey, onClose }) => {
     const [isOpen, setIsOpen] = useState(!!page);
     const [loading, setLoading] = useState(false);
     const editorRef = useRef(null);
-    
+    const {token } = getTokens()
     const [formData, setFormData] = useState({
         title: page?.title || '',
         slug: page?.slug || '',
@@ -27,7 +28,7 @@ const CustomPageForm = ({ page, setRefreshKey, onClose }) => {
         setLoading(true);
 
         try {
-            const token = Cookies.get('token');
+            
             const url = page
                 ? `${process.env.NEXT_PUBLIC_API_URL}/custom-pages/${page.id}/`
                 : `${process.env.NEXT_PUBLIC_API_URL}/custom-pages/`;

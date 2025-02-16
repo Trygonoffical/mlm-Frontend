@@ -1,12 +1,22 @@
+'use client'
 import React, { useState, useEffect } from 'react';
 import { Upload, FileText, AlertCircle, CheckCircle, XCircle, Info } from 'lucide-react';
+import { getTokens } from '@/utils/cookies';
+import { toast } from 'react-hot-toast';
+import BankDetailsForm from './BankDetailsForm';
 
 const KYCMemberDashboard = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploadingDoc, setUploadingDoc] = useState(null);
   const [error, setError] = useState(null);
-
+  const {token } = getTokens();
+  const [documentNumbers, setDocumentNumbers] = useState({
+    AADHAR: '',
+    PAN: '',
+    BANK_STATEMENT: '',
+    CANCELLED_CHEQUE: ''
+  });
   const documentTypes = [
     { id: 'AADHAR', label: 'Aadhar Card', required: true },
     { id: 'PAN', label: 'PAN Card', required: true },
@@ -20,40 +30,78 @@ const KYCMemberDashboard = () => {
 
   const fetchDocuments = async () => {
     try {
-      const response = await fetch('/api/kyc-documents/');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/kyc-documents/`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        } 
+      });
       const data = await response.json();
-      setDocuments(data);
+      setDocuments(Array.isArray(data) ? data : []);
       setLoading(false);
+      // setDocuments(data);
+      // setLoading(false);
     } catch (error) {
       console.error('Error fetching documents:', error);
+      toast.error('Failed to load documents');
       setError('Failed to load documents');
       setLoading(false);
+      setDocuments([]);
     }
   };
 
   const handleFileUpload = async (documentType, file) => {
-    if (!file) return;
+    if (!file) {
+      toast.error('Please select a file to upload');
+      return;
+    }
 
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File size should not exceed 5MB');
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Only JPG, PNG and PDF files are allowed');
+      return;
+    }
+
+    // Get document number
+    const docNumber = prompt(`Please enter your ${documentType} number:`);
+    if (!docNumber || docNumber.trim() === '') {
+      toast.error('Document number is required');
+      return;
+    }
     const formData = new FormData();
     formData.append('document_type', documentType);
     formData.append('document_file', file);
+    formData.append('document_number', docNumber.trim());
 
     setUploadingDoc(documentType);
     setError(null);
 
     try {
-      const response = await fetch('/api/kyc-documents/', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/kyc-documents/`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        } ,
         body: formData,
       });
 
+      const data = await response.json();
+      console.log('data val - ' , data)
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Upload failed');
+        throw new Error(data.message || data.error || 'Upload failed');
       }
 
-      fetchDocuments();
+      toast.success('Document uploaded successfully');
+      await fetchDocuments();
     } catch (error) {
+      console.error('Upload error:', error);
+      toast.error(error.message || 'Failed to upload document');
       setError(error.message);
     } finally {
       setUploadingDoc(null);
@@ -81,12 +129,16 @@ const KYCMemberDashboard = () => {
     return badges[status] || status;
   };
 
+  // const getDocumentStatus = (docType) => {
+  //   return documents.find(doc => doc.document_type === docType);
+  // };
   const getDocumentStatus = (docType) => {
+    if (!Array.isArray(documents)) return null;
     return documents.find(doc => doc.document_type === docType);
   };
 
   return (
-    <div className="p-6">
+    <div className="py-12 ">
       <div className="max-w-4xl mx-auto">
         <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
           <div className="flex">
@@ -100,6 +152,8 @@ const KYCMemberDashboard = () => {
             </div>
           </div>
         </div>
+
+        
 
         {error && (
           <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6">

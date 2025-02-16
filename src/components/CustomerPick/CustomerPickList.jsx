@@ -10,20 +10,21 @@ import {
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import CustomerPickForm from './CustomerPickForm';
+import { getTokens } from '@/utils/cookies';
 
 const CustomerPickList = () => {
     const [customerPicks, setCustomerPicks] = useState([]);
     const [refreshKey, setRefreshKey] = useState(0);
     const [loading, setLoading] = useState(true);
     const [editingPick, setEditingPick] = useState(null);
-
+    const { token } = getTokens()
     useEffect(() => {
         fetchCustomerPicks();
     }, [refreshKey]);
 
     const fetchCustomerPicks = async () => {
         try {
-            const token = Cookies.get('token');
+            
             if (!token) {
                 throw new Error('Authentication token not found');
             }
@@ -52,7 +53,7 @@ const CustomerPickList = () => {
         if (!window.confirm('Are you sure you want to delete this customer pick?')) return;
 
         try {
-            const token = Cookies.get('token');
+            
             if (!token) {
                 throw new Error('Authentication token not found');
             }
@@ -78,7 +79,7 @@ const CustomerPickList = () => {
 
     const handleToggleStatus = async (id) => {
         try {
-            const token = Cookies.get('token');
+            
             if (!token) {
                 throw new Error('Authentication token not found');
             }

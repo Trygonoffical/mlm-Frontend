@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { Editor } from '@tinymce/tinymce-react';
 import { useRouter } from 'next/navigation';
+import { getTokens } from '@/utils/cookies';
 
 
 const ProductForm = () => {
@@ -31,7 +32,7 @@ const ProductForm = () => {
     const [galleryImages, setGalleryImages] = useState([]);
     const [features, setFeatures] = useState([{ title: '', content: '' }]);
     const [categories, setCategories] = useState([]);
-
+    const { token} = getTokens()
 
     // Editor content
     const handleEditorChange = (content) => {
@@ -163,7 +164,7 @@ const ProductForm = () => {
         console.log('Features:', features);
 
         try {
-            const token = Cookies.get('token');
+            
             console.log('Sending form data:', Object.fromEntries(form));
             console.log('ropeo' , token )
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`, {

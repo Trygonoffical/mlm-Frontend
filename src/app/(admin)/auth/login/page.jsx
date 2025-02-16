@@ -6,15 +6,21 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { setTokens } from '@/utils/cookies';
 import { toast } from 'react-hot-toast';
-import Cookies from 'js-cookie';
+import { updateUserInfo , setUserInfo } from '@/redux/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const LoginPage = () => {
+
+
   const router = useRouter();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,19 +38,9 @@ const LoginPage = () => {
       const data = await response.json();
 
       if (response.ok) {
+        console.log('login indo data - ' ,data )
         setTokens(data.token ,data.refresh )
-        // Set cookies
-        // Cookies.set('token', data.token, {
-        //   secure: process.env.NODE_ENV === 'production',
-        //   sameSite: 'strict',
-        //   expires: 1 // 1 day
-        // });
-        // Cookies.set('refresh', data.refresh, {
-        //   secure: process.env.NODE_ENV === 'production',
-        //   sameSite: 'strict',
-        //   expires: 7 // 7 days
-        // });
-
+        dispatch(updateUserInfo({...data}));
         // Redirect based on role
         let redirectPath = '/';
         if (data.role === 'MLM_MEMBER') {

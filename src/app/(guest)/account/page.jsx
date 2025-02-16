@@ -11,6 +11,7 @@ import { ToastContainer , toast} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
+import OrderHistory from '@/components/Order/OrderHistory'
 
 const Account = () => {
     const router = useRouter();
@@ -18,14 +19,13 @@ const Account = () => {
     const dispatch = useDispatch();
     const {
       userInfo,
-      token,
       } = useSelector((state) => state.auth); 
 
-      useEffect(()=>{
-        if (!token) {
-            router.push('/');
-        }
-      }, [token])
+    //   useEffect(()=>{
+    //     if (!token) {
+    //         router.push('/');
+    //     }
+    //   }, [token])
   return (
     <>
         <section className='mx-auto max-w-7xl lg:px-8 py-8'>
@@ -63,13 +63,14 @@ const Account = () => {
                                 <CustomerAddress />
                             </TabPanel>
                             <TabPanel>
-                            <h2 className='text-center'>Oh-No! <br />
+                            {/* <h2 className='text-center'>Oh-No! <br />
 
                             Nothing To See Here</h2>
                             <div className='text-center py-10'>
                                 <ShoppingBagIcon className='w-28 h-28 mx-auto pb-5' />
                                 <Link href='/shop' className='bg-gray-900 text-white rounded-sm px-4 py-2'>Continue Shopping</Link>
-                            </div>
+                            </div> */}
+                             <OrderHistory />
                             </TabPanel>
                         </TabPanels>
                     {/* </div> */}

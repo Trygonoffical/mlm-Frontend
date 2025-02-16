@@ -3,7 +3,7 @@
 import PageHead from '@/components/Pagehead/PageHead';
 import React, { use, useEffect } from 'react'
 import { useHomeData } from '@/hooks/useHomeData';
-import { useRouter } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 
 const CustomPage = ({ params }) => {
     const slug = use(params).slug;
@@ -15,7 +15,7 @@ const CustomPage = ({ params }) => {
         if (!loading && customPages) {
             const currentPage = customPages.find(page => page.slug === slug);
             if (!currentPage) {
-                router.push('/404');
+                notFound();
             }
         }
     }, [loading, customPages, slug, router]);

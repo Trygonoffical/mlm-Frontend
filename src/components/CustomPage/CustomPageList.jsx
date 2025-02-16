@@ -5,20 +5,21 @@ import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { PencilIcon, TrashIcon, LinkIcon, GlobeAltIcon, ListBulletIcon } from '@heroicons/react/24/outline';
 import CustomPageForm from './CustomPageForm';
+import { getTokens } from '@/utils/cookies';
 
 const CustomPageList = () => {
     const [pages, setPages] = useState([]);
     const [refreshKey, setRefreshKey] = useState(0);
     const [loading, setLoading] = useState(true);
     const [editingPage, setEditingPage] = useState(null);
-
+    const {token} = getTokens()
     useEffect(() => {
         fetchPages();
     }, [refreshKey]);
 
     const fetchPages = async () => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/custom-pages/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -38,7 +39,7 @@ const CustomPageList = () => {
         if (!confirm('Are you sure you want to delete this page?')) return;
 
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/custom-pages/${id}/`, {
                 method: 'DELETE',
                 headers: {
@@ -60,7 +61,7 @@ const CustomPageList = () => {
 
     const handleToggleStatus = async (id) => {
         try {
-            const token = Cookies.get('token');
+            
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/custom-pages/${id}/toggle-status/`,
                 {
