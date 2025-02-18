@@ -75,8 +75,8 @@ const BlogGuestList = () => {
                 <span className="text-sm text-gray-500">
                   {new Date(blog.created_at).toLocaleDateString()}
                 </span>
-                <Link 
-                href={`/blogs/${blog.slug}`}
+                <div 
+                // href={`/blogs/${blog.slug}`}
                   className="text-blue-600 hover:text-blue-800 font-medium"
                 //   onClick={(e) => {
                 //     e.stopPropagation();
@@ -84,7 +84,7 @@ const BlogGuestList = () => {
                 //   }}
                 >
                   Read More →
-                </Link>
+                </div>
               </div>
             </div>
           </Link>

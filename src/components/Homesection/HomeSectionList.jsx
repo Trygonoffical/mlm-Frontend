@@ -38,7 +38,11 @@ const HomeSectionList = () => {
             
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.detail || 'Failed to fetch section');
+            if (!response.ok) {
+                console.log('fetching error homesec - ', data)    
+                console.log('fetching error homesec response - ', response)    
+                throw new Error(data.detail || 'Failed to fetch section');
+            }
             
             
             setSections(data);
