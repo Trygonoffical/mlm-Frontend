@@ -33,6 +33,7 @@ function CartArea() {
         if(userInfo){
             if(userInfo.role != "CUSTOMER"){
                 setIsMember(true);
+                
             }
         }
     },[userInfo]);
@@ -158,7 +159,7 @@ function CartArea() {
 
                                     {/* Cart Footer */}
                                     <div className="border-t border-gray-200 p-4">
-                                        <div className="space-y-2">
+                                        {/* <div className="space-y-2">
                                             <div className="flex justify-between text-sm">
                                                 <span>Subtotal</span>
                                                 <span>₹{subTotal}</span>
@@ -175,7 +176,7 @@ function CartArea() {
                                                 <span>Total</span>
                                                 <span>₹{total.toFixed(2)}</span>
                                             </div>
-                                        </div>
+                                        </div> */}
 
                                         <div className="mt-4">
                                             <button

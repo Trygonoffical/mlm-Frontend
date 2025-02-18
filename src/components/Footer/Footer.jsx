@@ -154,6 +154,7 @@ const Footer = () => {
                   <li><a href="/about" className="hover:text-gray-300">About Us</a></li>
                   <li><a href="/contact" className="hover:text-gray-300">Contact Us</a></li>
                   <li><a href="/shop" className="hover:text-gray-300">Shop</a></li>
+                  <li><a href="/blogs" className="hover:text-gray-300">Blogs</a></li>
                   {pages && pages.map(page=>(
                     <li key={page.id}>
                       {page.show_in_footer && (

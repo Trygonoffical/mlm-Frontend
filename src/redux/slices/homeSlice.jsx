@@ -18,6 +18,7 @@ const endpointConfig = {
     menu: '/menu/',
     products: '/products/',
     about: '/about/',
+    blogs: '/blogs/',
     companyInfo: '/company-info/'
 };
 

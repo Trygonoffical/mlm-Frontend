@@ -46,15 +46,18 @@ export default function CustomerProfile() {
       });
 
       const data = await response.json();
-
+      console.log('updated pro data - ', data)
       if (response.ok) {
-        dispatch(updateUserInfo(data.user));
+        dispatch(updateUserInfo(data.userinfo));
         toast.success('Profile updated successfully!');
       } else {
+        console.log('pro data - ', data)
         throw new Error(data.message || 'Failed to update profile');
       }
     } catch (error) {
       toast.error(error.message || 'Error updating profile');
+      console.log('pro error data  - ', error)
+
     } finally {
       setLoading(false);
     }

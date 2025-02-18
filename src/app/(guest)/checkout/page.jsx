@@ -66,10 +66,58 @@ const [formData, setFormData] = useState({
     }));
   };
 
+
+  const updateProfile = async () => {
+      setLoading(true);
+      const { token } = getTokens();
+      if(userInfo.first_name == ''){
+        toast.success('First Name is missing');
+      }
+      if(userInfo.last_name == ''){
+        toast.success('Last Name is missing');
+      }
+      if(userInfo.email == ''){
+        toast.success('email is missing');
+      }
+  
+      try {
+        
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profile/update/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            email: formData.email,
+          })
+        });
+  
+        const data = await response.json();
+        console.log('updated pro data - ', data)
+        if (response.ok) {
+          dispatch(updateUserInfo(data.userinfo));
+          toast.success('Profile updated successfully!');
+        } else {
+          console.log('pro data - ', data)
+          throw new Error(data.message || 'Failed to update profile');
+        }
+      } catch (error) {
+        toast.error(error.message || 'Error updating profile');
+        console.log('pro error data  - ', error)
+  
+      } finally {
+        setLoading(false);
+      }
+    };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
+      setLoading(true);
+      updateProfile();
     try {
       // Create order payload
       const orderData = {

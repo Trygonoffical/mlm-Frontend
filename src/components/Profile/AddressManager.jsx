@@ -34,13 +34,17 @@ const AddressManager = ({ onSelect, showSelection = false }) => {
       });
 
       if (!response.ok) {
+        console.log('featch address error' , response)
         throw new Error('Failed to fetch addresses');
       }
 
       const data = await response.json();
+      console.log('data address ', data)
       setAddresses(data);
     } catch (error) {
       toast.error('Failed to fetch addresses');
+      console.log('data error address ', error)
+
       console.error('Error fetching addresses:', error);
     }
   };
@@ -67,6 +71,7 @@ const AddressManager = ({ onSelect, showSelection = false }) => {
       });
 
       if (!response.ok) {
+        console.log('address featching error - ' , response)
         throw new Error('Failed to add address');
       }
 
