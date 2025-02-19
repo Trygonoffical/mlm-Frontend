@@ -103,7 +103,7 @@ const ProductCard = ({ product , styleval}) => {
                                 <span className="font-bold text-lg">₹{product.selling_price}</span>
                             </>
                         ):(
-                            <span className="font-bold text-lg">₹{totlePrice}</span>
+                            <span className="font-bold text-lg">₹{totlePrice.toFixed(2)}</span>
                         )}
                         {/* <span className="text-gray-400 line-through">₹{product.regular_price}</span>
                         <span className="font-bold text-lg">₹{product.selling_price}</span> */}

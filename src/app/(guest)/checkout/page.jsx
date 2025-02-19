@@ -13,6 +13,7 @@ import PayOrder from '@/components/PaymentButton/PayOrder';
 import { getTokens } from '@/utils/cookies';
 import AddressManager from '@/components/Profile/AddressManager';
 import PaymentHandler from '@/components/PaymentButton/PaymentHandler';
+import CustomerProfile from '@/components/Profile/CustomerProfile';
 
 const CheckoutPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -67,57 +68,57 @@ const [formData, setFormData] = useState({
   };
 
 
-  const updateProfile = async () => {
-      setLoading(true);
-      const { token } = getTokens();
-      if(userInfo.first_name == ''){
-        toast.success('First Name is missing');
-      }
-      if(userInfo.last_name == ''){
-        toast.success('Last Name is missing');
-      }
-      if(userInfo.email == ''){
-        toast.success('email is missing');
-      }
+  // const updateProfile = async () => {
+  //     setLoading(true);
+  //     const { token } = getTokens();
+  //     if(userInfo.first_name == ''){
+  //       toast.success('First Name is missing');
+  //     }
+  //     if(userInfo.last_name == ''){
+  //       toast.success('Last Name is missing');
+  //     }
+  //     if(userInfo.email == ''){
+  //       toast.success('email is missing');
+  //     }
   
-      try {
+  //     try {
         
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profile/update/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            first_name: formData.first_name,
-            last_name: formData.last_name,
-            email: formData.email,
-          })
-        });
+  //       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profile/update/`, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': `Bearer ${token}`
+  //         },
+  //         body: JSON.stringify({
+  //           first_name: formData.first_name,
+  //           last_name: formData.last_name,
+  //           email: formData.email,
+  //         })
+  //       });
   
-        const data = await response.json();
-        console.log('updated pro data - ', data)
-        if (response.ok) {
-          dispatch(updateUserInfo(data.userinfo));
-          toast.success('Profile updated successfully!');
-        } else {
-          console.log('pro data - ', data)
-          throw new Error(data.message || 'Failed to update profile');
-        }
-      } catch (error) {
-        toast.error(error.message || 'Error updating profile');
-        console.log('pro error data  - ', error)
+  //       const data = await response.json();
+  //       console.log('updated pro data - ', data)
+  //       if (response.ok) {
+  //         dispatch(updateUserInfo(data.userinfo));
+  //         toast.success('Profile updated successfully!');
+  //       } else {
+  //         console.log('pro data - ', data)
+  //         throw new Error(data.message || 'Failed to update profile');
+  //       }
+  //     } catch (error) {
+  //       toast.error(error.message || 'Error updating profile');
+  //       console.log('pro error data  - ', error)
   
-      } finally {
-        setLoading(false);
-      }
-    };
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
       setLoading(true);
-      updateProfile();
+      // updateProfile();
     try {
       // Create order payload
       const orderData = {
@@ -190,7 +191,7 @@ const [formData, setFormData] = useState({
        
               <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Shipping Information</h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              {/* <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -232,27 +233,28 @@ const [formData, setFormData] = useState({
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   />
-                </div>
+                </div> */}
                 { isAuthenticated ? (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    disabled
-                    value={formData.phone_number}
-                    onChange={handleInputChange}
-                    required
-                    pattern="[0-9]{10}"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
+                // <div>
+                //   <label className="block text-sm font-medium text-gray-700 mb-1">
+                //     Phone Number *
+                //   </label>
+                //   <input
+                //     type="tel"
+                //     name="phone"
+                //     disabled
+                //     value={formData.phone_number}
+                //     onChange={handleInputChange}
+                //     required
+                //     pattern="[0-9]{10}"
+                //     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                //   />
+                // </div>
+                <CustomerProfile />
               ):(
               <UserArea checkoutpage={true} />
             )}
-              </form>
+              {/* </form> */}
             </div>
             
             
