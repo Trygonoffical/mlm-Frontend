@@ -153,43 +153,34 @@ const MLMDownlineList = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // setSuccess('');
-    setLoading(true);
+  
     try {
-
-    
       if (!validateForm()) return;
-
-     
+  
       const formDataToSend = new FormData();
-
-      // Add all basic information
+  
+      // Add basic information
       formDataToSend.append('first_name', formData.first_name);
       formDataToSend.append('last_name', formData.last_name || '');
       formDataToSend.append('email', formData.email || '');
       formDataToSend.append('phone_number', formData.phone_number);
       formDataToSend.append('password', formData.password);
-
-      // Add KYC documents
-      let documentCount = 0;
-      Object.keys(kycDocuments).forEach((key) => {
-        if (kycDocuments[key]) {
-          formDataToSend.append('document_file', kycDocuments[key]);
-          formDataToSend.append('document_types[]', key);
-          formDataToSend.append('document_number', documentNumbers[key] || '');
-          documentCount++;
+  
+      // Add document numbers directly with their types as keys
+      Object.keys(documentNumbers).forEach((type) => {
+        if (documentNumbers[type]) {
+          formDataToSend.append(type, documentNumbers[type]);
         }
       });
-
-      // Validate required documents
-      if (documentCount < 2) {
-        setError('Aadhar and PAN documents are required');
-        setLoading(false);
-        return;
-      }
-
-
-      
+  
+      // Add KYC documents and their types
+      Object.keys(kycDocuments).forEach((type) => {
+        if (kycDocuments[type]) {
+          formDataToSend.append('document_file', kycDocuments[type]);
+          formDataToSend.append('document_types[]', type);
+        }
+      });
+  
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mlm/register-member/`, {
         method: 'POST',
         headers: {
@@ -197,16 +188,23 @@ const MLMDownlineList = () => {
         },
         body: formDataToSend
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         toast.success('Member registered successfully');
         setIsOpen(false);
         setRefreshKey(prev => prev + 1);
         resetForm();
       } else {
-        toast.error(data.error || 'Registration failed');
+        console.error('Registration error:', data);
+        if (data.details) {
+          // Handle specific validation errors
+          const errorMessages = Object.values(data.details).flat();
+          errorMessages.forEach(error => toast.error(error));
+        } else {
+          toast.error(data.error || 'Registration failed');
+        }
       }
     } catch (error) {
       console.error('Error:', error);
