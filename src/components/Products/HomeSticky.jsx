@@ -2,6 +2,7 @@
 import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/20/solid'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import ProductCard from './ProductCard';
 export default function HomeSticky() {
 
     // const products = [
@@ -57,38 +58,39 @@ export default function HomeSticky() {
             <div className="lg:pr-4">
               <div className="max-w-xl text-base/7 text-gray-700 lg:max-w-lg">
               {homeSection.products && homeSection.products.map((product) => (
-                <div
-                  key={product.id}
-                  className="flex-none mt-5 px-3"
-                  // style={{ flex: `0 0 ${100 / slidesToShow}%` }}
-                >
-                  <div className="bg-gray-50 rounded-lg p-4 cursor-pointer group hover:shadow-lg transition-shadow duration-300">
-                    <div className="relative aspect-square mb-4">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
+                // <div
+                //   key={product.id}
+                //   className="flex-none mt-5 px-3"
+                //   // style={{ flex: `0 0 ${100 / slidesToShow}%` }}
+                // >
+                //   <div className="bg-gray-50 rounded-lg p-4 cursor-pointer group hover:shadow-lg transition-shadow duration-300">
+                //     <div className="relative aspect-square mb-4">
+                //       <img
+                //         src={product.image}
+                //         alt={product.name}
+                //         className="w-full h-full object-contain"
+                //       />
+                //     </div>
                     
-                    {/* Rating Stars */}
-                    <div className="flex mb-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i}
-                          className="w-4 h-4 fill-yellow-400 text-yellow-400" 
-                        />
-                      ))}
-                    </div>
+                //     {/* Rating Stars */}
+                //     <div className="flex mb-2">
+                //       {[...Array(5)].map((_, i) => (
+                //         <Star 
+                //           key={i}
+                //           className="w-4 h-4 fill-yellow-400 text-yellow-400" 
+                //         />
+                //       ))}
+                //     </div>
                     
-                    <h3 className="font-semibold mb-2">{product.name}</h3>
+                //     <h3 className="font-semibold mb-2">{product.name}</h3>
                     
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-400 line-through">₹{product.oldPrice}</span>
-                      <span className="font-bold text-lg">₹{product.price}</span>
-                    </div>
-                  </div>
-                </div>
+                //     <div className="flex items-center gap-2">
+                //       <span className="text-gray-400 line-through">₹{product.oldPrice}</span>
+                //       <span className="font-bold text-lg">₹{product.price}</span>
+                //     </div>
+                //   </div>
+                // </div>
+                <ProductCard key={product.id} product={product} />
               ))}
               </div>
             </div>

@@ -7,7 +7,7 @@ import { addItemToCart } from '@/redux/slices/cartSlice';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-const ProductCard = ({ product , styleval}) => {
+const ProductCard = ({ product , styleval }) => {
     const [totlePrice , setTotalPrice] = useState(0)
     const dispatch = useDispatch();
 
@@ -54,7 +54,7 @@ const ProductCard = ({ product , styleval}) => {
     }, [product]);
     
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow" style={styleval}>
+        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow my-2" style={styleval}>
             <div className="aspect-square relative">
                 <Link href={`/product/${product.slug}`}>
                     <Image

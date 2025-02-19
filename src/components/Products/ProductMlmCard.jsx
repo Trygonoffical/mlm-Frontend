@@ -55,7 +55,7 @@ const ProductMlmCard = ({ product , styleval}) => {
     }, [product]);
     
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex" style={styleval}>
+        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex my-2" style={styleval}>
             <div className="aspect-square relative">
                 <Link href={`/product/${product.slug}`}>
                     <Image
@@ -105,7 +105,7 @@ const ProductMlmCard = ({ product , styleval}) => {
                                 <span className="font-bold text-lg">₹{product.selling_price}</span>
                             </>
                         ):(
-                            <span className="font-bold text-lg">₹{totlePrice}</span>
+                            <span className="font-bold text-lg">₹{totlePrice.toFixed(2)}</span>
                         )}
                         {/* <span className="text-gray-400 line-through">₹{product.regular_price}</span>
                         <span className="font-bold text-lg">₹{product.selling_price}</span> */}
