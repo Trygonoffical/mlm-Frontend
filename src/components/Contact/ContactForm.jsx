@@ -10,6 +10,67 @@ function classNames(...classes) {
 export default function ContactForm() {
   const [agreed, setAgreed] = useState(false)
 
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    company: '',
+    email: '',
+    phone_number: '',
+    message: ''
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!agreed) {
+      toast.error('Please agree to the privacy policy');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message || 'Message sent successfully!');
+        // Reset form
+        setFormData({
+          first_name: '',
+          last_name: '',
+          company: '',
+          email: '',
+          phone_number: '',
+          message: ''
+        });
+        setAgreed(false);
+      } else {
+        throw new Error(data.message || 'Failed to send message');
+      }
+    } catch (error) {
+      toast.error(error.message || 'An error occurred');
+      console.error('Contact form error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <div className=" bg-white px-6 py-8 sm:py-8 lg:px-8">
@@ -20,7 +81,7 @@ export default function ContactForm() {
           Let create someting just for you
         </p>
       </div>
-      <form action="#" method="POST" className="mx-auto mt-16 max-w-xl sm:mt-20">
+      <form onSubmit={handleSubmit}  method="POST" className="mx-auto mt-16 max-w-xl sm:mt-20">
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
           <div>
             <label htmlFor="first-name" className="block text-sm font-semibold leading-6 text-gray-900">
@@ -29,9 +90,13 @@ export default function ContactForm() {
             <div className="mt-2.5">
               <input
                 type="text"
-                name="first-name"
-                id="first-name"
-                autoComplete="given-name"
+                name="first_name"
+                id="first_name"
+                value={formData.first_name}
+                onChange={handleInputChange}
+                autoComplete="first-name"
+
+                required
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -43,9 +108,11 @@ export default function ContactForm() {
             <div className="mt-2.5">
               <input
                 type="text"
-                name="last-name"
-                id="last-name"
-                autoComplete="family-name"
+                name="last_name"
+                id="last_name"
+                value={formData.last_name}
+                onChange={handleInputChange}
+                autoComplete="Last-name"
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
@@ -137,13 +204,19 @@ export default function ContactForm() {
           </Field>
         </div>
         <div className="mt-10">
-          <button
-            type="submit"
-            className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Let&apos;s talk
-          </button>
-        </div>
+            <button
+              type="submit"
+              disabled={loading || !agreed}
+              className={`block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 ${
+                loading || !agreed 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-indigo-600 hover:bg-indigo-500'
+              }`}
+            >
+              {loading ? 'Sending...' : "Let's talk"}
+            </button>
+          </div>
+        
       </form>
     </div>
   )

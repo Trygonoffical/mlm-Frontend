@@ -3,6 +3,7 @@ import { Phone, Mail } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 const Footer = () => {
 
@@ -54,6 +55,43 @@ const Footer = () => {
             setLoading(false);
         }
     };
+
+
+  const [email, setEmail] = useState('');
+  const [subscribing, setSubscribing] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    setSubscribing(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/newsletters/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message);
+        setEmail('');
+      } else {
+        throw new Error(data.message || 'Failed to subscribe');
+      }
+    } catch (error) {
+      toast.error(error.message || 'Failed to subscribe');
+    } finally {
+      setSubscribing(false);
+    }
+  };
+
   
     useEffect(() => {
             fetchCompanyInfo();
@@ -125,7 +163,7 @@ const Footer = () => {
             </div>
 
             {/* Stay Connected Section */}
-            <div className="text-center mb-12 ">
+            {/* <div className="text-center mb-12 ">
               <h3 className="text-xl font-semibold mb-4">Stay Connected</h3>
               <div className='flex justify-center'>
                 <form action="" method="post">
@@ -143,7 +181,30 @@ const Footer = () => {
               </div>
               
                 
-            </div>
+            </div> */}
+
+              <div className="text-center mb-12">
+                <h3 className="text-xl font-semibold mb-4">Stay Connected</h3>
+                <div className="flex justify-center">
+                  <form onSubmit={handleSubscribe} className="flex mx-auto">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email..."
+                      className="min-w-[150px] md:min-w-[352px] px-4 py-2 border-y border-r-0 border-t-0 border-l-0 border-gray-100 focus:outline-none text-gray-200 bg-transparent"
+                      required
+                    />
+                    <button 
+                      type="submit"
+                      disabled={subscribing}
+                      className="bg-white text-green-700 px-8 py-2 rounded-md hover:bg-gray-100 transition-colors -ml-5 text-sm md:text-base disabled:opacity-50"
+                    >
+                      {subscribing ? 'Subscribing...' : 'Subscribe'}
+                    </button>
+                  </form>
+                </div>
+              </div>
 
             {/* Main Footer Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">

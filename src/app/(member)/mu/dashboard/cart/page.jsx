@@ -43,7 +43,8 @@ const CartPage = () => {
   };
 
   // Calculate total after all discounts
-  const finalTotal = total + shipping - (userInfo?.role === 'MLM_MEMBER' ? mlmDiscount : 0);
+  const finalTotal = total + shipping
+  //  - (userInfo?.role === 'MLM_MEMBER' ? mlmDiscount : 0);
 
   // Update quantity
   const handleQuantityChange = (itemId, selectedAttributes, change) => {

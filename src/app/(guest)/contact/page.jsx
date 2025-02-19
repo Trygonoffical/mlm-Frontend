@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Mail, Phone, Truck, Send, MapPin } from 'lucide-react';
 import PageHead from '@/components/Pagehead/PageHead';
-
+import { toast } from 'react-hot-toast';
 const ContactUs = () => {
   const [companyInfo, setCompanyInfo] = useState({
       email : '',
@@ -53,17 +53,37 @@ const ContactUs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setLoading(false);
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: ''
-    });
+    
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(data.message || 'Message sent successfully!');
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        throw new Error(data.message || 'Failed to send message');
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      toast.error(error.message || 'Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
