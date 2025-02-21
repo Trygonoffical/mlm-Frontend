@@ -133,13 +133,21 @@ import { CheckCircle, Home, User, ShoppingBag, Package, Truck } from 'lucide-rea
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { getTokens } from '@/utils/cookies';
+import { useSelector } from 'react-redux';
 
 const ThankYouPage = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [orderDetails, setOrderDetails] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [cust, setCust] = useState(true);
+    const { userInfo } = useSelector((state) => state.auth);
 
+    useEffect(()=>{
+        if(userInfo.role == 'MLM_MEMBER'){
+            setCust(false)
+        }
+    },[userInfo])
     useEffect(() => {
         const fetchOrderDetails = async () => {
             try {
@@ -196,7 +204,15 @@ const ThankYouPage = () => {
         {
             label: 'My Orders',
             icon: <Package className="w-5 h-5" />,
-            action: () => router.push('/account?tab=orders'),
+            action: () => {
+                if(cust) {
+
+                    router.push('/account?tab=orders')
+                }else {
+                    router.push('/mu/dashboard/order')
+                }
+            
+            },
             className: 'bg-blue-600 hover:bg-blue-700'
         },
         {
