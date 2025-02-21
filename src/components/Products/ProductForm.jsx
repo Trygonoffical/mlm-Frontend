@@ -608,13 +608,31 @@ const ProductForm = () => {
                                     placeholder="Feature Title"
                                     className="w-full p-2 border rounded"
                                 />
-                                <textarea
+                                {/* <textarea
                                     value={feature.content}
                                     onChange={(e) => handleFeatureChange(index, 'content', e.target.value)}
                                     placeholder="Feature Content"
                                     className="w-full p-2 border rounded"
                                     rows="3"
-                                />
+                                /> */}
+                                <Editor
+                                apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                                init={{
+                                    height: 200,
+                                    menubar: false,
+                                    plugins: [
+                                        'advlist', 'autolink', 'lists', 'link', 
+                                        'charmap', 'preview', 'anchor', 'searchreplace', 
+                                        'visualblocks', 'code', 'fullscreen',
+                                        'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                                    ],
+                                    toolbar: 'undo redo | blocks | ' +
+                                        'bold italic | alignleft aligncenter alignright | ' +
+                                        'bullist numlist outdent indent | help'
+                                }}
+                                value={feature.content}
+                                onEditorChange={(content) => handleFeatureChange(index, 'content', content)}
+                            />
                             </div>
                         </div>
                     ))}
@@ -650,13 +668,31 @@ const ProductForm = () => {
                                     placeholder="Question"
                                     className="w-full p-2 border rounded"
                                 />
-                                <textarea
+                                {/* <textarea
                                     value={faq.content}
                                     onChange={(e) => handleFaqChange(index, 'content', e.target.value)}
                                     placeholder="Answer"
                                     className="w-full p-2 border rounded"
                                     rows="3"
-                                />
+                                /> */}
+                                <Editor
+                                apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                                init={{
+                                    height: 200,
+                                    menubar: false,
+                                    plugins: [
+                                        'advlist', 'autolink', 'lists', 'link', 
+                                        'charmap', 'preview', 'anchor', 'searchreplace', 
+                                        'visualblocks', 'code', 'fullscreen',
+                                        'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                                    ],
+                                    toolbar: 'undo redo | blocks | ' +
+                                        'bold italic | alignleft aligncenter alignright | ' +
+                                        'bullist numlist outdent indent | help'
+                                }}
+                                value={faq.content}
+                                onEditorChange={(content) => handleFaqChange(index, 'content', content)}
+                            />
                             </div>
                         </div>
                     ))}

@@ -66,6 +66,7 @@ const CartPage = () => {
 
   // Update cart prices whenever userInfo changes
   useEffect(() => {
+    console.log('cartItems' , cartItems)
     if (userInfo?.role === 'MLM_MEMBER') {
       dispatch(updateCartPrices({
         mlmDiscountPercentage: userInfo.user_data?.position?.discount_percentage || 0
@@ -123,7 +124,7 @@ const CartPage = () => {
                         {parseFloat(item.regular_price) > parseFloat(item.selling_price) && (
                           <span className="text-gray-400 line-through">₹{item.regular_price}</span>
                         )}
-                        <span className="text-lg font-bold">₹{item.selling_price}</span>
+                        <span className="text-lg font-bold">₹{item.standard_price}</span>
                       </div>
 
                       {/* MLM Discount */}
@@ -164,7 +165,7 @@ const CartPage = () => {
                     {/* Price and Remove */}
                     <div className="mt-4 sm:mt-0 text-center sm:text-right">
                       {/* <p className="font-semibold text-lg">₹{calculateFinalPrice(item)}</p> */}
-                      <p className="font-semibold text-lg">₹{item.selling_price}</p>
+                      <p className="font-semibold text-lg">₹{item.standard_price}</p>
                       <button
                         onClick={() => handleRemoveItem(item.id, item.selectedAttributes)}
                         className="mt-2 text-red-500 hover:text-red-700 transition-colors"

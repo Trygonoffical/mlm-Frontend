@@ -99,7 +99,7 @@ const UserArea = ( {checkoutpage = false}) => {
                 </li>
                 <li>
                   <Link 
-                    href="/orders" 
+                    href="/account?tab=orders" 
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     My Orders

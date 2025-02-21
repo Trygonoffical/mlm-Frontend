@@ -34,6 +34,8 @@ const cartSlice = createSlice({
             if (newItem.stock <= 0) {
                 return;
             }
+            // Calculate standard price (selling price + GST)
+            const standardPrice = calculateStandardPrice(newItem);
 
             const itemIndex = state.cartItems.findIndex(
                 item => item.id === newItem.id && 
@@ -53,10 +55,20 @@ const cartSlice = createSlice({
                         (state.cartItems[itemIndex].selling_price * state.cartItems[itemIndex].qnt + 
                         state.cartItems[itemIndex].gst_amount).toFixed(2)
                     );
+                    // Recalculate standard price for the updated quantity
+                    state.cartItems[itemIndex].standard_price = calculateStandardPrice(
+                        {...newItem, qnt: state.cartItems[itemIndex].qnt}
+                    );
                 }
             } else {
                 // Add new item
-                state.cartItems.push(newItem);
+                // state.cartItems.push(newItem);
+                // Add new item with standard price
+                const newItemWithStandardPrice = {
+                    ...newItem,
+                    standard_price: standardPrice
+                };
+                state.cartItems.push(newItemWithStandardPrice);
             }
 
             // Update cart totals
@@ -76,6 +88,13 @@ const cartSlice = createSlice({
                 // Check if new quantity is within valid range (1 to stock limit)
                 if (newQty >= 1 && newQty <= item.stock) {
                     item.qnt = newQty;
+
+                    // Recalculate standard price for the updated quantity
+                    item.standard_price = calculateStandardPrice({
+                        ...item, 
+                        qnt: newQty
+                    });
+
                     updateCartTotals(state, mlmDiscountPercentage);
 
                     // item.gst_amount = parseFloat(
@@ -153,6 +172,14 @@ const cartSlice = createSlice({
           },
     },
 });
+
+// Helper function to calculate standard price (selling price + GST)
+function calculateStandardPrice(item) {
+    // Calculate standard price: selling price * quantity + GST for the entire quantity
+    const basePrice = item.selling_price * item.qnt;
+    const gstAmount = basePrice * (item.gst_percentage / 100);
+    return parseFloat((basePrice + gstAmount).toFixed(2));
+}
 
 // Helper function to update cart totals
 function updateCartTotals(state , mlmDiscountPercentage = 0) {

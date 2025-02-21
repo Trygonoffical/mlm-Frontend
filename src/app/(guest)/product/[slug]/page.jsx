@@ -286,7 +286,8 @@ const ProductDetail = ({params}) => {
                 </button>
                 {selectedFaq === item.title && (
                   <div className="p-4 border-t">
-                    {item.content}
+                    {/* {item.content} */}
+                    <span dangerouslySetInnerHTML={{ __html: item.content }} />
                   </div>
                 )}
               </div>
@@ -335,7 +336,8 @@ const ProductDetail = ({params}) => {
                 </button>
                 {selectedFaq === faq.id && (
                   <div className="pb-4">
-                    {faq.content}
+                    {/* {faq.content} */}
+                    <span dangerouslySetInnerHTML={{ __html: faq.content }} />
                   </div>
                 )}
               </div>

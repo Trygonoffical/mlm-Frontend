@@ -237,7 +237,7 @@ const [formData, setFormData] = useState({
                         </p>
                       )}
                     </div>
-                    <span className="font-semibold">₹{item.total_price}</span>
+                    <span className="font-semibold">₹{item.standard_price}</span>
                   </div>
                 ))}
               </div>

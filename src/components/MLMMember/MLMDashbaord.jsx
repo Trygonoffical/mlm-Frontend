@@ -234,7 +234,7 @@ const MLMMemberDashboard = () => {
                     />
                     <div>
                         <p className="font-medium">{product.name}</p>
-                        <p className="text-sm text-gray-500">₹{product.price}</p>
+                        {/* <p className="text-sm text-gray-500">₹{product.price}</p> */}
                     </div>
                     </div>
                     <Link href={`/product/${product.slug}`}   className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600">
