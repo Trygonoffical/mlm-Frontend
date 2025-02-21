@@ -248,10 +248,10 @@ const [formData, setFormData] = useState({
                   <span>Subtotal</span>
                   <span>₹{subTotal}</span>
                 </div>
-                <div className="flex justify-between text-gray-600">
+                {/* <div className="flex justify-between text-gray-600">
                   <span>GST</span>
                   <span>₹{totalGST}</span>
-                </div>
+                </div> */}
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
                   <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
