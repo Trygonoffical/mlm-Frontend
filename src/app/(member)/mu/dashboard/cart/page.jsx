@@ -135,12 +135,12 @@ const CartPage = () => {
                       )}
 
                       {/* GST and BP Points */}
-                      {/* <div className="text-sm text-gray-500 mt-1">
-                        <p>GST: {item.gst_percentage}%</p>
+                      <div className="text-sm text-gray-500 mt-1">
+                        {/* <p>GST: {item.gst_percentage}%</p> */}
                         {item.bp_value > 0 && (
                           <p className="text-blue-600">BP Points: {item.bp_value * item.qnt}</p>
                         )}
-                      </div> */}
+                      </div>
                       
                       {/* Quantity Controls */}
                       <div className="flex items-center justify-center sm:justify-start mt-4">

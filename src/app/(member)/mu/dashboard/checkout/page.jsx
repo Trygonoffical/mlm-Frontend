@@ -228,9 +228,9 @@ const [formData, setFormData] = useState({
                     <div className="flex-1">
                       <h3 className="font-medium">{item.name}</h3>
                       <p className="text-gray-500">Quantity: {item.qnt}</p>
-                      <p className="text-sm text-gray-500">
+                      {/* <p className="text-sm text-gray-500">
                         GST ({item.gst_percentage}%): ₹{item.gst_amount}
-                      </p>
+                      </p> */}
                       {item.bp_value > 0 && (
                         <p className="text-sm text-blue-600">
                           BP Points: {item.bp_value * item.qnt}
@@ -248,10 +248,10 @@ const [formData, setFormData] = useState({
                   <span>Subtotal</span>
                   <span>₹{subTotal}</span>
                 </div>
-                {/* <div className="flex justify-between text-gray-600">
+                <div className="flex justify-between text-gray-600">
                   <span>GST</span>
                   <span>₹{totalGST}</span>
-                </div> */}
+                </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
                   <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>

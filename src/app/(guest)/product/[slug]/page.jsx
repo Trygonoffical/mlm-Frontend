@@ -241,7 +241,7 @@ const ProductDetail = ({params}) => {
               />
               {product.stock > 0 && (
                 <span className="text-sm text-gray-500">
-                  Available: {product.stock}
+                  Available: {product.stock > 0 ? 'Available ': 'Out of Stock'}
                 </span>
               )}
             </div>
