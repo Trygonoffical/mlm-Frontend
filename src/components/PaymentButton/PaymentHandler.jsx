@@ -438,7 +438,7 @@ const PaymentHandler = ({ amount }) => {
     if (verifyData.status === 'success') {
       dispatch(clearCart()); // Clear the cart after successful payment
       // router.push(`/thank-you`);
-      router.push(`/thank-you?order_id=${verifyData.order_id}`);
+      router.push(`/thankyou?order_id=${verifyData.order_id}`);
       // router.push(`/thank-you/${orderId}`);
     } else {
       throw new Error(verifyData.message || 'Payment verification failed');
