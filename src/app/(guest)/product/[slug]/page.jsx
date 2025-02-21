@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 const ProductDetail = ({params}) => {
     const slug = use(params).slug;
     const [product, setProduct] = useState([]);
+    const [faqs, setFaqs] = useState([]);
     const [producAds, setProductAds] = useState([]);
     const [thumbnails, setThumbnails] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -42,6 +43,7 @@ const ProductDetail = ({params}) => {
               setFeaturedProducts(data2)
               console.log('cat data - ',data[0] )
               setProduct(data[0]);
+              setFaqs(data[0].faq);
               setMainImage(data[0].images[0].image)
               setThumbnails(extractThumbnails(data))
           } catch (error) {
@@ -111,13 +113,13 @@ const ProductDetail = ({params}) => {
     const [selectedFaq, setSelectedFaq] = useState(null)
 
 
-    const faqs = [
-      { id: 1, question: "What is Herbal Power for AESTHETICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-      { id: 2, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-      { id: 3, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-      { id: 4, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
-      { id: 5, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." }
-    ]
+    // const faqs = [
+    //   { id: 1, question: "What is Herbal Power for AESTHETICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+    //   { id: 2, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+    //   { id: 3, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+    //   { id: 4, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." },
+    //   { id: 5, question: "What is Herbal Power for ECONOMICS?", answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." }
+    // ]
 
     const toggleFaq = (id) => {
       setSelectedFaq(selectedFaq === id ? null : id);
@@ -199,7 +201,7 @@ const ProductDetail = ({params}) => {
                           </>
 
                         ):(
-                          <span className="text-2xl font-bold">₹{totlePrice}</span>
+                          <span className="text-2xl font-bold">₹{totlePrice.toFixed(2)}</span>
                         )
                         }
                 {/* <span className="text-2xl font-bold">₹{total}</span> */}
@@ -326,14 +328,14 @@ const ProductDetail = ({params}) => {
                   onClick={() => toggleFaq(faq.id)}
                   className="flex justify-between items-center w-full py-4"
                 >
-                  <span className="font-semibold">{faq.question}</span>
+                  <span className="font-semibold">{faq.title}</span>
                   <ChevronDown className={`w-5 h-5 transition-transform ${
                     selectedFaq === faq.id ? 'rotate-180' : ''
                   }`} />
                 </button>
                 {selectedFaq === faq.id && (
                   <div className="pb-4">
-                    {faq.answer}
+                    {faq.content}
                   </div>
                 )}
               </div>

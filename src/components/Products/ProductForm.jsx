@@ -1,39 +1,13 @@
-// 'use client'
-
-// import { use } from 'react';
-// import ProductUpdatePage from '@/components/Products/EditProduct'
-// import ProductEditForm from '@/components/Products/ProductEditForm';
-
-
-// // Page component that receives params
-// export default function UpdateProductPage({ params }) {
-//     // Use React.use to unwrap the params
-//     const slug = use(params).slug;
-
-//     return (
-//         // <ProductUpdatePage productSlug={slug} />
-//         <ProductEditForm />
-//     );
-// }
-
 'use client'
-import React, { useState, useEffect, useCallback, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import Cookies from 'js-cookie';
 import { Editor } from '@tinymce/tinymce-react';
 import { useRouter } from 'next/navigation';
 import { getTokens } from '@/utils/cookies';
-import Image from 'next/image';
-import { XCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 
-const ProductEditForm = ({ params }) => {
-    // const { slug } = params;
-    const slug = use(params).slug;
-    const router = useRouter();
-    const { token } = getTokens();
-    const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState(false);
-    const [categories, setCategories] = useState([]);
 
+const ProductForm = () => {
     // Main product data
     const [formData, setFormData] = useState({
         name: '',
@@ -62,121 +36,15 @@ const ProductEditForm = ({ params }) => {
         canonical_url: ''
     });
 
-    // Images
-    const [existingImages, setExistingImages] = useState([]);
-    const [newFeatureImage, setNewFeatureImage] = useState(null);
-    const [newGalleryImages, setNewGalleryImages] = useState([]);
-    
-    // Features and FAQs
+    const router = useRouter();
+
+    // Images and features
+    const [featureImage, setFeatureImage] = useState(null);
+    const [galleryImages, setGalleryImages] = useState([]);
     const [features, setFeatures] = useState([{ title: '', content: '' }]);
     const [faqs, setFaqs] = useState([{ title: '', content: '' }]);
-
-    // Fetch product data
-    const fetchProduct = useCallback(async () => {
-        try {
-            setLoading(true);
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${slug}/`);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to fetch product: ${response.status}`);
-            }
-            
-            const product = await response.json();
-            
-            // Set form data
-            setFormData({
-                name: product.name || '',
-                description: product.description || '',
-                regular_price: product.regular_price || '',
-                selling_price: product.selling_price || '',
-                bp_value: product.bp_value || 0,
-                gst_percentage: product.gst_percentage || 0,
-                stock: product.stock || 0,
-                HSN_Code: product.HSN_Code || '',
-                is_featured: product.is_featured || false,
-                is_bestseller: product.is_bestseller || false,
-                is_new_arrival: product.is_new_arrival || false,
-                is_trending: product.is_trending || false,
-                is_active: product.is_active || true,
-                categories: product.categories?.map(cat => cat) || []
-            });
-            
-            // Set existing images
-            if (product.images && product.images.length > 0) {
-                setExistingImages(product.images);
-            }
-            
-            // Set features
-            if (product.features && product.features.length > 0) {
-                setFeatures(product.features.map(f => ({
-                    id: f.id,
-                    title: f.title || '',
-                    content: f.content || ''
-                })));
-            }
-            
-            // Set FAQs
-            if (product.faq && product.faq.length > 0) {
-                setFaqs(product.faq.map(f => ({
-                    id: f.id,
-                    title: f.title || '',
-                    content: f.content || ''
-                })));
-            } else {
-                setFaqs([{ title: '', content: '' }]);
-            }
-            
-            // Fetch meta data if available
-            try {
-                const metaResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/meta-tags/?product=${product.id}`);
-                if (metaResponse.ok) {
-                    const metaDataResult = await metaResponse.json();
-                    if (metaDataResult && metaDataResult.length > 0) {
-                        const meta = metaDataResult[0];
-                        setMetaData({
-                            title: meta.title || '',
-                            description: meta.description || '',
-                            keywords: meta.keywords || '',
-                            og_title: meta.og_title || '',
-                            og_description: meta.og_description || '',
-                            canonical_url: meta.canonical_url || ''
-                        });
-                    }
-                }
-            } catch (metaError) {
-                console.error('Error fetching meta data:', metaError);
-                // Continue without meta data
-            }
-            
-        } catch (error) {
-            console.error('Error fetching product:', error);
-            toast.error('Failed to load product data');
-            router.push('/auth/dashboard/product');
-        } finally {
-            setLoading(false);
-        }
-    }, [slug, router]);
-
-    // Fetch categories
-    const fetchCategories = async () => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch categories');
-            }
-            const data = await response.json();
-            setCategories(data);
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-            toast.error('Failed to load categories');
-        }
-    };
-
-    // Load data on mount
-    useEffect(() => {
-        fetchCategories();
-        fetchProduct();
-    }, [fetchProduct]);
+    const [categories, setCategories] = useState([]);
+    const { token } = getTokens();
 
     // Editor content
     const handleEditorChange = (content) => {
@@ -184,6 +52,22 @@ const ProductEditForm = ({ params }) => {
             ...prev,
             description: content
         }));
+    };
+
+
+    // Fetch categories on component mount
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/`);
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            toast.error('Error fetching categories');
+        }
     };
 
     // Handle main form data changes
@@ -237,73 +121,23 @@ const ProductEditForm = ({ params }) => {
     // Image handling
     const handleFeatureImageChange = (e) => {
         if (e.target.files[0]) {
-            setNewFeatureImage(e.target.files[0]);
+            setFeatureImage(e.target.files[0]);
         }
     };
 
     const handleGalleryImagesChange = (e) => {
         const files = Array.from(e.target.files);
-        setNewGalleryImages(prev => [...prev, ...files]);
+        setGalleryImages(prev => [...prev, ...files]);
     };
 
-    const removeNewGalleryImage = (index) => {
-        setNewGalleryImages(prev => prev.filter((_, i) => i !== index));
+    const removeGalleryImage = (index) => {
+        setGalleryImages(prev => prev.filter((_, i) => i !== index));
     };
 
-    const removeExistingImage = async (imageId) => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${slug}/delete_image/`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ image_id: imageId })
-            });
-
-            if (response.ok) {
-                toast.success('Image removed successfully');
-                setExistingImages(prev => prev.filter(img => img.id !== imageId));
-            } else {
-                toast.error('Failed to remove image');
-            }
-        } catch (error) {
-            console.error('Error removing image:', error);
-            toast.error('Error removing image');
-        }
-    };
-
-    const setFeatureImage = async (imageId) => {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${slug}/set_feature_image/`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ image_id: imageId })
-            });
-
-            if (response.ok) {
-                toast.success('Feature image set successfully');
-                // Update the existing images to reflect the change
-                setExistingImages(prev => prev.map(img => ({
-                    ...img,
-                    is_feature: img.id === imageId
-                })));
-            } else {
-                toast.error('Failed to set feature image');
-            }
-        } catch (error) {
-            console.error('Error setting feature image:', error);
-            toast.error('Error setting feature image');
-        }
-    };
 
     // Form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitting(true);
 
         const form = new FormData();
 
@@ -330,13 +164,13 @@ const ProductEditForm = ({ params }) => {
             }
         });
 
-        // Add new feature image
-        if (newFeatureImage) {
-            form.append('uploaded_images', newFeatureImage);
+        // Add feature image
+        if (featureImage) {
+            form.append('uploaded_images', featureImage);
         }
 
-        // Add new gallery images
-        newGalleryImages.forEach(image => {
+        // Add gallery images
+        galleryImages.forEach(image => {
             form.append('uploaded_images', image);
         });
 
@@ -368,46 +202,73 @@ const ProductEditForm = ({ params }) => {
             }
         }
 
+        // Debug logs
+        console.log('Feature Image:', featureImage);
+        console.log('Gallery Images:', galleryImages);
+        console.log('Features:', features);
+        console.log('FAQs:', faqs);
+        console.log('Meta Data:', metaData);
+
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${slug}/`, {
-                method: 'PATCH',
+            console.log('Sending form data:', Object.fromEntries(form));
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/`, {
+                method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },
                 body: form
             });
+            const responseData = await response.json();
 
             if (response.ok) {
-                toast.success('Product updated successfully');
+                toast.success('Product created successfully');
+                console.log('Created product:', responseData);
+                
+                // Reset form
+                setFormData({
+                    name: '',
+                    description: '',
+                    regular_price: '',
+                    selling_price: '',
+                    bp_value: 0,
+                    gst_percentage: 0,
+                    stock: 0,
+                    HSN_Code: '',
+                    is_featured: false,
+                    is_bestseller: false,
+                    is_new_arrival: false,
+                    is_trending: false,
+                    is_active: true,
+                    categories: []
+                });
+                setMetaData({
+                    title: '',
+                    description: '',
+                    keywords: '',
+                    og_title: '',
+                    og_description: '',
+                    canonical_url: ''
+                });
+                setFeatureImage(null);
+                setGalleryImages([]);
+                setFeatures([{ title: '', content: '' }]);
+                setFaqs([{ title: '', content: '' }]);
                 router.push('/auth/dashboard/product');
             } else {
-                const errorData = await response.json().catch(() => ({}));
-                toast.error(errorData.message || 'Error updating product');
-                console.error('Error updating product:', errorData);
+                console.log('Error response:', responseData);
+                toast.error(responseData.error || 'Error creating product');
             }
         } catch (error) {
-            console.error('Error updating product:', error);
-            toast.error('Error updating product');
-        } finally {
-            setSubmitting(false);
+            console.log('Submit error:', error);
+            toast.error('Error creating product');
         }
     };
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-            </div>
-        );
-    }
 
     return (
         <div className="p-6">
             <div className='flex justify-between mb-5 align-middle'>
-                <h1 className="text-2xl font-bold mb-6">Edit Product: {formData.name}</h1>
-                <a href='/auth/dashboard/product' className="bg-gray-600 text-white rounded hover:bg-gray-700 pt-4 px-4">
-                    Back to Products
-                </a>
+                <h1 className="text-2xl font-bold mb-6">Create New Product</h1>
+                <a href='/auth/dashboard/product' className="bg-green-600 text-white rounded hover:bg-green-700 pt-4 px-4">All Products</a>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
@@ -671,84 +532,29 @@ const ProductEditForm = ({ params }) => {
                 <div className="bg-white rounded-lg shadow p-6">
                     <h2 className="text-xl font-semibold mb-4">Product Images</h2>
                     
-                    {/* Existing Images */}
-                    {existingImages.length > 0 && (
-                        <div className="mb-6">
-                            <h3 className="text-lg font-medium mb-3">Current Images</h3>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                                {existingImages.map((image) => (
-                                    <div key={image.id} className="relative">
-                                        <div className={`border-2 rounded-lg overflow-hidden ${image.is_feature ? 'border-green-500' : 'border-gray-300'}`}>
-                                            <div className="relative h-40 w-full">
-                                                <Image
-                                                    src={image.image}
-                                                    alt={image.alt_text || 'Product image'}
-                                                    fill
-                                                    className="object-cover"
-                                                />
-                                            </div>
-                                            <div className="p-2 bg-white">
-                                                <div className="flex justify-between items-center">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => setFeatureImage(image.id)}
-                                                        className={`text-xs px-2 py-1 rounded ${
-                                                            image.is_feature 
-                                                                ? 'bg-green-100 text-green-800' 
-                                                                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                                                        }`}
-                                                    >
-                                                        {image.is_feature ? 'Featured' : 'Set as Featured'}
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => removeExistingImage(image.id)}
-                                                        className="text-red-500 hover:text-red-700"
-                                                    >
-                                                        <TrashIcon className="h-5 w-5" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                    
-                    {/* New Feature Image */}
+                    {/* Feature Image */}
                     <div className="mb-4">
-                        <label className="block mb-1">Add New Feature Image</label>
+                        <label className="block mb-1">Feature Image</label>
                         <input
                             type="file"
                             accept="image/*"
                             onChange={handleFeatureImageChange}
                             className="w-full p-2 border rounded"
                         />
-                        {newFeatureImage && (
+                        {featureImage && (
                             <div className="mt-2">
-                                <div className="relative w-32 h-32">
-                                    <Image
-                                        src={URL.createObjectURL(newFeatureImage)}
-                                        alt="New Feature"
-                                        fill
-                                        className="object-cover rounded"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setNewFeatureImage(null)}
-                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
-                                    >
-                                        <XCircleIcon className="h-5 w-5" />
-                                    </button>
-                                </div>
+                                <img
+                                    src={URL.createObjectURL(featureImage)}
+                                    alt="Feature"
+                                    className="w-32 h-32 object-cover rounded"
+                                />
                             </div>
                         )}
                     </div>
                 
-                    {/* New Gallery Images */}
+                    {/* Gallery Images */}
                     <div>
-                        <label className="block mb-1">Add More Gallery Images</label>
+                        <label className="block mb-1">Gallery Images</label>
                         <input
                             type="file"
                             multiple
@@ -756,27 +562,22 @@ const ProductEditForm = ({ params }) => {
                             onChange={handleGalleryImagesChange}
                             className="w-full p-2 border rounded"
                         />
-                        {newGalleryImages.length > 0 && (
-                            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                                {newGalleryImages.map((file, index) => (
+                        {galleryImages.length > 0 && (
+                            <div className="mt-4 grid grid-cols-4 gap-4">
+                                {galleryImages.map((file, index) => (
                                     <div key={index} className="relative">
-                                        <div className="border rounded-lg overflow-hidden">
-                                            <div className="relative h-40 w-full">
-                                                <Image
-                                                    src={URL.createObjectURL(file)}
-                                                    alt={`New Gallery ${index}`}
-                                                    fill
-                                                    className="object-cover"
-                                                />
-                                            </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeNewGalleryImage(index)}
-                                                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
-                                            >
-                                                <XCircleIcon className="h-5 w-5" />
-                                            </button>
-                                        </div>
+                                        <img
+                                            src={URL.createObjectURL(file)}
+                                            alt={`Gallery ${index}`}
+                                            className="w-full h-32 object-cover rounded"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeGalleryImage(index)}
+                                            className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
+                                        >
+                                            ×
+                                        </button>
                                     </div>
                                 ))}
                             </div>
@@ -869,25 +670,15 @@ const ProductEditForm = ({ params }) => {
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex justify-between">
-                    <button
-                        type="button"
-                        onClick={() => router.push('/auth/dashboard/product')}
-                        className="p-3 bg-gray-600 text-white rounded hover:bg-gray-700"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        disabled={submitting}
-                        className="p-3 px-6 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {submitting ? 'Updating...' : 'Update Product'}
-                    </button>
-                </div>
+                <button
+                    type="submit"
+                    className="w-full p-3 bg-green-600 text-white rounded hover:bg-green-700"
+                >
+                    Create Product
+                </button>
             </form>
         </div>
     );
 };
 
-export default ProductEditForm;
+export default ProductForm;

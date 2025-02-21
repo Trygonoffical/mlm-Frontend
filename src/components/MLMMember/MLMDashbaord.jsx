@@ -98,7 +98,7 @@ const MLMMemberDashboard = () => {
     <div className="py-12 bg-gray-50 min-h-screen">
         
 
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-2 gap-2 mb-2">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
                 <div>
                     <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2">
                         <div className="bg-white shadow-md rounded-lg p-4 flex items-center">

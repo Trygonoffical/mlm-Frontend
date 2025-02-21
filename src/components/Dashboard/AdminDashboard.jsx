@@ -93,7 +93,7 @@ const AdminDashboard = () => {
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {/* Total Revenue */}
-          <div className="bg-white shadow-md rounded-lg p-6 flex items-center">
+          <div className="bg-white shadow-md rounded-lg p-6 flex flex-wrap items-center">
             <div className="bg-green-100 rounded-full p-3 mr-4">
               <DollarSign className="text-green-600" />
             </div>
@@ -104,7 +104,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Total MLM Members */}
-          <div className="bg-white shadow-md rounded-lg p-6 flex items-center">
+          <div className="bg-white shadow-md rounded-lg p-6 flex flex-wrap items-center">
             <div className="bg-blue-100 rounded-full p-3 mr-4">
               <Users className="text-blue-600" />
             </div>
@@ -115,7 +115,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Total Orders */}
-          <div className="bg-white shadow-md rounded-lg p-6 flex items-center">
+          <div className="bg-white shadow-md rounded-lg p-6 flex flex-wrap items-center">
             <div className="bg-purple-100 rounded-full p-3 mr-4">
               <ShoppingCart className="text-purple-600" />
             </div>
@@ -126,7 +126,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Active Positions */}
-          <div className="bg-white shadow-md rounded-lg p-6 flex items-center">
+          <div className="bg-white shadow-md rounded-lg p-6 flex flex-wrap items-center">
             <div className="bg-yellow-100 rounded-full p-3 mr-4">
               <Award className="text-yellow-600" />
             </div>

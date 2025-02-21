@@ -16,3 +16,15 @@ import {
     { icon: User, label: 'Profile' , href : 'profile'},
     { icon: TicketPercent, label: 'Orders' , href : 'orders'}
   ];
+
+
+  export const sidebarPrefredItems = [
+    { icon: Home, label: 'Dashboard', active: true, bgColor: 'bg-[#DEB887]', href : '/'},
+    { icon: ShoppingCart, label: 'Shop Now', href : 'shop'},
+    { icon: Wallet, label: 'Wallet' , href : 'wallet'},
+    { icon: FileText, label: 'KYC', href : 'kyc' },
+    { icon: FileText, label: 'Reports' , href : 'reports'},
+    { icon: Bell, label: 'Notification' , href : 'notification'},
+    { icon: User, label: 'Profile' , href : 'profile'},
+    { icon: TicketPercent, label: 'Orders' , href : 'orders'}
+  ];

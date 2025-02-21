@@ -11,7 +11,9 @@ import {
   BarChart2, 
   Users, 
   Calendar, 
-  Trophy
+  Trophy,
+  ShoppingCart,
+  DollarSign
 } from 'lucide-react';
 
 const AdminMLMReports = () => {
@@ -19,6 +21,7 @@ const AdminMLMReports = () => {
   const [reportData, setReportData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [positions, setPositions] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [filters, setFilters] = useState({
     start_date: '',
     end_date: '',
@@ -32,7 +35,14 @@ const AdminMLMReports = () => {
     min_bp: '',
     max_bp: '',
     position: '',
-    is_active: ''
+    is_active: '',
+    // Sales report filters
+    category: '',
+    product_id: '',
+    min_amount: '',
+    max_amount: '',
+    payment_status: '',
+    order_status: ''
   });
 
   const { token } = getTokens();
@@ -61,7 +71,30 @@ const AdminMLMReports = () => {
         toast.error('Failed to load positions');
       }
     };
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/categories/`, 
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
+        );
 
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        toast.error('Failed to load categories');
+      }
+    };
+
+    fetchCategories();
     fetchPositions();
   }, [token]);
 
@@ -289,8 +322,328 @@ const AdminMLMReports = () => {
             </div>
           </div>
         );
+        case 'sales':
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Start Date</label>
+              <input 
+                type="date" 
+                className="w-full border rounded-lg p-2"
+                value={filters.start_date}
+                onChange={(e) => setFilters({...filters, start_date: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">End Date</label>
+              <input 
+                type="date" 
+                className="w-full border rounded-lg p-2"
+                value={filters.end_date}
+                onChange={(e) => setFilters({...filters, end_date: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Category</label>
+              <select
+                className="w-full border rounded-lg p-2"
+                value={filters.category}
+                onChange={(e) => setFilters({...filters, category: e.target.value})}
+              >
+                <option value="">All Categories</option>
+                {categories.map((category) => (
+                  <option 
+                    key={category.id} 
+                    value={category.id}
+                  >
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Min Amount</label>
+              <input 
+                type="number" 
+                className="w-full border rounded-lg p-2"
+                placeholder="Minimum Amount"
+                value={filters.min_amount}
+                onChange={(e) => setFilters({...filters, min_amount: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Max Amount</label>
+              <input 
+                type="number" 
+                className="w-full border rounded-lg p-2"
+                placeholder="Maximum Amount"
+                value={filters.max_amount}
+                onChange={(e) => setFilters({...filters, max_amount: e.target.value})}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Order Status</label>
+              <select
+                className="w-full border rounded-lg p-2"
+                value={filters.order_status}
+                onChange={(e) => setFilters({...filters, order_status: e.target.value})}
+              >
+                <option value="">All Statuses</option>
+                <option value="PENDING">Pending</option>
+                <option value="CONFIRMED">Confirmed</option>
+                <option value="SHIPPED">Shipped</option>
+                <option value="DELIVERED">Delivered</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Time Period</label>
+              <select
+                className="w-full border rounded-lg p-2"
+                value={filters.period}
+                onChange={(e) => setFilters({...filters, period: e.target.value})}
+              >
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+            </div>
+          </div>
+        );
       default:
         return null;
+    }
+  };
+
+  const renderReportData = () => {
+    if (!reportData || !reportData.data) return <p>No data to display</p>;
+
+    const { report_type, data } = reportData;
+
+    switch(report_type) {
+      case 'level_wise':
+        return (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Level-wise Report</h2>
+              <button 
+                onClick={downloadReport}
+                className="flex items-center text-blue-600 hover:text-blue-800"
+              >
+                <Download className="mr-1 h-4 w-4" /> Download CSV
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="py-3 px-4 text-left border-b">Position</th>
+                    <th className="py-3 px-4 text-left border-b">Total Members</th>
+                    <th className="py-3 px-4 text-left border-b">Total Earnings</th>
+                    <th className="py-3 px-4 text-left border-b">Total BP</th>
+                    <th className="py-3 px-4 text-left border-b">Avg Monthly Purchase</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
+                      <td className="py-2 px-4 border-b">{item.position__name}</td>
+                      <td className="py-2 px-4 border-b">{item.total_members}</td>
+                      <td className="py-2 px-4 border-b">₹{item.total_earnings?.toFixed(2) || '0.00'}</td>
+                      <td className="py-2 px-4 border-b">{item.total_bp}</td>
+                      <td className="py-2 px-4 border-b">₹{item.avg_monthly_purchase?.toFixed(2) || '0.00'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      case 'joining':
+        return (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Joining Report</h2>
+              <button 
+                onClick={downloadReport}
+                className="flex items-center text-blue-600 hover:text-blue-800"
+              >
+                <Download className="mr-1 h-4 w-4" /> Download CSV
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="py-3 px-4 text-left border-b">Period</th>
+                    <th className="py-3 px-4 text-left border-b">Total Members</th>
+                    <th className="py-3 px-4 text-left border-b">Total BP</th>
+                    <th className="py-3 px-4 text-left border-b">Total Earnings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
+                      <td className="py-2 px-4 border-b">{item.period}</td>
+                      <td className="py-2 px-4 border-b">{item.total_members}</td>
+                      <td className="py-2 px-4 border-b">{item.total_bp}</td>
+                      <td className="py-2 px-4 border-b">₹{item.total_earnings?.toFixed(2) || '0.00'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      case 'member_search':
+        return (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Member Search Results</h2>
+              <button 
+                onClick={downloadReport}
+                className="flex items-center text-blue-600 hover:text-blue-800"
+              >
+                <Download className="mr-1 h-4 w-4" /> Download CSV
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="py-3 px-4 text-left border-b">Member ID</th>
+                    <th className="py-3 px-4 text-left border-b">Name</th>
+                    <th className="py-3 px-4 text-left border-b">Email</th>
+                    <th className="py-3 px-4 text-left border-b">Phone</th>
+                    <th className="py-3 px-4 text-left border-b">Position</th>
+                    <th className="py-3 px-4 text-left border-b">Total Earnings</th>
+                    <th className="py-3 px-4 text-left border-b">Join Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
+                      <td className="py-2 px-4 border-b">{item.member_id}</td>
+                      <td className="py-2 px-4 border-b">{item.name}</td>
+                      <td className="py-2 px-4 border-b">{item.email}</td>
+                      <td className="py-2 px-4 border-b">{item.phone}</td>
+                      <td className="py-2 px-4 border-b">{item.position}</td>
+                      <td className="py-2 px-4 border-b">₹{item.total_earnings?.toFixed(2) || '0.00'}</td>
+                      <td className="py-2 px-4 border-b">{new Date(item.join_date).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      case 'custom':
+        return (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Custom Report</h2>
+              <button 
+                onClick={downloadReport}
+                className="flex items-center text-blue-600 hover:text-blue-800"
+              >
+                <Download className="mr-1 h-4 w-4" /> Download CSV
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="py-3 px-4 text-left border-b">Member ID</th>
+                    <th className="py-3 px-4 text-left border-b">Name</th>
+                    <th className="py-3 px-4 text-left border-b">Position</th>
+                    <th className="py-3 px-4 text-left border-b">Is Active</th>
+                    <th className="py-3 px-4 text-left border-b">Total Earnings</th>
+                    <th className="py-3 px-4 text-left border-b">Total BP</th>
+                    <th className="py-3 px-4 text-left border-b">Current Month Purchase</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
+                      <td className="py-2 px-4 border-b">{item.member_id}</td>
+                      <td className="py-2 px-4 border-b">{item.name}</td>
+                      <td className="py-2 px-4 border-b">{item.position}</td>
+                      <td className="py-2 px-4 border-b">{item.is_active ? 'Yes' : 'No'}</td>
+                      <td className="py-2 px-4 border-b">₹{item.total_earnings?.toFixed(2) || '0.00'}</td>
+                      <td className="py-2 px-4 border-b">{item.total_bp}</td>
+                      <td className="py-2 px-4 border-b">₹{item.current_month_purchase?.toFixed(2) || '0.00'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      case 'sales':
+        return (
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Sales Report</h2>
+              <button 
+                onClick={downloadReport}
+                className="flex items-center text-blue-600 hover:text-blue-800"
+              >
+                <Download className="mr-1 h-4 w-4" /> Download CSV
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="py-3 px-4 text-left border-b">Period</th>
+                    <th className="py-3 px-4 text-left border-b">Total Orders</th>
+                    <th className="py-3 px-4 text-left border-b">Total Revenue</th>
+                    <th className="py-3 px-4 text-left border-b">Total BP</th>
+                    <th className="py-3 px-4 text-left border-b">Avg Order Value</th>
+                    {filters.category && <th className="py-3 px-4 text-left border-b">Category</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
+                      <td className="py-2 px-4 border-b">{item.period}</td>
+                      <td className="py-2 px-4 border-b">{item.total_orders}</td>
+                      <td className="py-2 px-4 border-b">₹{item.total_revenue?.toFixed(2) || '0.00'}</td>
+                      <td className="py-2 px-4 border-b">{item.total_bp}</td>
+                      <td className="py-2 px-4 border-b">₹{item.avg_order_value?.toFixed(2) || '0.00'}</td>
+                      {filters.category && <td className="py-2 px-4 border-b">{item.category_name}</td>}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Show additional summary metrics */}
+            {reportData.summary && (
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <p className="text-sm text-blue-500">Total Revenue</p>
+                  <p className="text-2xl font-bold">₹{reportData.summary.total_revenue?.toFixed(2) || '0.00'}</p>
+                </div>
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <p className="text-sm text-green-500">Total Orders</p>
+                  <p className="text-2xl font-bold">{reportData.summary.total_orders || 0}</p>
+                </div>
+                <div className="bg-purple-50 p-4 rounded-lg">
+                  <p className="text-sm text-purple-500">Total BP Generated</p>
+                  <p className="text-2xl font-bold">{reportData.summary.total_bp || 0}</p>
+                </div>
+                <div className="bg-amber-50 p-4 rounded-lg">
+                  <p className="text-sm text-amber-500">Average Order Value</p>
+                  <p className="text-2xl font-bold">₹{reportData.summary.avg_order_value?.toFixed(2) || '0.00'}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      default:
+        return <p>No data to display</p>;
     }
   };
 
@@ -306,7 +659,7 @@ const AdminMLMReports = () => {
       </div>
 
        {/* Report Type Selection */}
-       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+       <div className="grid grid-cols-1 md:grid-cols-5 gap-5 mb-6">
          {[
            { 
              type: 'level_wise', 
@@ -327,7 +680,12 @@ const AdminMLMReports = () => {
              type: 'custom', 
              icon: <Filter className="mr-2" />, 
              label: 'Custom Report' 
-           }
+           },
+           { 
+            type: 'sales', 
+            icon: <ShoppingCart className="mr-2" />, 
+            label: 'Sales Report' 
+          }
          ].map((report) => (
            <button
              key={report.type}
@@ -336,7 +694,10 @@ const AdminMLMReports = () => {
                  ? 'bg-blue-500 text-white' 
                  : 'bg-white text-gray-700 hover:bg-gray-100'
              }`}
-             onClick={() => setReportType(report.type)}
+             onClick={() => {
+              setReportType(report.type);
+              setReportData(null); // Clear previous report data
+            }}
            >
              {report.icon}
              {report.label}

@@ -1,23 +1,5 @@
-// 'use client'
-
-// import { use } from 'react';
-// import ProductUpdatePage from '@/components/Products/EditProduct'
-// import ProductEditForm from '@/components/Products/ProductEditForm';
-
-
-// // Page component that receives params
-// export default function UpdateProductPage({ params }) {
-//     // Use React.use to unwrap the params
-//     const slug = use(params).slug;
-
-//     return (
-//         // <ProductUpdatePage productSlug={slug} />
-//         <ProductEditForm />
-//     );
-// }
-
 'use client'
-import React, { useState, useEffect, useCallback, use } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import { Editor } from '@tinymce/tinymce-react';
 import { useRouter } from 'next/navigation';
@@ -26,8 +8,7 @@ import Image from 'next/image';
 import { XCircleIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 const ProductEditForm = ({ params }) => {
-    // const { slug } = params;
-    const slug = use(params).slug;
+    const { slug } = params;
     const router = useRouter();
     const { token } = getTokens();
     const [loading, setLoading] = useState(true);

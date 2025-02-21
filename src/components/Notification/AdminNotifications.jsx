@@ -225,7 +225,7 @@ const AdminNotifications = () => {
                 >
                   <option value="GENERAL">General (All Members)</option>
                   <option value="INDIVIDUAL">Individual Member</option>
-                  <option value="SYSTEM">System Notification</option>
+                  {/* <option value="SYSTEM">System Notification</option> */}
                 </select>
               </div>
 

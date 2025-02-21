@@ -33,7 +33,6 @@ function CartArea() {
         if(userInfo){
             if(userInfo.role != "CUSTOMER"){
                 setIsMember(true);
-                
             }
         }
     },[userInfo]);

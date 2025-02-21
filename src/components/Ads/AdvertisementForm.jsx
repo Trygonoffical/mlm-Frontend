@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { toast } from 'react-hot-toast';
 import Cookies from 'js-cookie';
@@ -13,13 +13,13 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
     const [formData, setFormData] = useState({
         title: advertisement?.title || '',
         link: advertisement?.link || '',
-        position: advertisement?.position || '',
+        position: advertisement?.position || 'SIDEBAR', // Default to SIDEBAR
         is_active: advertisement?.is_active ?? true,
         image: null
     });
     const [previewUrl, setPreviewUrl] = useState(advertisement?.image_url || null);
 
-    // In your AdvertisementForm component
+    // Predefined positions with correct values matching backend
     const POSITIONS = [
         { value: 'SIDEBAR', label: 'Sidebar' },
         { value: 'FULL_WIDTH', label: 'Full Width' },
@@ -27,11 +27,21 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
         { value: 'CUSTOMER_PANEL', label: 'Customer Panel' },
         { value: 'MLM_PANEL', label: 'MLM Panel' }
     ];
+
+    // Log initial position value to debug
+    useEffect(() => {
+        console.log('Initial position value:', formData.position);
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
         const form = new FormData();
+        
+        // Log the data being sent to the API
+        console.log('Submitting advertisement data:', formData);
+        
         Object.keys(formData).forEach(key => {
             if (key === 'image' && formData[key]) {
                 form.append('image', formData[key]);
@@ -46,6 +56,8 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
                 ? `${process.env.NEXT_PUBLIC_API_URL}/advertisements/${advertisement.id}/`
                 : `${process.env.NEXT_PUBLIC_API_URL}/advertisements/`;
 
+            console.log('Sending request to:', url);
+
             const response = await fetch(url, {
                 method: advertisement ? 'PATCH' : 'POST',
                 headers: {
@@ -55,12 +67,24 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
             });
 
             if (response.ok) {
+                const result = await response.json();
+                console.log('API response:', result);
+                
                 toast.success(`Advertisement ${advertisement ? 'updated' : 'created'} successfully`);
                 setRefreshKey(old => old + 1);
                 setIsOpen(false);
                 if (onClose) onClose();
+                setFormData({
+                    title: '',
+                    link: '',
+                    position: 'SIDEBAR', // Default to SIDEBAR
+                    is_active: advertisement?.is_active ?? true,
+                    image: null
+                })
+                setPreviewUrl(null);
             } else {
                 const data = await response.json();
+                console.error('API error response:', data);
                 toast.error(data.message || `Error ${advertisement ? 'updating' : 'creating'} advertisement`);
             }
         } catch (error) {
@@ -81,6 +105,11 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
             }));
             setPreviewUrl(URL.createObjectURL(files[0]));
         } else {
+            // Log position selection changes
+            if (name === 'position') {
+                console.log('Position changed to:', value);
+            }
+            
             setFormData(prev => ({
                 ...prev,
                 [name]: type === 'checkbox' ? checked : value
@@ -145,8 +174,9 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
                                     value={formData.link}
                                     onChange={handleChange}
                                     className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2"
-                                    />
+                                />
                             </div>
+                            
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Image</label>
                                 <input
@@ -163,21 +193,12 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
                                             alt="Preview"
                                             width={100}
                                             height={100}
-                                            className="rounded-full"
+                                            className="rounded-md object-cover"
                                         />
                                     </div>
                                 )}
                             </div>
-                            {/* <div>
-                                <label className="block mb-1">Position</label>
-                                <input
-                                type="number"
-                                value={formData.position}
-                                onChange={(e) => setFormData({...formData, position: e.target.value})}
-                                className="w-full p-2 border rounded"
-                                />
-                            </div> */}
-                             {/* Replace the position input with: */}
+                            
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Position</label>
                                 <select
@@ -192,7 +213,11 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
                                         </option>
                                     ))}
                                 </select>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Current position value: {formData.position}
+                                </p>
                             </div>
+                            
                             <div className="flex items-center">
                                 <input
                                     type="checkbox"
@@ -203,21 +228,23 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
                                 />
                                 <label className="ml-2 text-sm text-gray-700">Active</label>
                             </div>
+                            
                             <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-                                >
-                                    {loading ? 
-                                        `${advertisement ? 'Updating...' : 'Creating...'}` : 
-                                        `${advertisement ? 'Update' : 'Create'} advertisement`
-                                    }
+                                type="submit"
+                                disabled={loading}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                            >
+                                {loading ? 
+                                    `${advertisement ? 'Updating...' : 'Creating...'}` : 
+                                    `${advertisement ? 'Update' : 'Create'} advertisement`
+                                }
                             </button>
-                       </form>
+                        </form>
                     </DialogPanel>
                 </div>
             </Dialog>
         </>
     );
 };
-    export default AdvertisementForm;
+
+export default AdvertisementForm;

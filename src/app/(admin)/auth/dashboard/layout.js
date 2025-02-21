@@ -8,7 +8,7 @@ export default function GuestLayout({ children }) {
   return (
     <>
       <StoreProvider>
-        <div className="flex  bg-gray-100">
+        <div className="flex  bg-gray-100 max-h-[100vh]">
             {/* Sidebar  bg-[#2C3E50] */}
             <SlideBar admin={true} />
             {/* Main Content */}

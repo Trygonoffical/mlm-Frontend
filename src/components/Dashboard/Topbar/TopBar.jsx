@@ -3,6 +3,8 @@ import UserArea from './UserArea'
 import Notification from './Notification'
 import MobileSidebar from '../Slidebar/MobileSidebar'
 import CartArea from '@/components/Cart/ShopingCart'
+import Link from 'next/link'
+import { Bell } from 'lucide-react'
 
 const TopBar = ({shop=false , admin=false}) => {
   return (
@@ -13,7 +15,9 @@ const TopBar = ({shop=false , admin=false}) => {
             <div className="flex items-center gap-2">
               <MobileSidebar admin={admin} />
               <div className='flex items-center gap-2'>
-                <img src="/Images/logo.png" alt="Logo" className="h-auto w-8" />
+                <Link href={`/`}>
+                  <img src="/Images/logo.png" alt="Logo" className="h-auto w-8" />
+                </Link>
                 {/* <span className="text-green-600">Commission - ₹ 1000.00</span> */}
               </div>
               
@@ -25,10 +29,13 @@ const TopBar = ({shop=false , admin=false}) => {
                
 
               {/* Notification Dropdown */}
-              <Notification />
+              <Link href={admin ? '/auth/dashboard/notification': '/mu/dashboard/notification'}>
+                <Bell  className="w-6 h-6 " />
+              </Link>
+              {/* <Notification /> */}
 
               {/* Profile Dropdown */}
-              <UserArea />
+              <UserArea admin={admin} />
             </div>
           </div>
         </header>
