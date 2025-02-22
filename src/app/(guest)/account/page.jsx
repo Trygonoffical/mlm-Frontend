@@ -98,6 +98,7 @@ import { ToastContainer } from "react-toastify"
 import { useSelector } from 'react-redux'
 import OrderHistory from '@/components/Order/OrderHistory'
 import 'react-toastify/dist/ReactToastify.css'
+import CustomerAds from '@/components/Ads/CustomerAds'
 
 const Account = () => {
     const router = useRouter();
@@ -128,6 +129,7 @@ const Account = () => {
 
     return (
         <>
+            <CustomerAds />
             <section className='mx-auto max-w-7xl lg:px-8 py-8'>
                 <TabGroup 
                     vertical 
