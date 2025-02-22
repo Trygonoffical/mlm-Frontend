@@ -23,6 +23,7 @@ import {
   Legend 
 } from 'recharts';
 import Link from 'next/link';
+import MLMAds from '../Ads/MLMAds';
 
 const MLMMemberDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -214,6 +215,8 @@ const MLMMemberDashboard = () => {
             </div>
             </div>
 
+            {/* Ads Section  */}
+            <MLMAds />
             {/* Featured Products and Recent Orders */}
             <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-2 my-2">
             {/* Featured Products */}

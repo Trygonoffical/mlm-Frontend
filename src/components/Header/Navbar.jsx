@@ -84,48 +84,7 @@ export default function Navbar() {
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
           <ProductSearch />
-        {/* <div className="flex h-12">
-           
-              <div className="relative">
-                <select 
-                  className="h-full py-2 px-6 bg-[#8B6D4D] text-white text-sm font-medium rounded-l-md outline-none appearance-none cursor-pointer min-w-[160px]"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'right 12px center',
-                    backgroundSize: '16px',
-                    borderRadius: '39px 0px 0px 39px',
-                  }}
-                >
-                  <option>All Categories</option>
-                  <option> Categories</option>
-                  <option> Categories</option>
-                  <option> Categories</option>
-                </select>
-              </div>
-
-              
-              <div className="flex">
-                <input
-                  type="text"
-                  placeholder="Search for Products......"
-                  className="w-full min-w-[412px]  px-4 py-2 border-y border-r-0 border-l border-gray-300 focus:outline-none text-gray-600"
-                />
-                  
-                <button 
-                    className="px-4
-                    bg-[#6B8E5F] hover:bg-[#5c7a51]
-                      transition-colors rounded-r-md flex items-center justify-center"
-                      style={{
-                        borderRadius: '0px 39px 39px 0px',
-                      }}
-                      >
-                    <MagnifyingGlassIcon  
-                    className=" text-white w-6 h-6"
-                     />
-                </button>
-              </div>
-            </div> */}
+        
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end space-x-3">
             <div className="flex items-center cursor-pointer">
@@ -138,11 +97,7 @@ export default function Navbar() {
               <UserArea checkoutpage={false} />
             </div>
             <div className="flex items-center relative cursor-pointer">
-              {/* <ShoppingCartIcon className="w-7 h-7 text-gray-600" /> */}
-              {/* <Image src='/images/shopping-cart.png' alt='shoppingCart Icon' width={30} height={30} />
-              <span className="absolute -top-2 -right-2 bg-[#8B6D4D] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                0
-              </span> */}
+              
               <CartArea />
             </div>
         </div>
