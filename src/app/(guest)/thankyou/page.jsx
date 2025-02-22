@@ -451,6 +451,9 @@ const ThankYouPage = () => {
     const getOrdersPath = () => {
         return isMlmMember ? '/mu/dashboard/orders' : '/account?tab=orders';
     };
+    const getShopPath = () => {
+        return isMlmMember ? '/mu/dashboard/shop' : '/shop';
+    };
 
     const navigationButtons = [
         {
@@ -468,7 +471,7 @@ const ThankYouPage = () => {
         {
             label: 'Continue Shopping',
             icon: <ShoppingBag className="w-5 h-5" />,
-            action: () => router.push('/shop'),
+            action: () =>router.push(getShopPath()),
             className: 'bg-purple-600 hover:bg-purple-700'
         }
     ];

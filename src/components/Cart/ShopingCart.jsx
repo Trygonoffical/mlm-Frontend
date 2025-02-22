@@ -35,7 +35,8 @@ function CartArea() {
                 setIsMember(true);
             }
         }
-    },[userInfo]);
+        console.log('cart Iteams values - ', cartItems)
+    },[userInfo , cartItems]);
     // const calculateTotalAmount = (product) => {
     //     // Make sure the values exist and are numbers
     //     const sellingPrice = typeof product.selling_price === 'number' 
@@ -122,7 +123,7 @@ function CartArea() {
                                                         <div>
                                                             <h3 className="text-sm font-medium">{item.name}</h3>
                                                             <p className="mt-1 text-sm text-gray-500">
-                                                                ₹{item.total_price}
+                                                                ₹{item.standard_price}
                                                             </p>
                                                         </div>
 

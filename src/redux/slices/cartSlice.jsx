@@ -303,12 +303,12 @@ const cartSlice = createSlice({
             if (newItem.stock <= 0) {
                 return;
             }
-
+            //Calculate standard price (selling price + GST)
+            const standardPrice = calculateStandardPrice(newItem);
             const itemIndex = state.cartItems.findIndex(
                 item => item.id === newItem.id && 
                 JSON.stringify(item.selectedAttributes) === JSON.stringify(newItem.selectedAttributes)
             );
-
             if (itemIndex !== -1) {
                 // Check stock before updating quantity
                 if (state.cartItems[itemIndex].qnt + newItem.qnt <= newItem.stock) {
@@ -317,6 +317,10 @@ const cartSlice = createSlice({
                     
                     // Base calculations are done in the updateCartTotals function
                     // We're not calculating individual item properties here anymore
+                    // Recalculate standard price for the updated quantity
+                    state.cartItems[itemIndex].standard_price = calculateStandardPrice(
+                        {...newItem, qnt: state.cartItems[itemIndex].qnt}
+                    );
                 }
             } else {
                 // Add new item without standard price - we'll calculate it centrally
@@ -324,10 +328,10 @@ const cartSlice = createSlice({
                     ...newItem,
                     discount_amount: 0, // Will be calculated centrally
                     gst_amount: 0, // Will be calculated centrally
-                    total_price: 0 // Will be calculated centrally
+                    total_price: 0, // Will be calculated centrally
+                    standard_price: standardPrice
                 });
             }
-
             // Update cart totals, which will also update all individual item calculations
             updateCartTotals(state, mlmDiscountPercentage);
             state.isCartSidebarVisible = true;
@@ -345,6 +349,11 @@ const cartSlice = createSlice({
                 // Check if new quantity is within valid range (1 to stock limit)
                 if (newQty >= 1 && newQty <= item.stock) {
                     item.qnt = newQty;
+                    // Recalculate standard price for the updated quantity
+                    item.standard_price = calculateStandardPrice({
+                        ...item, 
+                        qnt: newQty
+                    });
                     // All other calculations will be done in updateCartTotals
                     updateCartTotals(state, mlmDiscountPercentage);
                 }
@@ -405,7 +414,13 @@ const cartSlice = createSlice({
         },
     },
 });
-
+// Helper function to calculate standard price (selling price + GST)
+function calculateStandardPrice(item) {
+    // Calculate standard price: selling price * quantity + GST for the entire quantity
+    const basePrice = item.selling_price * item.qnt;
+    const gstAmount = basePrice * (item.gst_percentage / 100);
+    return parseFloat((basePrice + gstAmount).toFixed(2));
+}
 // Helper function to update cart totals and recalculate all item prices
 function updateCartTotals(state, mlmDiscountPercentage = 0) {
     // Calculate cart count
