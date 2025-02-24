@@ -105,7 +105,7 @@ const CustomPageForm = ({ page, setRefreshKey, onClose }) => {
                 <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
                 <div className="fixed inset-0 flex items-center justify-start p-4 ">
-                    <DialogPanel className="mx-auto my-8 max-h-[750px] max-w-3xl rounded bg-white p-6 w-full overflow-y-auto" >
+                    <DialogPanel className="mx-auto my-8 max-h-[90vh] max-w-3xl rounded bg-white p-6 w-full overflow-y-auto" >
                         <div className="flex justify-between items-center mb-4">
                             <DialogTitle className="text-lg font-medium">
                                 {page ? 'Edit' : 'Add'} Page

@@ -12,6 +12,7 @@ import { XMarkIcon, ShoppingBagIcon, TrashIcon, MinusIcon, PlusIcon } from '@her
 function CartArea() {
     const router = useRouter();
     const dispatch = useDispatch();
+    const [mlmDiscountPercentage , setMlmDiscountPercentage] = useState(0)
 
     // Get cart state from Redux
     const {
@@ -24,6 +25,7 @@ function CartArea() {
         regular_price = 0,
         mlmDiscount= 0,
         discountedSubTotal= 0,
+        // mlmDiscountPercentage=0,
     } = useSelector((state) => state.cart);
 
     const [isMember, setIsMember] = useState(false);
@@ -36,6 +38,15 @@ function CartArea() {
             }
         }
         console.log('cart Iteams values - ', cartItems)
+        console.log('cartCount Iteams values - ', cartCount)
+        console.log('subTotal Iteams values - ', subTotal)
+        console.log('totalGST Iteams values - ', totalGST)
+        console.log('total Iteams values - ', total)
+        console.log('regular_price Iteams values - ', regular_price)
+        console.log('mlmDiscount Iteams values - ', mlmDiscount)
+        console.log('discountedSubTotal Iteams values - ', discountedSubTotal)
+        console.log('mlmDiscountPercentage Iteams values - ', userInfo?.user_data?.position?.discount_percentage)
+        setMlmDiscountPercentage( userInfo?.user_data?.position?.discount_percentage)
     },[userInfo , cartItems]);
     // const calculateTotalAmount = (product) => {
     //     // Make sure the values exist and are numbers
@@ -51,14 +62,15 @@ function CartArea() {
     //     return parseFloat((sellingPrice + gstAmount).toFixed(2));
     // }
     const handleRemoveItem = (itemId, selectedAttributes) => {
-        dispatch(removeItemFromCart({ itemID: itemId, selectedAttributes }));
+        dispatch(removeItemFromCart({ itemID: itemId, selectedAttributes ,mlmDiscountPercentage}));
     };
 
-    const handleQuantityChange = (itemId, selectedAttributes, change) => {
+    const handleQuantityChange = (itemId, selectedAttributes, change , mlmDiscountPercentage) => {
         dispatch(updateQuantity({ 
             itemID: itemId, 
             selectedAttributes, 
-            change 
+            change ,
+            mlmDiscountPercentage
         }));
     };
 
@@ -130,14 +142,14 @@ function CartArea() {
                                                         <div className="flex items-center justify-between">
                                                             <div className="flex items-center space-x-2">
                                                                 <button
-                                                                    onClick={() => handleQuantityChange(item.id, item.selectedAttributes, -1)}
+                                                                    onClick={() => handleQuantityChange(item.id, item.selectedAttributes, -1 , mlmDiscountPercentage)}
                                                                     className="rounded-full p-1 hover:bg-gray-100"
                                                                 >
                                                                     <MinusIcon className="h-4 w-4" />
                                                                 </button>
                                                                 <span>{item.qnt}</span>
                                                                 <button
-                                                                    onClick={() => handleQuantityChange(item.id, item.selectedAttributes, 1)}
+                                                                    onClick={() => handleQuantityChange(item.id, item.selectedAttributes, 1 , mlmDiscountPercentage)}
                                                                     className="rounded-full p-1 hover:bg-gray-100"
                                                                 >
                                                                     <PlusIcon className="h-4 w-4" />
@@ -145,7 +157,7 @@ function CartArea() {
                                                             </div>
 
                                                             <button
-                                                                onClick={() => handleRemoveItem(item.id, item.selectedAttributes)}
+                                                                onClick={() => handleRemoveItem(item.id, item.selectedAttributes , mlmDiscountPercentage)}
                                                                 className="text-red-500 hover:text-red-600"
                                                             >
                                                                 <TrashIcon className="h-5 w-5" />

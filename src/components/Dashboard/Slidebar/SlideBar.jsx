@@ -38,7 +38,7 @@ const SlideBar = ({admin=false}) => {
         </button>
 
         {/* Sidebar Items */}
-        <div className="flex flex-col pt-16 max-h-[100vh] overflow-y-scroll">
+        <div className="flex flex-col pt-16 max-h-[100vh] overflow-y-auto">
 
           {sideItems.map((item, index) => (
             <Link 

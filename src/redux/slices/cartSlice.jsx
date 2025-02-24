@@ -298,7 +298,7 @@ const cartSlice = createSlice({
         addItemToCart: (state, action) => {
             const newItem = action.payload;
             const mlmDiscountPercentage = action.payload.mlmDiscountPercentage || 0;
-            
+            console.log('userInfo?.user_data?.position?.discount_percentage -', mlmDiscountPercentage)
             // Check if item is in stock
             if (newItem.stock <= 0) {
                 return;
@@ -442,6 +442,8 @@ function updateCartTotals(state, mlmDiscountPercentage = 0) {
     
     // Now update each item with its individual calculations
     state.cartItems = state.cartItems.map(item => {
+        // Base calculations for each item
+        const itemBasePrice = parseFloat((item.selling_price * item.qnt).toFixed(2));
         // Calculate base price for this item (price × quantity)
         const itemSubtotal = parseFloat((item.selling_price * item.qnt).toFixed(2));
         
@@ -464,7 +466,8 @@ function updateCartTotals(state, mlmDiscountPercentage = 0) {
             ...item,
             mlmDiscountPercentage,
             discount_amount: itemDiscount,
-            discounted_price: parseFloat((item.selling_price - (item.selling_price * mlmDiscountPercentage / 100)).toFixed(2)),
+            // discounted_price: parseFloat((item.selling_price - (item.selling_price * mlmDiscountPercentage / 100)).toFixed(2)),
+            discounted_price: parseFloat((item.selling_price * (1 - mlmDiscountPercentage / 100)).toFixed(2)),
             gst_amount: itemGST,
             total_price: itemTotalPrice
         };

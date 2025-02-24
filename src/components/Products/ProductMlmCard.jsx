@@ -11,13 +11,14 @@ const ProductMlmCard = ({ product , styleval}) => {
     const [totlePrice , setTotalPrice] = useState(0)
     const dispatch = useDispatch();
     const { userInfo } = useSelector((state) => state.auth);
+    const [mlmDiscountPercentage , setMlmDiscountPercentage] = useState(0)
     const handleAddToCart = () => {
         // Calculate prices as numbers to ensure proper calculations
         const sellingPrice = parseFloat(product.selling_price);
         const gstPercentage = parseFloat(product.gst_percentage);
         const gstAmount = (sellingPrice * gstPercentage) / 100;
         const totalPrice = parseFloat(sellingPrice + gstAmount);
-        
+        // const discountedSubTotal = 0 ;
 
         const cartItem = {
             id: product.id,
@@ -33,7 +34,9 @@ const ProductMlmCard = ({ product , styleval}) => {
             qnt: 1,
             stock: product.stock,
             selectedAttributes: {}, // For future use if needed
-            mlmDiscountPercentage: userInfo?.user_data?.position?.discount_percentage || 0
+            mlmDiscountPercentage: mlmDiscountPercentage || 0,
+            // mlmDiscountPercentage: userInfo?.user_data?.position?.discount_percentage || 0,
+            // discountedSubTotal : discountedSubTotal
         };
 
         dispatch(addItemToCart(cartItem));
@@ -52,7 +55,14 @@ const ProductMlmCard = ({ product , styleval}) => {
     }
     useEffect(()=>{
         updatePrice (product)
-    }, [product]);
+        if(userInfo){
+            // console.log()
+            console.log('userInfo -- mlm cart' , userInfo)
+            console.log('mlm cart discount_percentage - ',  userInfo?.user_data?.position?.discount_percentage)
+            setMlmDiscountPercentage(userInfo?.user_data?.position?.discount_percentage)
+        }
+        
+    }, [product , userInfo]);
     
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex my-2" style={styleval}>
