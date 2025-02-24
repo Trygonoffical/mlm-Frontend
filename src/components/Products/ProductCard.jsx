@@ -110,14 +110,14 @@ const ProductCard = ({ product , styleval }) => {
                     </div>
                 
                     {/* GST and BP Info */}
-                    <div className="text-xs text-gray-500 space-y-1">
-                        {/* <div>GST: {product.gst_percentage}%</div> */}
+                    {/* <div className="text-xs text-gray-500 space-y-1">
+                        <div>GST: {product.gst_percentage}%</div>
                         {product.bp_value > 0 && (
                             <div className="text-blue-600 font-medium">
                                 BP Points: {product.bp_value}
                             </div>
                         )}
-                    </div>
+                    </div> */}
                 
                     {/* Stock Info */}
                     <div className="text-sm">

@@ -13,6 +13,7 @@ import {
     { icon: Network, label: 'Networks' ,  href : 'networks' },
     { icon: FileText, label: 'KYC' ,  href : 'kyc' },
     { icon: Bell, label: 'Orders'  ,  href : 'orders' },
+    { icon: UserPlus, label: 'Password Reset'  ,  href : 'password-resets' },
     { icon: Bell, label: 'Notification'  ,  href : 'notification' },
     { icon: Bell, label: 'Newsletters'  ,  href : 'newsletter' },
     { icon: User, label: 'Customers'  ,  href : 'customers' },

@@ -6,7 +6,9 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+// import { toast } from 'react-hot-toast';
 import { toast } from 'react-hot-toast';
+
 import Cookies from 'js-cookie';
 import UserArea from '@/components/Header/UserArea';
 import PayOrder from '@/components/PaymentButton/PayOrder';
@@ -324,11 +326,11 @@ const [formData, setFormData] = useState({
                       <p className="text-sm text-gray-500">
                         GST ({item.gst_percentage}%): ₹{item.gst_amount}
                       </p>
-                      {item.bp_value > 0 && (
+                      {/* {item.bp_value > 0 && (
                         <p className="text-sm text-blue-600">
                           BP Points: {item.bp_value * item.qnt}
                         </p>
-                      )}
+                      )} */}
                     </div>
                     <span className="font-semibold">₹{item.total_price}</span>
                   </div>
@@ -349,12 +351,12 @@ const [formData, setFormData] = useState({
                   <span>Shipping</span>
                   <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
                 </div>
-                {totalBPPoints > 0 && (
+                {/* {totalBPPoints > 0 && (
                   <div className="flex justify-between text-blue-600">
                     <span>Total BP Points</span>
                     <span>{totalBPPoints}</span>
                   </div>
-                )}
+                )} */}
                 <div className="border-t pt-4">
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { toast} from "react-toastify";
+// import { toast} from "react-toastify";
+import { toast } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUserInfo } from '@/redux/slices/authSlice';
 import { getTokens } from '@/utils/cookies';

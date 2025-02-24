@@ -15,6 +15,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { ProfileTab } from '@/components/MLMMember/Tab/ProfileTab';
 import EarningsTab from '@/components/MLMMember/Tab/EarnningTab';
+import { CogIcon } from 'lucide-react';
+import AccountManagementTab from '@/components/MLMMember/Tab/AccountManagmentTab';
 
 const MLMMemberDetails = ({params}) => {
     const memberId  =  use(params).id;
@@ -83,11 +85,11 @@ const MLMMemberDetails = ({params}) => {
             icon: CurrencyDollarIcon,
             content: <EarningsTab member={memberData} />
         },
-        // {
-        //     name: 'Team',
-        //     icon: UsersIcon,
-        //     content: <TeamTab member={memberData} />
-        // },
+        {
+            name: 'Account Management',
+            icon: CogIcon,  // Import this from heroicons
+            content: <AccountManagementTab member={memberData} />
+        },
         // {
         //     name: 'KYC',
         //     icon: DocumentTextIcon,

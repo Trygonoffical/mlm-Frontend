@@ -8,7 +8,8 @@ import {
   Activity, 
   Globe, 
   Award, 
-  Layers 
+  Layers, 
+  Link
 } from 'lucide-react';
 import { getTokens } from '@/utils/cookies';
 import { toast } from 'react-hot-toast';
@@ -208,7 +209,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Critical Alerts and Notifications */}
-          <div className="bg-white shadow-md rounded-lg p-6">
+          {/* <div className="bg-white shadow-md rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-4 flex items-center">
               <Activity className="mr-2" /> Critical Alerts
             </h3>
@@ -229,7 +230,52 @@ const AdminDashboard = () => {
                 </div>
               ))}
             </div>
+          </div> */}
+          {/* Critical Alerts and Notifications */}
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              <Activity className="mr-2" /> Critical Alerts
+            </h3>
+            <div className="space-y-4">
+              {dashboardData.critical_alerts?.map((alert, index) => (
+                <div 
+                  key={index} 
+                  className={`p-3 rounded-lg ${
+                    alert.severity === 'high' 
+                      ? 'bg-red-100 text-red-800' 
+                      : alert.severity === 'medium' 
+                      ? 'bg-yellow-100 text-yellow-800' 
+                      : 'bg-blue-100 text-blue-800'
+                  }`}
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-medium">{alert.title}</p>
+                      <p className="text-sm">{alert.description}</p>
+                    </div>
+                    {alert.type === 'password_reset' && (
+                      <Link
+                        href="/auth/dashboard/password-resets"
+                        className="px-3 py-1 bg-red-600 text-white text-sm rounded-md hover:bg-red-700"
+                      >
+                        View Requests
+                      </Link>
+                    )}
+                  </div>
+                  {alert.type === 'password_reset' && (
+                    <p className="mt-2 text-xs text-red-700">
+                      * Requires immediate attention
+                    </p>
+                  )}
+                </div>
+              ))}
+              {!dashboardData.critical_alerts?.length && (
+                <p className="text-gray-500 text-center">No critical alerts at this time</p>
+              )}
+            </div>
           </div>
+
+
         </div>
 
         {/* Recent Activities */}

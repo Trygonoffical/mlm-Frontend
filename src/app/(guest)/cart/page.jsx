@@ -163,12 +163,12 @@ const CartPage = () => {
                   <span>Shipping</span>
                   <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
                 </div>
-                {totalBPPoints > 0 && (
+                {/* {totalBPPoints > 0 && (
                   <div className="flex justify-between text-blue-600">
                     <span>Total BP Points</span>
                     <span>{totalBPPoints}</span>
                   </div>
-                )}
+                )} */}
                 <div className="border-t pt-4">
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>

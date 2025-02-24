@@ -124,7 +124,7 @@ const BlogForm = ({ blog, onSuccess, onClose }) => {
                 <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
                 <div className="fixed inset-0 flex items-center justify-center p-4">
-                    <DialogPanel className="mx-auto max-w-3xl w-full rounded bg-white p-6">
+                    <DialogPanel className="mx-auto max-w-3xl max-h-[750px] w-full rounded bg-white p-6 overflow-y-auto">
                         <div className="flex justify-between items-center mb-4">
                             <DialogTitle className="text-lg font-medium">
                                 {blog ? 'Edit' : 'Add'} Blog

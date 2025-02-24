@@ -8,6 +8,7 @@ const MLMCartBanner = () => {
   const { 
     cartItems, 
     total, 
+    finalTotal,
     totalBPPoints,
     mlmDiscount 
   } = useSelector((state) => state.cart);

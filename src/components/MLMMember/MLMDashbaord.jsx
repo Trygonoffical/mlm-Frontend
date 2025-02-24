@@ -134,13 +134,23 @@ const MLMMemberDashboard = () => {
 
                         <div className="bg-white shadow-md rounded-lg p-4 flex items-center">
                             <div className="bg-red-100 rounded-full p-3 mr-4">
+                                <Award className="text-red-600" />
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500">Current BP</p>
+                                <p className="text-xl font-bold">{dashboardData.total_bp || 0} BP</p>
+                            </div>
+                        </div>
+
+                        {/* <div className="bg-white shadow-md rounded-lg p-4 flex items-center">
+                            <div className="bg-red-100 rounded-full p-3 mr-4">
                             <Award className="text-red-600" />
                             </div>
                             <div>
                             <p className="text-sm text-gray-500">Current Rank</p>
                             <p className="text-xl font-bold">{dashboardData.current_rank || 'N/A'}</p>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div>

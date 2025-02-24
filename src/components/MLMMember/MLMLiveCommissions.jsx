@@ -26,14 +26,18 @@ const MLMLiveCommissions = ({ memberId }) => {
           }
         }
       );
-
-      if (!response.ok) throw new Error('Failed to fetch live commissions');
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch live commissions');
+      }
+      
       const data = await response.json();
       setLiveCommissions(data);
       setCalculationTime(new Date().toLocaleTimeString());
     } catch (error) {
       console.error('Error:', error);
-      toast.error('Failed to load live commission data');
+      toast.error(error.message || 'Failed to load live commission data');
     } finally {
       setLoading(false);
     }
