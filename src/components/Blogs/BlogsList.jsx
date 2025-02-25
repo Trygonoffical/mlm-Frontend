@@ -211,9 +211,9 @@ const BlogList = () => {
                         )}
                         <div className="p-4">
                             <h2 className="text-xl font-semibold mb-2">{blog.title}</h2>
-                            <p className="text-gray-600 text-sm mb-4">
-                                {blog.content.substring(0, 150)}...
-                            </p>
+                            {/* <p className="text-gray-600 text-sm mb-4">
+                                {blog.content.substring(0, 120)}...
+                            </p> */}
                             
                             <div className="flex items-center justify-between mb-4">
                                 <span className={`px-2 py-1 rounded-full text-sm ${

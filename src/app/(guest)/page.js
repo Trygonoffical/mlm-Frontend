@@ -1,5 +1,6 @@
 import HomeAbout from "@/components/About/HomeAbout";
 import HomeAds from "@/components/Ads/homeAds";
+import HomeBlogSlider from "@/components/Blogs/guest/HomeBlogSlider";
 import  HomeCats  from "@/components/Categories/HomeCats";
 import BestSelling from "@/components/Products/HomeProducts";
 import HomeSticky from "@/components/Products/HomeSticky";
@@ -20,6 +21,7 @@ export default function Home() {
     <HomeAbout />
     <TestimonialSection />
     <SuccessAndReviews />
+    <HomeBlogSlider />
     </>
   );
 }
