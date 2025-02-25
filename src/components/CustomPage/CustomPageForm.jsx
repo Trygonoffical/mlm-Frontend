@@ -30,7 +30,7 @@ const CustomPageForm = ({ page, setRefreshKey, onClose }) => {
         try {
             
             const url = page
-                ? `${process.env.NEXT_PUBLIC_API_URL}/custom-pages/${page.id}/`
+                ? `${process.env.NEXT_PUBLIC_API_URL}/custom-pages/${page.slug}/`
                 : `${process.env.NEXT_PUBLIC_API_URL}/custom-pages/`;
 
             const response = await fetch(url, {
@@ -67,21 +67,31 @@ const CustomPageForm = ({ page, setRefreshKey, onClose }) => {
         }));
     };
 
-    // TinyMCE configuration
-    const editorConfig = {
-        height: 500,
-        menubar: true,
-        plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount'
-        ],
-        toolbar: 'undo redo | blocks | ' +
-            'bold italic backcolor | alignleft aligncenter ' +
-            'alignright alignjustify | bullist numlist outdent indent | ' +
-            'removeformat | help',
-        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+    const handleEditorChange = (content) => {
+        setFormData(prev => ({
+            ...prev,
+            content: content
+        }));
     };
+    // Update your editorConfig object with these additional settings:
+    // const editorConfig = {
+    //     height: 500,
+    //     menubar: true,
+    //     // Add these lines to force LTR direction
+    //     directionality: 'ltr',
+    //     language: 'en_US',
+    //     // Rest of your existing config stays the same
+    //     plugins: [
+    //         'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+    //         'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+    //         'insertdatetime', 'media', 'table', 'help', 'wordcount', 'directionality'
+    //     ],
+    //     toolbar: 'undo redo | blocks | ' +
+    //         'bold italic backcolor | alignleft aligncenter ' +
+    //         'alignright alignjustify | bullist numlist outdent indent | ' +
+    //         'removeformat | ltr rtl | help',
+    //     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px; direction: ltr; }'
+    // };
 
     return (
         <>
@@ -149,15 +159,62 @@ const CustomPageForm = ({ page, setRefreshKey, onClose }) => {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
-                                <Editor
+                                {/* <Editor
                                     apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
                                     onInit={(evt, editor) => editorRef.current = editor}
                                     initialValue={formData.content}
-                                    init={editorConfig}
+                                    init={{
+                                        height: 400,
+                                        menubar: true,
+                                        plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                        ],
+                                        toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | help'
+                                    }}
                                     onEditorChange={(content) => {
                                         setFormData(prev => ({ ...prev, content }));
                                     }}
+                                /> */}
+
+                                <Editor
+                                    apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                                    init={{
+                                        height: 400,
+                                        menubar: true,
+                                        plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                        ],
+                                        toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | help'
+                                    }}
+                                    value={formData.content}
+                                    onEditorChange={handleEditorChange}
                                 />
+                                {/* <Editor
+                                    apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                                    onInit={(evt, editor) => editorRef.current = editor}
+                                    initialValue={formData.content}
+                                    init={{
+                                        height: 400,
+                                        menubar: true,
+                                        plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                        ],
+                                        toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | help'
+                                    }}
+                                    onEditorChange={(content) => {
+                                        // Only update the form state when the editor loses focus or on significant changes
+                                        // This prevents cursor jumps during typing
+                                        if (content !== formData.content) {
+                                            // Use setTimeout to delay the state update
+                                            setTimeout(() => {
+                                                setFormData(prev => ({ ...prev, content }));
+                                            }, 0);
+                                        }
+                                    }}
+                                /> */}
                             </div>
 
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

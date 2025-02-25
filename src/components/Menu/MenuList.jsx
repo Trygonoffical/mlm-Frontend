@@ -13,6 +13,10 @@ function MenuList() {
     const [editingItem, setEditingItem] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
+
+    const { token } = getTokens();
+
+
     useEffect(() => {
         fetchMenuItems();
     }, [refreshKey]);
@@ -37,6 +41,9 @@ function MenuList() {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menu/${id}/`, {
                 method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
             });
 
             if (!response.ok) throw new Error('Failed to delete menu item');
@@ -52,7 +59,10 @@ function MenuList() {
     const handleToggleStatus = async (id) => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menu/${id}/toggle_status/`, {
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
             });
 
             if (!response.ok) throw new Error('Failed to update status');
@@ -65,16 +75,36 @@ function MenuList() {
         }
     };
 
-    const handleMoveItem = async (id, newPosition) => {
+    const handleMoveItem = async (id, direction) => {
+        // Get current item index
+        const currentIndex = menuItems.findIndex(item => item.id === id);
+        if (currentIndex === -1) return;
+        
+        // Calculate new position based on direction
+        let newPosition;
+        if (direction === 'up' && currentIndex > 0) {
+            // For moving up, use a position that's lower than the item above
+            // If positions are the same, create a gap
+            const prevItem = menuItems[currentIndex - 1];
+            newPosition = prevItem.position > 0 ? prevItem.position - 1 : 0;
+        } else if (direction === 'down' && currentIndex < menuItems.length - 1) {
+            // For moving down, use a position that's higher than the item below
+            const nextItem = menuItems[currentIndex + 1];
+            newPosition = nextItem.position + 1;
+        } else {
+            return; // Invalid move
+        }
+        
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/menu/${id}/update_position/`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ position: newPosition })
             });
-
+    
             if (!response.ok) throw new Error('Failed to update position');
             
             setRefreshKey(old => old + 1);
@@ -126,7 +156,7 @@ function MenuList() {
                                     <div className="flex items-center gap-2">
                                         <span>{item.position}</span>
                                         <div className="flex flex-col gap-1">
-                                            <button
+                                            {/* <button
                                                 onClick={() => handleMoveItem(
                                                     item.id,
                                                     index > 0 ? menuItems[index - 1].position : item.position
@@ -141,6 +171,20 @@ function MenuList() {
                                                     item.id,
                                                     index < menuItems.length - 1 ? menuItems[index + 1].position : item.position
                                                 )}
+                                                disabled={index === menuItems.length - 1}
+                                                className="p-1 hover:bg-gray-100 rounded disabled:opacity-50"
+                                            >
+                                                <ArrowDownIcon className="w-4 h-4" />
+                                            </button> */}
+                                            <button
+                                                onClick={() => handleMoveItem(item.id, 'up')}
+                                                disabled={index === 0}
+                                                className="p-1 hover:bg-gray-100 rounded disabled:opacity-50"
+                                            >
+                                                <ArrowUpIcon className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleMoveItem(item.id, 'down')}
                                                 disabled={index === menuItems.length - 1}
                                                 className="p-1 hover:bg-gray-100 rounded disabled:opacity-50"
                                             >

@@ -35,12 +35,12 @@ const CustomPageList = () => {
         }
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (slug) => {
         if (!confirm('Are you sure you want to delete this page?')) return;
 
         try {
             
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/custom-pages/${id}/`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/custom-pages/${slug}/`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -113,7 +113,7 @@ const CustomPageList = () => {
                                 <PencilIcon className="h-5 w-5" />
                             </button>
                             <button
-                                onClick={() => handleDelete(page.id)}
+                                onClick={() => handleDelete(page.slug)}
                                 className="p-1 text-red-600 hover:text-red-800"
                             >
                                 <TrashIcon className="h-5 w-5" />
@@ -142,7 +142,7 @@ const CustomPageList = () => {
                                 Order: {page.order}
                             </span>
                             <a 
-                                href={`/page/${page.slug}`}
+                                href={`/${page.slug}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center text-blue-600 hover:text-blue-800"

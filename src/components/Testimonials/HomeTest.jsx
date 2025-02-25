@@ -15,10 +15,13 @@ const TestimonialSection = () => {
 
     const fetchTestimonials = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/testimonials/`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/testimonials/?is_active=true`);
             if (!response.ok) throw new Error('Failed to fetch testimonials');
             const data = await response.json();
             setTestimonials(data);
+            // Filter to only show active testimonials
+        // const activeTestimonials = data.filter(testimonial => testimonial.is_active);
+        // setTestimonials(activeTestimonials);
         } catch (error) {
             console.error('Error fetching testimonials:', error);
         } finally {

@@ -211,7 +211,8 @@ const AboutForm = ({ type = 'MAIN' }) => {
                         </div>
 
                         {/* Feature Content Editor */}
-                        <div>
+                        {type === 'Homepage About Content' && (
+                            <div>
                             <label className="block text-sm font-medium mb-1">Feature Content</label>
                             <Editor
                                 apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
@@ -221,6 +222,8 @@ const AboutForm = ({ type = 'MAIN' }) => {
                                 onEditorChange={(content) => handleEditorChange('feature_content', content)}
                             />
                         </div>
+                        )}
+                        
                     </div>
                 </div>
 

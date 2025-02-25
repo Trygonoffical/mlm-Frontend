@@ -23,6 +23,7 @@ import { getTokens } from '@/utils/cookies'
 import { toast } from 'react-hot-toast'
 import BankDetailsForm from '@/components/Kyc/BankDetailsForm'
 import { User, Mail, Phone, MapPin, Shield } from 'lucide-react'
+import AddressManager from '@/components/Profile/AddressManager'
 
 const ProfilePage = () => {
   const [profileData, setProfileData] = useState(null)
@@ -232,6 +233,10 @@ const ProfilePage = () => {
             </button>
           </div>
         </div> */}
+
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <AddressManager />
+        </div>
 
         {/* Bank Details Section */}
         <div className="md:col-span-2">

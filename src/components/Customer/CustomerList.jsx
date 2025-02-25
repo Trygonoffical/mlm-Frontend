@@ -6,6 +6,45 @@ import { getTokens } from '@/utils/cookies';
 import { toast } from 'react-hot-toast';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
+// Utility function to convert data to CSV
+const convertToCSV = (data) => {
+    // Define headers
+    const headers = [
+      'ID', 
+      'First Name', 
+      'Last Name', 
+      'Email', 
+      'Phone Number', 
+      'Date Joined', 
+      'Total Orders',
+      'Total Order Value'
+    ];
+  
+    // Map data to CSV rows
+    const csvRows = data.map(customer => [
+      customer.id,
+      customer.first_name,
+      customer.last_name,
+      customer.email,
+      customer.phone_number,
+      new Date(customer.date_joined).toLocaleDateString(),
+      customer.order_count || 0,
+      // Calculate total order value if needed (you might want to fetch this separately)
+      0
+    ]);
+  
+    // Combine headers and rows
+    const csvContent = [
+      headers.join(','),
+      ...csvRows.map(row => row.map(field => 
+        // Escape commas and quotes
+        `"${String(field).replace(/"/g, '""')}"`
+      ).join(','))
+    ].join('\n');
+  
+    return csvContent;
+  };
+
 const AdminCustomerList = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,6 +56,7 @@ const AdminCustomerList = () => {
     dateJoined: '',
     hasOrders: ''
   });
+  const [exportLoading, setExportLoading] = useState(false);
   const { token } = getTokens();
 
   useEffect(() => {
@@ -97,6 +137,55 @@ const AdminCustomerList = () => {
     }));
   };
 
+  const exportCustomers = async () => {
+    try {
+      setExportLoading(true);
+      
+      // Create query params for export (same as fetch)
+      const queryParams = new URLSearchParams();
+      
+      if (filters.search) queryParams.append('search', filters.search);
+      if (filters.dateJoined) queryParams.append('date_joined', filters.dateJoined);
+      if (filters.hasOrders) queryParams.append('has_orders', filters.hasOrders);
+
+      // Fetch customers with applied filters
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/customers/?${queryParams.toString()}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) throw new Error('Failed to fetch customers for export');
+      
+      const data = await response.json();
+
+      // Convert to CSV
+      const csvContent = convertToCSV(data);
+
+      // Create and download CSV file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', `customers_export_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success('Customers exported successfully');
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Failed to export customers');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   const clearFilters = () => {
     setFilters({
       search: '',
@@ -120,6 +209,20 @@ const AdminCustomerList = () => {
           <UserCircleIcon className="h-6 w-6 mr-2" />
           Customer Management
         </h1>
+        <button
+          onClick={exportCustomers}
+          disabled={exportLoading}
+          className="flex items-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50"
+        >
+          {exportLoading ? (
+            <span className="mr-2">Exporting...</span>
+          ) : (
+            <>
+              <ArrowDownTrayIcon className="h-5 w-5 mr-2" />
+              Export Customers
+            </>
+          )}
+        </button>
       </div>
 
       {/* Filters */}

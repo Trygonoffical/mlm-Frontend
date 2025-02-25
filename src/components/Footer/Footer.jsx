@@ -246,7 +246,7 @@ const Footer = () => {
               {/* Connect With Us Column */}
               <div>
                 <h4 className="font-semibold mb-4">CONNECT WITH US</h4>
-                <p className="mb-4">{companyInfo.full_address}</p>
+                <p className="mb-4 whitespace-normal break-words w-full max-w-full">{companyInfo.full_address}</p>
                 <h5 className="font-semibold mb-3">Follow Us On</h5>
                 <div className="flex gap-4">
                   {socialLinks.map((social , idx) => (

@@ -9,6 +9,54 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import MLMLiveCommissions from '../MLMMember/MLMLiveCommissions';
 
+
+// Utility function to convert data to CSV
+const convertToCSV = (data) => {
+  // Define headers
+  const headers = [
+    'Member ID', 
+    'First Name', 
+    'Last Name', 
+    'Email', 
+    'Phone Number', 
+    'Position', 
+    'Sponsor ID', 
+    'Total Earnings', 
+    'Total BP', 
+    'Current Month Purchase', 
+    'Join Date', 
+    'Status'
+  ];
+
+  // Map data to CSV rows
+  const csvRows = data.map(member => [
+    member.member_id,
+    member.user.first_name,
+    member.user.last_name,
+    member.user.email || 'N/A',
+    member.user.phone_number,
+    member.position.name,
+    member.sponsor ? member.sponsor.member_id : 'N/A',
+    parseFloat(member.total_earnings).toFixed(2),
+    member.total_bp,
+    parseFloat(member.current_month_purchase).toFixed(2),
+    new Date(member.join_date).toLocaleDateString(),
+    member.is_active ? 'Active' : 'Inactive'
+  ]);
+
+  // Combine headers and rows
+  const csvContent = [
+    headers.join(','),
+    ...csvRows.map(row => row.map(field => 
+      // Escape commas and quotes
+      `"${String(field).replace(/"/g, '""')}"`
+    ).join(','))
+  ].join('\n');
+
+  return csvContent;
+};
+
+
 const AdminMLMMembersList = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,11 +73,64 @@ const AdminMLMMembersList = () => {
     is_active: ''
   });
   const { token } = getTokens();
-
+  const [exportLoading, setExportLoading] = useState(false);
   useEffect(() => {
     fetchPositions();
     fetchMembers();
   }, [filters]);
+
+
+  const exportMembers = async () => {
+    try {
+      setExportLoading(true);
+      
+      // Create query params for export (same as fetch)
+      const queryParams = new URLSearchParams();
+      
+      if (filters.search) queryParams.append('search', filters.search);
+      if (filters.position) queryParams.append('position', filters.position);
+      if (filters.sponsor) queryParams.append('sponsor', filters.sponsor);
+      if (filters.joinDate) queryParams.append('join_date', filters.joinDate);
+      if (filters.is_active) queryParams.append('is_active', filters.is_active);
+
+      // Fetch members with applied filters
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/mlm-members/?${queryParams.toString()}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) throw new Error('Failed to fetch MLM members for export');
+      
+      const data = await response.json();
+
+      // Convert to CSV
+      const csvContent = convertToCSV(data);
+
+      // Create and download CSV file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', `mlm_members_export_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success('MLM Members exported successfully');
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Failed to export MLM members');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
 
   const fetchPositions = async () => {
     try {
@@ -200,6 +301,20 @@ const AdminMLMMembersList = () => {
           <UserGroupIcon className="h-6 w-6 mr-2" />
           MLM Member Management
         </h1>
+        <button
+          onClick={exportMembers}
+          disabled={exportLoading}
+          className="flex items-center px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50"
+        >
+          {exportLoading ? (
+            <span className="mr-2">Exporting...</span>
+          ) : (
+            <>
+              <ArrowDownTrayIcon className="h-5 w-5 mr-2" />
+              Export Members
+            </>
+          )}
+        </button>
       </div>
 
       {/* Filters */}

@@ -248,6 +248,14 @@ const [formData, setFormData] = useState({
                   <span>Subtotal</span>
                   <span>₹{subTotal}</span>
                 </div>
+                
+                {userInfo?.role === 'MLM_MEMBER' && mlmDiscount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>MLM Discount</span>
+                    <span>-₹{mlmDiscount}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between text-gray-600">
                   <span>GST</span>
                   <span>₹{totalGST}</span>

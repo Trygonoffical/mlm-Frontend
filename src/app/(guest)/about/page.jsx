@@ -37,7 +37,7 @@ const AboutUs = () => {
             <h2 className="text-3xl font-bold text-gray-800">
             {homeAbout.title}
             </h2>
-            <div className="space-y-4 text-gray-600" dangerouslySetInnerHTML={{ __html: homeAbout.content }} />
+            <div className="space-y-4 text-gray-600 whitespace-normal" dangerouslySetInnerHTML={{ __html: homeAbout.content }} />
              
           </div>
         </div>
@@ -52,7 +52,7 @@ const AboutUs = () => {
               </div>
               <h3 className="text-2xl font-bold">Vision</h3>
             </div>
-            <div className="text-white/90" dangerouslySetInnerHTML={{ __html: homeAbout.vision_description }}  />
+            <div className="text-white/90 whitespace-normal" dangerouslySetInnerHTML={{ __html: homeAbout.vision_description }}  />
               
           </div>
 
@@ -64,7 +64,7 @@ const AboutUs = () => {
               </div>
               <h3 className="text-2xl font-bold">Mission</h3>
             </div>
-            <div className="text-white/90" dangerouslySetInnerHTML={{ __html: homeAbout.mission_description}}  />
+            <div className="text-white/90 whitespace-normal" dangerouslySetInnerHTML={{ __html: homeAbout.mission_description}}  />
           </div>
         </div>
 
@@ -72,7 +72,7 @@ const AboutUs = () => {
         <div className="mt-16">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">Our Business Objectives</h2>
           <div className="space-y-6 text-gray-600">
-            <div className="p-6 bg-gray-50 rounded-xl" dangerouslySetInnerHTML={{ __html: homeAbout.objective_content}}  />
+            <div className="p-6 bg-gray-50 rounded-xl whitespace-normal" dangerouslySetInnerHTML={{ __html: homeAbout.objective_content}}  />
             
           </div>
         </div>
