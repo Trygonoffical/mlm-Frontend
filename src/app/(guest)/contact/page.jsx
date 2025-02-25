@@ -167,7 +167,7 @@ const ContactUs = () => {
                   <MapPin className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-lg">
+                  <p className="text-lg whitespace-normal break-words w-full max-w-full">
                   {companyInfo.address}
                   </p>
                 </div>

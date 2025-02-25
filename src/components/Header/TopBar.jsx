@@ -45,10 +45,10 @@ console.log('top babr con data - ' , companyInfo)
             <Link href={instagram_link?instagram_link:'#'}  target='_blank'>
                 <Image src='/Images/instagram.png' width={20} height={20}  alt='instagram' />
             </Link>
-            <Link href={twitter_link?twitter_link:'#'}  target='_blank'>
+            <Link href={youtube_link?youtube_link:'#'}  target='_blank'>
                 <Image src='/Images/youtube.png' width={20} height={20}  alt='youtube' />
             </Link>
-            <Link href={youtube_link?youtube_link:'#'}  target='_blank'>
+            <Link href={twitter_link?twitter_link:'#'}   target='_blank'>
                 <Image src='/Images/twitter.png' width={20} height={20}  alt='twitter' />
             </Link>
         </div>

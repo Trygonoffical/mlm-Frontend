@@ -577,6 +577,7 @@ const MLMDownlineList = () => {
     phone_number: '',
     password: '',
     confirm_password: '',
+    position_id: '',
   });
 
   const [kycDocuments, setKycDocuments] = useState({

@@ -47,7 +47,8 @@ const [formData, setFormData] = useState({
     subTotal, 
     totalGST,
     total,
-    totalBPPoints 
+    totalBPPoints ,
+    mlmDiscount
   } = useSelector((state) => state.cart);
 
   // Calculate shipping and final total
@@ -249,7 +250,7 @@ const [formData, setFormData] = useState({
                   <span>₹{subTotal}</span>
                 </div>
                 
-                {userInfo?.role === 'MLM_MEMBER' && mlmDiscount > 0 && (
+                {mlmDiscount && mlmDiscount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>MLM Discount</span>
                     <span>-₹{mlmDiscount}</span>
