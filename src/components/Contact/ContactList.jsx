@@ -580,7 +580,7 @@ const ContactList = () => {
               
               <div>
                 <h4 className="text-md font-semibold mb-2">Message</h4>
-                <div className="bg-gray-50 p-4 rounded-lg text-gray-800 whitespace-pre-wrap">
+                <div className="bg-gray-50 p-4 rounded-lg text-gray-800 whitespace-normal break-words w-full max-w-full">
                   {selectedContact.message}
                 </div>
               </div>

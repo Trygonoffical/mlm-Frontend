@@ -116,7 +116,7 @@ const ContactUs = () => {
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Contact Information */}
-          <div className="space-y-8">
+          <div className="space-y-8 whitespace-normal break-words w-full max-w-full">
             <div>
               <h2 className="text-3xl font-bold mb-6">Get in touch with us</h2>
               <p className="text-gray-600 mb-8">
@@ -124,7 +124,7 @@ const ContactUs = () => {
               </p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-6 whitespace-normal break-words w-full max-w-full">
               {/* Email Contacts */}
               <div className="flex items-start space-x-4">
                 <div className="bg-green-100 p-3 rounded-full">
@@ -141,7 +141,7 @@ const ContactUs = () => {
               </div>
 
               {/* Phone Numbers */}
-              <div className="flex items-start space-x-4">
+              <div className="flex items-start space-x-4 whitespace-normal break-words w-full max-w-full">
                 <div className="bg-green-100 p-3 rounded-full">
                   <Phone className="w-6 h-6 text-green-600" />
                 </div>
@@ -162,13 +162,13 @@ const ContactUs = () => {
               </div>
 
               {/* Location */}
-              <div className="flex items-start space-x-4">
+              <div className="flex items-start space-x-4 whitespace-normal break-words w-full max-w-full">
                 <div className="bg-green-100 p-3 rounded-full">
                   <MapPin className="w-6 h-6 text-green-600" />
                 </div>
-                <div>
+                <div className='whitespace-normal break-words w-full max-w-full'>
                   <p className="text-lg whitespace-normal break-words w-full max-w-full">
-                  {companyInfo.address}
+                      {companyInfo.address}
                   </p>
                 </div>
               </div>

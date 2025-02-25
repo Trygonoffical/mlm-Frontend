@@ -506,6 +506,8 @@ const MLMDownlineList = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [error, setError] = useState('');
   const [memberData, setMemberData] = useState(null);
+  const [positions, setPositions] = useState([]);
+  const [filteredPositions, setFilteredPositions] = useState([]);
   const [usernameCheck, setUsernameCheck] = useState({
     isChecking: false,
     isAvailable: null,
@@ -595,6 +597,8 @@ const MLMDownlineList = () => {
   useEffect(() => {
     fetchDownline();
     fetchMemberData();
+    fetchMemberData();
+    fetchPositions();
   }, [refreshKey]);
 
   const fetchDownline = async () => {
@@ -632,6 +636,43 @@ const MLMDownlineList = () => {
     } catch (error) {
       console.error('Error fetching member data:', error);
     }
+  };
+
+  const fetchPositions = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/positions/`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      setPositions(data);
+    } catch (error) {
+      console.error('Error fetching positions:', error);
+      toast.error('Error fetching positions');
+    }
+  };
+
+  const filterAvailablePositions = () => {
+    if (!memberData || !positions.length) return;
+
+    // Get the current member's position level
+    const currentMemberLevel = memberData.current_position_level || 0;
+
+    // Filter positions based on business rules
+    let availablePositions = [];
+
+    if (currentMemberLevel > 2) {
+      // Can create both level 1 and level 2
+      availablePositions = positions.filter(position => 
+        position.level_order === 1 || position.level_order === 2);
+    } else if (currentMemberLevel === 2) {
+      // Can only create level 1
+      availablePositions = positions.filter(position => 
+        position.level_order === 1);
+    }
+
+    setFilteredPositions(availablePositions);
   };
 
   const checkUsernameAvailability = async (username) => {
@@ -745,7 +786,7 @@ const MLMDownlineList = () => {
       formDataToSend.append('email', formData.email || '');
       formDataToSend.append('phone_number', formData.phone_number);
       formDataToSend.append('password', formData.password);
-  
+      formDataToSend.append('position_id', formData.position_id);
       // Add document numbers directly with their types as keys
       Object.keys(documentNumbers).forEach((type) => {
         if (documentNumbers[type]) {
@@ -809,6 +850,7 @@ const MLMDownlineList = () => {
       phone_number: '',
       password: '',
       confirm_password: '',
+      position_id: ''
     });
     setKycDocuments({
       AADHAR: null,
@@ -907,6 +949,8 @@ const MLMDownlineList = () => {
     // Members can only add new members if they are at level 1 or 2
     return currentLevel <= 2;
   };
+
+  
 
   return (
     <div className="p-6">
@@ -1049,6 +1093,26 @@ const MLMDownlineList = () => {
                 />
                 <p className="text-xs text-gray-500 mt-1">Must be 10 digits</p>
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Position *</label>
+                <select
+                  name="position_id"
+                  value={formData.position_id}
+                  onChange={handleInputChange}
+                  className={`mt-1 block w-full rounded-md border ${
+                    errors.position_id ? 'border-red-300' : 'border-gray-300'
+                  } px-3 py-2`}
+                  required
+                >
+                  <option value="">Select Position</option>
+                  {filteredPositions && filteredPositions.length > 0 && filteredPositions.map(position => (
+                    <option key={position.id} value={position.id}>
+                      {position.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700">Password *</label>
                 <input
