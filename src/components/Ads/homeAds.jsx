@@ -35,20 +35,21 @@ const HomeAds = () => {
         <div className="max-w-7xl mx-auto px-4 py-8 md:flex md:justify-around" >
         {advertisements.map((ad )=>(
             
-                <Link href={ad.link} key={ad.id}> 
-                    <Image src={ad.image} width={512} height={120} className="w-full wx-auto " alt={ad.title} />
+                <Link href={ad.link} key={ad.id}  className="p-2"> 
+                    <Image src={ad.image} width={512} height={120} className="w-100 wx-auto " alt={ad.title} />
                 </Link>
             
         ))}
         </div>
     
         {fullAdvertisements.map((ad )=>(
-            <div className="max-w-7xl mx-auto py-8" key={ad.id}>
+            <div className="max-w-7xl mx-auto w-full mb-4 px-4" key={ad.id}>
                 <Link href={ad.link} > 
                     <Image src={ad.image} width={1144} height={45} className="w-full wx-auto " alt={ad.title} />
                 </Link>
             </div>
         ))}
+
     </>
     
   )
