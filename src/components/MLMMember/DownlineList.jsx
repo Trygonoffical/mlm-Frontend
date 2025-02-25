@@ -1099,9 +1099,9 @@ const MLMDownlineList = () => {
                   name="position_id"
                   value={formData.position_id}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full rounded-md border ${
-                    errors.position_id ? 'border-red-300' : 'border-gray-300'
-                  } px-3 py-2`}
+                  className={`mt-1 block w-full rounded-md border 
+        border-gray-300
+                  px-3 py-2`}
                   required
                 >
                   <option value="">Select Position</option>
