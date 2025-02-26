@@ -285,9 +285,9 @@ const ProductDetail = ({params}) => {
                   }`} />
                 </button>
                 {selectedFaq === item.title && (
-                  <div className="p-4 border-t">
+                  <div className="p-4 border-t prose max-w-none">
                     {/* {item.content} */}
-                    <span dangerouslySetInnerHTML={{ __html: item.content }} />
+                    <div  dangerouslySetInnerHTML={{ __html: item.content }} />
                   </div>
                 )}
               </div>

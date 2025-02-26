@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Minus, Plus, X, Truck, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import Image from 'next/image';
 
 const CartPage = () => {
   const dispatch = useDispatch();
+    const [mlmDiscountPercentage , setMlmDiscountPercentage] = useState(0)
   
   const { 
     cartItems, 
@@ -47,12 +48,12 @@ const CartPage = () => {
   //  - (userInfo?.role === 'MLM_MEMBER' ? mlmDiscount : 0);
 
   // Update quantity
-  const handleQuantityChange = (itemId, selectedAttributes, change) => {
+  const handleQuantityChange = (itemId, selectedAttributes, change , mlmDiscountPercentage) => {
     dispatch(updateQuantity({ 
       itemID: itemId, 
       selectedAttributes, 
       change ,
-      
+      mlmDiscountPercentage
     }));
   };
 
@@ -71,6 +72,7 @@ const CartPage = () => {
       dispatch(updateCartPrices({
         mlmDiscountPercentage: userInfo.user_data?.position?.discount_percentage || 0
       }));
+      setMlmDiscountPercentage( userInfo?.user_data?.position?.discount_percentage)
     }
   }, [userInfo, dispatch]);
 
@@ -145,7 +147,7 @@ const CartPage = () => {
                       {/* Quantity Controls */}
                       <div className="flex items-center justify-center sm:justify-start mt-4">
                         <button
-                          onClick={() => handleQuantityChange(item.id, item.selectedAttributes, -1)}
+                          onClick={() => handleQuantityChange(item.id, item.selectedAttributes, -1 , mlmDiscountPercentage)}
                           className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                           disabled={item.qnt <= 1}
                         >
@@ -153,7 +155,7 @@ const CartPage = () => {
                         </button>
                         <span className="mx-4 min-w-[2rem] text-center">{item.qnt}</span>
                         <button
-                          onClick={() => handleQuantityChange(item.id, item.selectedAttributes, 1)}
+                          onClick={() => handleQuantityChange(item.id, item.selectedAttributes, 1 , mlmDiscountPercentage)}
                           className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                           disabled={item.qnt >= item.stock}
                         >

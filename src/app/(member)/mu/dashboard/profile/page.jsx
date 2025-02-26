@@ -59,6 +59,7 @@ const ProfilePage = () => {
       }
 
       const data = await response.json()
+      console.log('mlm user data - ' , data)
       setProfileData(data)
       setFormData({
         first_name: data.first_name || '',
@@ -115,6 +116,25 @@ const ProfilePage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-1 gap-6">
+        <div className='bg-white shadow-md rounded-lg p-6 '>
+            <div className='flex'>
+              <p className="text-md  flex items-center">
+                  <User className="mr-2 text-gray-300" /> User Name :
+                </p> 
+                <p className='ml-2 text-gray-900 p-2'>
+                  {profileData.username}
+                </p>
+            </div>
+          <div className='flex'>
+              <p className="text-md  flex items-center">
+                <User className="mr-2 text-gray-300" /> Member ID :
+              </p> 
+              <p className='ml-2 text-gray-900 p-2'>
+                {profileData.member_id}
+              </p>
+          </div>
+              
+        </div>
         {/* Personal Information Section */}
         <div className="md:col-span-2 bg-white shadow-md rounded-lg p-6">
           <div className="flex justify-between items-center mb-6">
@@ -130,7 +150,7 @@ const ProfilePage = () => {
               </button>
             )}
           </div>
-
+            
           {editMode ? (
             <form onSubmit={handleUpdateProfile} className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
