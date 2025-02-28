@@ -22,7 +22,7 @@ import React, { useState, useEffect } from 'react'
 import { getTokens } from '@/utils/cookies'
 import { toast } from 'react-hot-toast'
 import BankDetailsForm from '@/components/Kyc/BankDetailsForm'
-import { User, Mail, Phone, MapPin, Shield } from 'lucide-react'
+import { User, Mail, Phone, MapPin, Shield, Award } from 'lucide-react'
 import AddressManager from '@/components/Profile/AddressManager'
 
 const ProfilePage = () => {
@@ -131,6 +131,15 @@ const ProfilePage = () => {
               </p> 
               <p className='ml-2 text-gray-900 p-2'>
                 {profileData.member_id}
+              </p>
+          </div>
+
+          <div className='flex'>
+              <p className="text-md  flex items-center">
+                <Award className="mr-2 text-gray-300" /> Position :
+              </p> 
+              <p className='ml-2 text-gray-900 p-2'>
+                {profileData.position}
               </p>
           </div>
               

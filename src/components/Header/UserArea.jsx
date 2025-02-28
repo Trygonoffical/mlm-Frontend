@@ -8,6 +8,10 @@ import Cookies from 'js-cookie';
 import { setUserLogout } from '@/redux/slices/authSlice';
 import SendOtp from '../CustomerLogin/SendOtp';
 import { removeTokens } from '@/utils/cookies'; 
+import { getTokens } from '@/utils/cookies'
+
+
+
 const UserArea = ( {checkoutpage = false}) => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,11 +19,11 @@ const UserArea = ( {checkoutpage = false}) => {
   const router = useRouter();
   
   const { userInfo } = useSelector((state) => state.auth);
-
+  const { token } = getTokens()
   // Check authentication status on mount and when token changes
   useEffect(() => {
     console.log('checkoutbtn val -' , checkoutpage)
-    const token = Cookies.get('token');
+    console.log('in the userarea userinfo' , userInfo)
     setIsAuthenticated(!!token);
   }, [userInfo]);
 
@@ -77,11 +81,11 @@ const UserArea = ( {checkoutpage = false}) => {
         <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-50 py-1">
           {/* User Info Section */}
           <div className="px-4 py-2 border-b border-gray-100">
-            <p className="text-sm font-medium text-gray-900">
+            {/* <p className="text-sm font-medium text-gray-900">
               {userInfo?.firstName} {userInfo?.lastName}
-            </p>
+            </p> */}
             <p className="text-xs text-gray-500">
-              {userInfo?.phone_number}
+            {userInfo && userInfo?.role === 'CUSTOMER' ? ( userInfo.phone_number):(userInfo.username)}
             </p>
           </div>
 

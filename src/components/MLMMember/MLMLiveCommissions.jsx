@@ -15,25 +15,71 @@ const MLMLiveCommissions = ({ memberId }) => {
     fetchLiveCommissions();
   }, [memberId]);
 
+  // const fetchLiveCommissions = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/mlm/member/${memberId}/live-commissions/`,
+  //       {
+  //         headers: {
+  //           'Authorization': `Bearer ${token}`
+  //         }
+  //       }
+  //     );
+  
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.error || 'Failed to fetch live commissions');
+  //     }
+      
+  //     const data = await response.json();
+  //     setLiveCommissions(data);
+  //     setCalculationTime(new Date().toLocaleTimeString());
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     toast.error(error.message || 'Failed to load live commission data');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const fetchLiveCommissions = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/mlm/member/${memberId}/live-commissions/`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+      
+      // Use the new endpoint - we'll pass memberId as a query param if needed
+      let url = `${process.env.NEXT_PUBLIC_API_URL}/mlm/live-commission/`;
+      if (memberId) {
+        url += `?member_id=${memberId}`;
+      }
+      
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      );
+      });
   
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch live commissions');
+        throw new Error(errorData.message || errorData.error || 'Failed to fetch live commissions');
       }
       
       const data = await response.json();
-      setLiveCommissions(data);
+      
+      if (!data.status) {
+        throw new Error(data.message || 'Failed to load commission data');
+      }
+      
+      // Transform the data to match the expected format
+      const transformedData = {
+        current_month_estimate: data.commission_data.current_month_estimate || 0,
+        last_month_earned: data.commission_data.last_month_earned || 0,
+        total_pending: data.commission_data.total_pending || 0,
+        level_breakdown: data.commission_data.level_breakdown || [],
+        top_performers: data.commission_data.top_performers || [],
+        recent_transactions: data.commission_data.recent_transactions || []
+      };
+      
+      setLiveCommissions(transformedData);
       setCalculationTime(new Date().toLocaleTimeString());
     } catch (error) {
       console.error('Error:', error);
