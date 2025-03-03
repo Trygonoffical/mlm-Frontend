@@ -1438,45 +1438,60 @@ const MLMDownlineList = () => {
   }, [positions, memberData]);
 
   const filterAvailablePositions = () => {
-    if (!memberData || !positions.length) return;
-
+    if (!memberData || !positions.length) {
+      console.log("No member data or positions available");
+      return;
+    }
+  
     console.log("Filtering positions...");
     console.log("Current member data:", memberData);
+    
+    // Map position name to level
+    const positionMap = {
+      'Preferred Customer': 1,
+      'Business Associates': 2,
+      'Business Executive': 3,
+      'Marketing Director': 4,
+      'Executive Marketing Director': 5
+    };
     
     // Try to determine the current member's position level
     let currentMemberLevel = 0;
     
-    // First try to get it directly from memberData
-    if (memberData.current_position_level) {
+    // Check the current_rank first
+    if (memberData.current_rank) {
+      currentMemberLevel = positionMap[memberData.current_rank] || 0;
+      console.log("Using mapped position from current_rank:", currentMemberLevel);
+    }
+    // Then try other methods if current_rank didn't work
+    else if (memberData.current_position_level) {
       currentMemberLevel = memberData.current_position_level;
     } 
-    // Otherwise, try to extract it from position object if available
     else if (memberData.position && memberData.position.level_order) {
       currentMemberLevel = memberData.position.level_order;
     }
     
     console.log("Current member level:", currentMemberLevel);
-
+  
     // Filter positions based on business rules
     let availablePositions = [];
-
-    if (currentMemberLevel > 2) {
-      // Can create both level 1 and level 2
+  
+    // Fix the filtering logic to match your business rules
+    if (currentMemberLevel >= 3) {
+      // Business Executive and higher can create both PC and BA
       availablePositions = positions.filter(position => 
         position.level_order === 1 || position.level_order === 2);
-    } else if (currentMemberLevel === 2) {
-      // Can only create level 1
-      availablePositions = positions.filter(position => 
-        position.level_order === 1);
-    } else if (currentMemberLevel === 1) {
-      // Level 1 members can't create other members
-      availablePositions = [];
-    } else {
-      // Default: allow only level 1 positions
+    } 
+    else if (currentMemberLevel === 2) {
+      // Business Associates can only create Preferred Customers
       availablePositions = positions.filter(position => 
         position.level_order === 1);
     }
-
+    else {
+      // Level 1 members can't create other members
+      availablePositions = [];
+    }
+  
     console.log("Available positions:", availablePositions);
     setFilteredPositions(availablePositions);
   };
@@ -1753,22 +1768,64 @@ const MLMDownlineList = () => {
   };
 
   // Check if current member can add new members
-  const canAddMembers = () => {
-    if (!memberData) return false;
+  // const canAddMembers = () => {
+  //   if (!memberData) return false;
     
-    // Get current member's level
+  //   // Get current member's level
+  //   let currentLevel = 0;
+    
+  //   if (memberData.current_position_level) {
+  //     currentLevel = memberData.current_position_level;
+  //   } 
+  //   else if (memberData.position && memberData.position.level_order) {
+  //     currentLevel = memberData.position.level_order;
+  //   }
+    
+  //   // Members can only add new members if they are at level 2 or higher
+  //   return currentLevel >= 2;
+  // };
+
+  const canAddMembers = () => {
+    if (!memberData) {
+      console.log("No member data available");
+      return false;
+    }
+    
+    // Get current member's level based on current_rank
     let currentLevel = 0;
     
     if (memberData.current_position_level) {
       currentLevel = memberData.current_position_level;
+      console.log("Using current_position_level:", currentLevel);
     } 
     else if (memberData.position && memberData.position.level_order) {
       currentLevel = memberData.position.level_order;
+      console.log("Using position.level_order:", currentLevel);
+    }
+    // Add a check for current_rank
+    else if (memberData.current_rank) {
+      // Map position name to level
+      const positionMap = {
+        'Preferred Customer': 1,
+        'Business Associates': 2,
+        'Business Executive': 3,
+        'Marketing Director': 4,
+        'Executive Marketing Director': 5
+      };
+      
+      currentLevel = positionMap[memberData.current_rank] || 0;
+      console.log("Using mapped position from current_rank:", currentLevel);
     }
     
+    console.log("Final current level:", currentLevel);
+    
     // Members can only add new members if they are at level 2 or higher
-    return currentLevel >= 2;
+    const canAdd = currentLevel >= 2;
+    console.log("Can add members:", canAdd);
+    return canAdd;
   };
+
+
 
   return (
     <div className="p-6">
