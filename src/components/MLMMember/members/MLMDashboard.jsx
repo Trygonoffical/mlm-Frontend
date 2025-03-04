@@ -272,7 +272,7 @@ const MLMDashboard = () => {
             ))}
           </div>
           <div className="mt-4 text-center">
-            <Link href="/products" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+            <Link href="/mu/dashboard/shop" className="text-blue-600 hover:text-blue-800 text-sm font-medium">
               View All Products →
             </Link>
           </div>

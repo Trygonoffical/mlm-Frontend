@@ -1436,11 +1436,19 @@ const MLMLiveCommissions = ({ memberId }) => {
                   ? 'Monthly Quota Status: Maintained' 
                   : 'Monthly Quota Status: Not Maintained'}
               </p>
-              <p className="text-sm text-gray-600 mt-1">
+              {/* <p className="text-sm text-gray-600 mt-1">
                 {commissionData.monthly_quota_status 
                   ? 'You are currently meeting your monthly quota requirement and will earn commissions from your downline.' 
                   : `You need to purchase at least ${formatCurrency(commissionData.monthly_quota_remaining || 0)} more this month to qualify for downline commissions.`}
-              </p>
+              </p> */}
+
+              {!commissionData.monthly_quota_status && (
+                <div className="text-sm text-yellow-700">
+                  {parseFloat(commissionData.monthly_quota_remaining || 0) > 0
+                    ? `You need to purchase at least ${formatCurrency(commissionData.monthly_quota_remaining)} more this month to qualify for downline commissions.`
+                    : 'You have met your monthly quota requirement.'}
+                </div>
+              )}
               {!commissionData.monthly_quota_status && (
                 <div className="mt-2">
                   <a 

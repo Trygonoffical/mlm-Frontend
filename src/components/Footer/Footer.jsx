@@ -127,7 +127,9 @@ const Footer = () => {
 
 
   return (
-    <footer className="bg-[url('/Sliders/footerbg.png')] bg-no-repeat bg-cover">
+    <footer className={ `bg-[url('/Sliders/footerbg.png')] 
+    
+    bg-no-repeat bg-cover`}>
       <div className="bg-gradient-to-r from-slate-700 to-green-800 text-white pt-12 pb-4 opacity-90">
           {/* Need Help Section */}
           <div className="container mx-auto px-4">
