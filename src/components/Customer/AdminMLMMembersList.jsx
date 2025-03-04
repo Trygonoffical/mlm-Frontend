@@ -184,6 +184,62 @@ const AdminMLMMembersList = () => {
     }
   };
 
+
+  const verifyDocument = async (docId, status) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/kyc-documents/${docId}/verify/`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ status })
+        }
+      );
+  
+      if (!response.ok) throw new Error('Failed to verify document');
+      
+      toast.success('Document verification updated');
+      fetchMemberDetails(selectedMember.member_id);
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Failed to update document verification');
+    }
+  };
+  
+  const rejectDocument = async (docId) => {
+    const reason = prompt('Please enter rejection reason:');
+    if (!reason) return;
+    
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/kyc-documents/${docId}/verify/`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            status: 'REJECTED',
+            rejection_reason: reason
+          })
+        }
+      );
+  
+      if (!response.ok) throw new Error('Failed to reject document');
+      
+      toast.success('Document rejected');
+      fetchMemberDetails(selectedMember.member_id);
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Failed to reject document');
+    }
+  };
+
+  
   const fetchMemberDetails = async (memberId) => {
     try {
       const response = await fetch(
@@ -198,6 +254,7 @@ const AdminMLMMembersList = () => {
       if (!response.ok) throw new Error('Failed to fetch member details');
       const data = await response.json();
       setSelectedMember(members.find(m => m.member_id === memberId));
+      console.log('member details - ', data)
       setMemberDetails(data);
       setShowDetails(true);
     } catch (error) {
