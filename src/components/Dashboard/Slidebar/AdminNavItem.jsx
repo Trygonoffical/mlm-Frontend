@@ -25,7 +25,7 @@ import {
     { icon: Bell, label: 'Categories' , href : 'category' },
     { icon: ShoppingCart, label: 'Products' , href : 'product' },
     { icon: ShoppingCart, label: 'Shipment Manegement' , href : 'shippingmanagement' },
-    { icon: ShoppingCart, label: 'Shipment Configuration' , href : 'shipmentconfiguration' },
+    // { icon: ShoppingCart, label: 'Shipment Configuration' , href : 'shipmentconfiguration' },
     { icon: ShoppingCart, label: 'Testimonials' , href : 'testimonial' },
     { icon: FileText, label: 'Advertisements' , href : 'ads' },
     { icon: TicketPercent, label: 'Success Story' , href : 'successstory' },

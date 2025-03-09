@@ -17,12 +17,14 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import MLMLiveCommissions from '../MLMLiveCommissions';
+import { useSelector } from 'react-redux';
+import MLMAds from '@/components/Ads/MLMAds';
 
 const MLMDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const { token } = getTokens();
-
+  const { userInfo } = useSelector((state) => state.auth);
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -41,6 +43,7 @@ const MLMDashboard = () => {
       }
 
       const data = await response.json();
+      console.log('dashboard data - ', data)
       setDashboardData(data);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -82,14 +85,14 @@ const MLMDashboard = () => {
       <div className="bg-gradient-to-r from-blue-700 to-indigo-800 text-white p-6 rounded-lg shadow-md">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
           <div>
-            <h1 className="text-2xl font-bold mb-2">Welcome, {dashboardData.user?.first_name || 'Member'}</h1>
+            <h1 className="text-2xl font-bold mb-2">Welcome, {userInfo?.first_name || 'Member'}</h1>
             <div className="flex items-center space-x-2 text-blue-100">
               <IdentificationIcon className="h-5 w-5" />
-              <span>Member ID: {dashboardData.member_id}</span>
+              <span>Member ID: {userInfo?.user_data.member_id || '0'}</span>
             </div>
             <div className="flex items-center space-x-2 text-blue-100 mt-1">
               <QrCodeIcon className="h-5 w-5" />
-              <span>Position: {dashboardData.position_name}</span>
+              <span>Position: {userInfo?.user_data.position.name}</span>
             </div>
           </div>
           
@@ -108,6 +111,9 @@ const MLMDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Ads Section  */}
+      <MLMAds />
 
       {/* Key Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -221,22 +227,22 @@ const MLMDashboard = () => {
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-lg font-medium text-gray-800 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link href="/mlm/register-member" className="flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+          <Link href="/mu/dashboard/register-member" className="flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
             <UserIcon className="h-6 w-6 text-blue-600 mb-2" />
             <span className="text-sm text-center">Register New Member</span>
           </Link>
           
-          <Link href="/mlm/network" className="flex flex-col items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+          <Link href="/mu/dashboard/network" className="flex flex-col items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
             <UsersIcon className="h-6 w-6 text-green-600 mb-2" />
             <span className="text-sm text-center">View Network</span>
           </Link>
           
-          <Link href="/mlm/wallet" className="flex flex-col items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+          <Link href="/mu/dashboard/wallet" className="flex flex-col items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
             <BanknotesIcon className="h-6 w-6 text-purple-600 mb-2" />
             <span className="text-sm text-center">Wallet & Withdrawals</span>
           </Link>
           
-          <Link href="/mlm/reports" className="flex flex-col items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+          <Link href="/mu/dashboard/reports" className="flex flex-col items-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
             <ChartBarIcon className="h-6 w-6 text-yellow-600 mb-2" />
             <span className="text-sm text-center">View Reports</span>
           </Link>

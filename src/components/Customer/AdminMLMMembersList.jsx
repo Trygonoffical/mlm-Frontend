@@ -175,6 +175,7 @@ const AdminMLMMembersList = () => {
 
       if (!response.ok) throw new Error('Failed to fetch MLM members');
       const data = await response.json();
+      console.log('member info - ', data)
       setMembers(data);
     } catch (error) {
       console.error('Error:', error);
@@ -239,7 +240,7 @@ const AdminMLMMembersList = () => {
     }
   };
 
-  
+
   const fetchMemberDetails = async (memberId) => {
     try {
       const response = await fetch(

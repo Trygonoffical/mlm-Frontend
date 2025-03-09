@@ -392,7 +392,7 @@ const ContactList = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-48">
+          {/* <div className="w-full md:w-48">
             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select
               name="is_read"
@@ -404,7 +404,7 @@ const ContactList = () => {
               <option value="true">Read</option>
               <option value="false">Unread</option>
             </select>
-          </div>
+          </div> */}
 
           <div className="w-full md:w-48">
             <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
@@ -449,9 +449,9 @@ const ContactList = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
-                </th>
+                </th> */}
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Name
                 </th>
@@ -482,7 +482,7 @@ const ContactList = () => {
                     key={contact.id} 
                     className={`hover:bg-gray-50 ${!contact.is_read ? 'bg-blue-50' : ''}`}
                   >
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           contact.is_read
@@ -492,7 +492,7 @@ const ContactList = () => {
                       >
                         {contact.is_read ? 'Read' : 'Unread'}
                       </span>
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       {contact.name}
                     </td>
@@ -521,7 +521,7 @@ const ContactList = () => {
                         >
                           View
                         </button>
-                        <button
+                        {/* <button
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleReadStatus(contact.id, contact.is_read);
@@ -529,7 +529,7 @@ const ContactList = () => {
                           className={`text-${contact.is_read ? 'yellow' : 'green'}-600 hover:text-${contact.is_read ? 'yellow' : 'green'}-900`}
                         >
                           Mark as {contact.is_read ? 'Unread' : 'Read'}
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>
@@ -558,7 +558,7 @@ const ContactList = () => {
                   <p className="text-gray-600">{selectedContact.phone}</p>
                 </div>
                 <div className="text-right">
-                  <span
+                  {/* <span
                     className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
                       selectedContact.is_read
                         ? 'bg-green-100 text-green-800'
@@ -566,7 +566,7 @@ const ContactList = () => {
                     }`}
                   >
                     {selectedContact.is_read ? 'Read' : 'Unread'}
-                  </span>
+                  </span> */}
                   <p className="text-gray-500 text-sm mt-1">
                     {new Date(selectedContact.created_at).toLocaleDateString()} {new Date(selectedContact.created_at).toLocaleTimeString()}
                   </p>
@@ -586,7 +586,7 @@ const ContactList = () => {
               </div>
             </div>
             <div className="p-4 border-t flex justify-end space-x-3">
-              <button
+              {/* <button
                 onClick={() => toggleReadStatus(selectedContact.id, selectedContact.is_read)}
                 className={`px-4 py-2 rounded-md ${
                   selectedContact.is_read 
@@ -595,7 +595,7 @@ const ContactList = () => {
                 }`}
               >
                 Mark as {selectedContact.is_read ? 'Unread' : 'Read'}
-              </button>
+              </button> */}
               <button
                 onClick={closeDetailModal}
                 className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
