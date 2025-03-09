@@ -11,6 +11,7 @@ const AboutUs = () => {
         }
         // Find the specific page with matching slug
         const homeAbout = about.data.find(page => page.type === 'MAIN');
+        console.log('about data - ', homeAbout);
        
   return (
     <div className="min-h-screen">
@@ -72,7 +73,7 @@ const AboutUs = () => {
         <div className="mt-16">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">Our Business Objectives</h2>
           <div className="space-y-6 text-gray-600">
-            <div className={`text-white/90 ${styles.aboutcontent}`}  dangerouslySetInnerHTML={{ __html: homeAbout.objective_content}}  />
+            <div className={`text-white/600 ${styles.aboutcontent}`}  dangerouslySetInnerHTML={{ __html: homeAbout.objective_content}}  />
             
           </div>
         </div>

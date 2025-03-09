@@ -913,7 +913,7 @@ const AdminMLMMembersList = () => {
                       )}
                     </div>
                     
-                    <div >
+                    {/* <div >
                     <h3 className="text-lg font-medium text-gray-900 mb-4">Commission Preview</h3>
                     <div className="bg-gray-50 p-4 rounded-lg space-y-4">
                         <div className="flex justify-between border-b border-gray-200 pb-2">
@@ -935,15 +935,10 @@ const AdminMLMMembersList = () => {
                         </span>
                         </div>
                         <div className="text-center mt-2">
-                        {/* <button
-                            onClick={() => setActiveTab('commissions')}
-                            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                        >
-                            View Full Commission Details
-                        </button> */}
+                       
                         </div>
                     </div>
-                    </div>
+                    </div> */}
 
 
                   </div>
