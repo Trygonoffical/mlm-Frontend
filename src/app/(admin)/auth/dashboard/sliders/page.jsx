@@ -213,7 +213,7 @@ const columns = [
           </div>
 
           <div>
-            <label className="block mb-1">Desktop Image</label>
+            <label className="block mb-1">Desktop Image <span className='text-xs text-red-500'>1600 * 620 pixel</span></label>
             <input
               type="file"
               onChange={(e) => setFormData({...formData, desktop_image: e.target.files[0]})}
@@ -224,7 +224,7 @@ const columns = [
           </div>
 
           <div>
-            <label className="block mb-1">Mobile Image (Optional)</label>
+            <label className="block mb-1">Mobile Image (Optional)  <span className='text-xs text-red-500'>1080 * 1080 pixel</span></label>
             <input
               type="file"
               onChange={(e) => setFormData({...formData, mobile_image: e.target.files[0]})}

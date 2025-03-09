@@ -536,7 +536,7 @@ const editorRef = useRef(null);
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Image
+              Image  <span className='text-xs text-red-500'>1080 * 1080 pixel</span>
             </label>
             <input
               type="file"

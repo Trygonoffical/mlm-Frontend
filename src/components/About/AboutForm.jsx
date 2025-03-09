@@ -231,7 +231,7 @@ const AboutForm = ({ type = 'MAIN' }) => {
                 <div className="bg-white rounded-lg shadow p-6">
                     <h2 className="text-xl font-semibold mb-4 flex items-center">
                         <PhotoIcon className="h-6 w-6 mr-2" />
-                        Left Image
+                        Left Image  <span className='text-xs text-red-500'>1080 * 1080 pixel</span>
                     </h2>
 
                     <div>

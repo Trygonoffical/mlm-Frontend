@@ -436,7 +436,7 @@ const CompanyInfoForm = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-medium mb-1">Footer Background</label>
+                            <label className="block text-sm font-medium mb-1">Footer Background  <span className='text-xs text-red-500'>1440 * 599 pixel</span></label>
                             <input
                                 type="file"
                                 name="footer_bg_image"

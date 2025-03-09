@@ -178,7 +178,7 @@ const AdvertisementForm = ({ advertisement, setRefreshKey, onClose }) => {
                             </div>
                             
                             <div>
-                                <label className="block text-sm font-medium text-gray-700">Image</label>
+                                <label className="block text-sm font-medium text-gray-700">Image  <span className='text-xs text-red-500'>493 * 120 pixel</span></label>
                                 <input
                                     type="file"
                                     name="image"
