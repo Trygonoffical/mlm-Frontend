@@ -117,7 +117,7 @@ const TestimonialSection = () => {
                                     </p>
                                     <div className="relative">
                                         <div className="absolute -left-8 -top-4 text-6xl text-green-400 opacity-50"></div>
-                                        <p className="text-lg leading-relaxed relative z-10 ">
+                                        <p className="text-lg leading-relaxed relative z-10 whitespace-normal break-words w-full max-w-full">
                                             {testimonial.content}
                                         </p>
                                         <div className="absolute -right-4 bottom-0 text-6xl text-green-400 opacity-50"></div>

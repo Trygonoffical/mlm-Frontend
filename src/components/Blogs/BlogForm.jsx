@@ -160,19 +160,19 @@ const BlogForm = ({ blog, onSuccess, onClose }) => {
                                     className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2"
                                 /> */}
                                 <Editor
-                                        apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                                        init={{
-                                            height: 400,
-                                            menubar: true,
-                                            plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                                                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                                            ],
-                                            toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | help'
-                                        }}
-                                        value={formData.content}
-                                        onEditorChange={handleChange}
-                                    />
+                                    apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                                    init={{
+                                        height: 400,
+                                        menubar: true,
+                                        plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                        ],
+                                        toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | help'
+                                    }}
+                                    value={formData.content}
+                                    onEditorChange={handleChange}
+                                />
                             </div>
 
                             <div>

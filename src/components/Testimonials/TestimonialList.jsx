@@ -149,7 +149,7 @@ const TestimonialList = () => {
                             ))}
                         </div>
 
-                        <p className="text-gray-700 mb-4">{testimonial.content}</p>
+                        <p className="text-gray-700 mb-4 whitespace-normal break-words w-full max-w-full">{testimonial.content}</p>
 
                         <div className="flex items-center justify-between mt-4">
                             <span className={`px-2 py-1 text-xs rounded-full ${
