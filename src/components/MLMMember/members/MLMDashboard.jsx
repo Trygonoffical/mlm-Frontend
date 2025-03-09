@@ -227,12 +227,12 @@ const MLMDashboard = () => {
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-lg font-medium text-gray-800 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link href="/mu/dashboard/register-member" className="flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+          <Link href="/mu/dashboard/register" className="flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
             <UserIcon className="h-6 w-6 text-blue-600 mb-2" />
             <span className="text-sm text-center">Register New Member</span>
           </Link>
           
-          <Link href="/mu/dashboard/network" className="flex flex-col items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+          <Link href="/mu/dashboard/networks" className="flex flex-col items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
             <UsersIcon className="h-6 w-6 text-green-600 mb-2" />
             <span className="text-sm text-center">View Network</span>
           </Link>
