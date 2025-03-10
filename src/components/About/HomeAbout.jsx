@@ -23,7 +23,7 @@ const HomeAbout = () => {
                     <img
                       src={homeAbout.left_image}
                       alt="Herbal supplements with yellow flowers"
-                      className="w-full h-full object-cover rounded-lg"
+                      className="w-full h-full  rounded-lg"
                     />
                   </div>
 
