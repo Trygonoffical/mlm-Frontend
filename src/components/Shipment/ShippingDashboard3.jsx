@@ -59,37 +59,16 @@ const ShippingDashboard = () => {
       length: '10.0',
       width: '10.0',
       height: '10.0',
-      productName: 'Order Products',
       courier: 'DTC',
-      service_type: 'SF'
-    }
+      service_type: 'SF',
+    
+    },
+    quantity: 0
   });
   const { token } = getTokens();
 
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;  // Adjust based on your API prefix
 
-
-  const checkAndRefreshToken = async () => {
-    try {
-      // Make a request to check token validity
-      const response = await fetch(`${API_BASE_URL}/config/check-token/`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      const data = await response.json();
-      
-      if (!data.valid) {
-        // Token is invalid or expired, refresh it
-        await refreshQuixGoToken();
-      }
-    } catch (error) {
-      console.error('Error checking token:', error);
-      // Try to refresh anyway on error
-      await refreshQuixGoToken();
-    }
-  };
   
   const refreshQuixGoToken = async () => {
     try {
@@ -121,12 +100,6 @@ const ShippingDashboard = () => {
   const [configData, setConfigData] = useState({
     email: '',
     password: '',
-    // quixgo_firstName: '',
-    // quixgo_lastName: '',
-    // quixgo_mobile: '',
-    // default_courier: 'DTC',
-    // default_service_type: 'SF',
-    // quixgo_api_base_url: 'https://dev.api.quixgo.com/clientApi/login'
   });
   const [pickupAddresses, setPickupAddresses] = useState([]);
   
@@ -143,37 +116,37 @@ const ShippingDashboard = () => {
 
 
   // Add this to your ShippingDashboard component
-const ensureValidToken = async () => {
-  try {
-    // Check token validity
-    const response = await fetch(`${API_BASE_URL}/config/check-token/`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    
-    const data = await response.json();
-    
-    // If token is invalid, refresh it
-    if (!data.valid) {
-      console.log('Token is invalid, refreshing...');
-      const refreshResponse = await fetch(`${API_BASE_URL}/config/refresh-token/`, {
-        method: 'POST',
+  const ensureValidToken = async () => {
+    try {
+      // Check token validity
+      const response = await fetch(`${API_BASE_URL}/config/check-token/`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       
-      if (!refreshResponse.ok) {
-        console.error('Failed to refresh token:', await refreshResponse.text());
-      } else {
-        console.log('Token refreshed successfully');
+      const data = await response.json();
+      
+      // If token is invalid, refresh it
+      if (!data.valid) {
+        console.log('Token is invalid, refreshing...');
+        const refreshResponse = await fetch(`${API_BASE_URL}/config/refresh-token/`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!refreshResponse.ok) {
+          console.error('Failed to refresh token:', await refreshResponse.text());
+        } else {
+          console.log('Token refreshed successfully');
+        }
       }
+    } catch (error) {
+      console.error('Error ensuring valid token:', error);
     }
-  } catch (error) {
-    console.error('Error ensuring valid token:', error);
-  }
-};
+  };
 
 // Update the useEffect to use this function
 useEffect(() => {
@@ -190,6 +163,8 @@ useEffect(() => {
     loadShipments();
   } else if (activeTab === 'pending') {
     loadPendingOrders();
+    loadPickupAddresses();
+
   } else if (activeTab === 'settings') {
     loadConfigData();
     loadPickupAddresses();
@@ -218,6 +193,7 @@ useEffect(() => {
     setLoading(prev => ({ ...prev, dashboard: true }));
     const data = await fetchShippingStats();
     if (data && data.success) {
+      console.log('order data - ', data)
       setDashboardData(data);
     }
     setLoading(prev => ({ ...prev, dashboard: false }));
@@ -293,17 +269,52 @@ useEffect(() => {
   // Load pickup addresses
   const loadPickupAddresses = async () => {
     try {
+      console.log("Loading pickup addresses...");
       const response = await fetch(`${API_BASE_URL}/pickup-addresses/`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      
+      const contentType = response.headers.get('content-type');
+      console.log("Response content type:", contentType);
+      
       if (response.ok) {
-        const data = await response.json();
-        setPickupAddresses(data);
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json();
+          console.log("Pickup addresses response:", data);
+          
+          // Handle different response formats
+          if (Array.isArray(data)) {
+            setPickupAddresses(data);
+            console.log(`Loaded ${data.length} pickup addresses`);
+          } else if (data.addresses && Array.isArray(data.addresses)) {
+            setPickupAddresses(data.addresses);
+            console.log(`Loaded ${data.addresses.length} pickup addresses`);
+          } else if (data.success === false) {
+            console.error("API returned an error:", data.message || data.error);
+            setPickupAddresses([]);
+          } else {
+            console.error("Unexpected response format for pickup addresses:", data);
+            setPickupAddresses([]);
+          }
+        } else {
+          const text = await response.text();
+          console.error("Non-JSON response:", text);
+          setPickupAddresses([]);
+        }
+      } else {
+        try {
+          const errorText = await response.text();
+          console.error("Error loading pickup addresses:", errorText);
+        } catch (textError) {
+          console.error("Error reading error response:", textError);
+        }
+        setPickupAddresses([]);
       }
     } catch (error) {
-      console.error('Error loading pickup addresses:', error);
+      console.error('Exception loading pickup addresses:', error);
+      setPickupAddresses([]);
     }
   };
 
@@ -393,47 +404,19 @@ useEffect(() => {
     console.log('API Base URL:', API_BASE_URL);
   }, [token, API_BASE_URL]);
 
-  const handleTestConnection = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/config/test/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          email: configData.quixgo_email,
-          password: configData.quixgo_password
-        })
-      });
-  
-      const data = await response.json();
-  
-      if (data.success) {
-        setNotification({
-          type: 'success',
-          message: 'Connection successful'
-        });
-      } else {
-        setNotification({
-          type: 'error',
-          message: data.error || 'Connection failed'
-        });
-      }
-    } catch (error) {
-      console.error('Error testing connection:', error);
-      setNotification({
-        type: 'error',
-        message: 'Network error'
-      });
-    }
-  };
 
 // Handle showing the shipment modal
 const handleShowShipmentModal = (order) => {
+  // const defaultPickupAddress = pickupAddresses.find(addr => addr.is_default) || 
+  //                              (pickupAddresses.length > 0 ? pickupAddresses[0] : null);
+  console.log("Available pickup addresses:", pickupAddresses);
+  
   const defaultPickupAddress = pickupAddresses.find(addr => addr.is_default) || 
                                (pickupAddresses.length > 0 ? pickupAddresses[0] : null);
   
+  console.log("Selected default address:", defaultPickupAddress);
+  // console.log("Selected default order:", order);
+
   setShipmentModal({
     isOpen: true,
     orderId: order.id,
@@ -446,8 +429,10 @@ const handleShowShipmentModal = (order) => {
       height: '10.0',
       productName: 'Order Products',
       courier: 'DTC',
-      service_type: 'SF'
-    }
+      service_type: 'SF',
+      
+    },
+   
   });
 };
 
@@ -455,7 +440,7 @@ const handleShowShipmentModal = (order) => {
 const handleCreateShipment = async (e) => {
   e.preventDefault();
   
-  const { orderId, formData } = shipmentModal;
+  const { orderId, formData  } = shipmentModal;
   
   if (!formData.pickupAddressId) {
     setNotification({
@@ -468,17 +453,21 @@ const handleCreateShipment = async (e) => {
   const shipmentData = {
     order: orderId,
     pickup_address: formData.pickupAddressId,
+    
+    // Only send customizable shipping parameters
     weight: parseFloat(formData.weight),
     length: parseFloat(formData.length),
     width: parseFloat(formData.width),
     height: parseFloat(formData.height),
+    
+    // Service preferences
     service_type: formData.service_type,
-    courier_name: formData.courier,
-    is_cod: false, // You can make this dynamic if needed
-    product_name: formData.productName
+    courier_name: formData.courier
   };
+
   
   try {
+    console.log('shipment Data before sending -', shipmentData)
     const response = await createShipment(shipmentData);
     
     if (response.success) {
@@ -509,50 +498,6 @@ const handleCreateShipment = async (e) => {
 };
 
   
-  // Handle create shipment
-  // const handleCreateShipment = async (orderId) => {
-  //   // Get default pickup address
-  //   const defaultAddress = pickupAddresses.find(addr => addr.is_default) || pickupAddresses[0];
-    
-  //   if (!defaultAddress) {
-  //     setNotification({
-  //       type: 'error',
-  //       message: 'No pickup address available. Please create one first.'
-  //     });
-  //     return;
-  //   }
-    
-  //   const shipmentData = {
-  //     order: orderId,
-  //     pickup_address: defaultAddress.id,
-  //     weight: 1.0,
-  //     length: 10.0,
-  //     width: 10.0,
-  //     height: 10.0,
-  //     service_type: configData.default_service_type,
-  //     is_cod: false
-  //   };
-    
-  //   const response = await createShipment(shipmentData);
-    
-  //   if (response.success) {
-  //     setNotification({
-  //       type: 'success',
-  //       message: 'Shipment created successfully'
-  //     });
-  //     refreshData();
-  //   } else {
-  //     setNotification({
-  //       type: 'error',
-  //       message: response.message || 'Failed to create shipment'
-  //     });
-  //   }
-    
-  //   // Clear notification after 3 seconds
-  //   setTimeout(() => {
-  //     setNotification(null);
-  //   }, 3000);
-  // };
 
   // Handle track shipment
   const handleTrackShipment = async (shipmentId) => {
@@ -664,7 +609,9 @@ const fetchPendingOrders = async (search = '') => {
       }
     });
     if (!response.ok) throw new Error('Failed to fetch pending orders');
-    return await response.json();
+    const data = await response.json();
+    console.log('all pending orders - '. data)
+    return data
   } catch (error) {
     console.error('Error fetching pending orders:', error);
     return [];
@@ -697,111 +644,17 @@ const saveShippingConfig = async (configData) => {
   }
 };
 
-const testConnection = async (credentials) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/config/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(credentials)
-    });
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error testing connection:', error);
-    return { success: false, message: 'Network error' };
-  }
-};
+
 
 const createShipment = async (shipmentData) => {
+  console.log('shipmentData at create shipmentData -', shipmentData)
+
   try {
     // Get pickup address details
-    const pickupAddress = pickupAddresses.find(addr => addr.id === shipmentData.pickup_address);
-    if (!pickupAddress) {
-      return { success: false, message: 'Pickup address not found' };
-    }
-    
-    // Get order details
-    const orderResponse = await fetch(`${API_BASE_URL}/orders/${shipmentData.order}/`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    
-    if (!orderResponse.ok) {
-      return { success: false, message: 'Failed to fetch order details' };
-    }
-    
-    const order = await orderResponse.json();
-    
-    // Extract delivery address from order shipping address
-    // This assumes shipping_address is a string like "Name, Address1, City, State, Pincode"
-    const addressParts = order.shipping_address.split(',').map(part => part.trim());
-    const deliveryAddress = {
-      name: addressParts[0] || 'Customer',
-      address1: addressParts[1] || '',
-      address2: addressParts[2] || '',
-      landmark: '',
-      city: addressParts[3] || '',
-      state: addressParts[4] || '',
-      pincode: addressParts[5] || '',
-      mobile: order.user?.phone_number || '',
-      email: order.user?.email || '',
-      addressType: 'Home'
-    };
-    
-    // Format pickupAddress for QuixGo
-    const quixgoPickupAddress = {
-      addressId: pickupAddress.address_id,
-      customerId: pickupAddress.customer_id,
-      pickupName: pickupAddress.name,
-      addressCategory: 'pickup',
-      addressType: pickupAddress.address_type,
-      shipmentType: 'B2C',
-      cpPerson: pickupAddress.contact_person,
-      address1: pickupAddress.address_line1,
-      address2: pickupAddress.address_line2 || '',
-      city: pickupAddress.city,
-      state: pickupAddress.state,
-      country: pickupAddress.country || 'India',
-      landmark: pickupAddress.landmark || '',
-      pincode: pickupAddress.pincode,
-      cpMobile: pickupAddress.phone,
-      alternateNumber: pickupAddress.alternate_phone || '',
-      email: pickupAddress.email || '',
-      isActive: true,
-      isDeleted: false,
-      addName: `${pickupAddress.contact_person}-${pickupAddress.pincode}-${pickupAddress.customer_id}-${pickupAddress.address_id}`
-    };
-    
-    // Prepare the payload according to QuixGo's API requirements
-    const payload = [{
-      deliveryAddress: deliveryAddress,
-      pickupAddress: quixgoPickupAddress,
-      returnAddress: quixgoPickupAddress, // Using same pickup address for return
-      customerType: 'Business',
-      productDetails: {
-        weight: shipmentData.weight.toString(),
-        height: shipmentData.height.toString(),
-        width: shipmentData.width.toString(),
-        length: shipmentData.length.toString(),
-        invoice: order.final_amount.toString(),
-        productName: shipmentData.product_name || 'Order Products',
-        productType: 'Merchandise',
-        quantity: '1',
-        skuNumber: '',
-        orderNumber: order.order_number
-      },
-      serviceProvider: shipmentData.courier_name,
-      serviceType: shipmentData.service_type,
-      paymentMode: order.orderType === 'COD' ? 'COD' : 'Prepaid',
-      codAmount: order.orderType === 'COD' ? order.final_amount : 0,
-      insuranceCharge: 0,
-      customerId: pickupAddress.customer_id,
-      serviceMode: 'FW' // Forward shipment
-    }];
+    // const pickupAddress = pickupAddresses.find(addr => addr.id === shipmentData.pickup_address);
+    // if (!pickupAddress) {
+    //   return { success: false, message: 'Pickup address not found' };
+    // }
     
     // Make the API call
     const response = await fetch(`${API_BASE_URL}/shipments/`, {
@@ -854,78 +707,6 @@ const cancelShipment = async (shipmentId, reason) => {
   }
 };
 
-const handleSetDefaultAddress = async (addressId) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/pickup-addresses/${addressId}/set_default/`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        setNotification({
-          type: 'success',
-          message: 'Default address updated successfully'
-        });
-        loadPickupAddresses();
-      } else {
-        setNotification({
-          type: 'error',
-          message: 'Failed to update default address'
-        });
-      }
-    } catch (error) {
-      console.error('Error setting default address:', error);
-      setNotification({
-        type: 'error',
-        message: 'Error setting default address'
-      });
-    }
-    
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
-  };
-  
-  const handleDeleteAddress = async (addressId) => {
-    if (!window.confirm('Are you sure you want to delete this address?')) {
-      return;
-    }
-    
-    try {
-      const response = await fetch(`${API_BASE_URL}/pickup-addresses/${addressId}/`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (response.ok) {
-        setNotification({
-          type: 'success',
-          message: 'Address deleted successfully'
-        });
-        loadPickupAddresses();
-      } else {
-        setNotification({
-          type: 'error',
-          message: 'Failed to delete address'
-        });
-      }
-    } catch (error) {
-      console.error('Error deleting address:', error);
-      setNotification({
-        type: 'error',
-        message: 'Error deleting address'
-      });
-    }
-    
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
-  };
-
 
   // Add state for the address modal
 const [addressModal, setAddressModal] = useState({
@@ -949,78 +730,6 @@ const [addressModal, setAddressModal] = useState({
     addressId: null
   });
   
-  // Function to handle the address form submission
-  const handleAddressSubmit = async (e) => {
-    e.preventDefault();
-    
-    const { isEdit, addressData, addressId } = addressModal;
-    const method = isEdit ? 'PUT' : 'POST';
-    const url = isEdit 
-      ? `${API_BASE_URL}/pickup-addresses/${addressId}/` 
-      : `${API_BASE_URL}/pickup-addresses/`;
-    
-    try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(addressData)
-      });
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        setNotification({
-          type: 'success',
-          message: `Address ${isEdit ? 'updated' : 'created'} successfully`
-        });
-        loadPickupAddresses();
-        setAddressModal({...addressModal, isOpen: false});
-      } else {
-        setNotification({
-          type: 'error',
-          message: result.message || `Failed to ${isEdit ? 'update' : 'create'} address`
-        });
-      }
-    } catch (error) {
-      console.error(`Error ${isEdit ? 'updating' : 'creating'} address:`, error);
-      setNotification({
-        type: 'error',
-        message: `Error ${isEdit ? 'updating' : 'creating'} address`
-      });
-    }
-    
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
-  };
-  
-  // Function to open the edit modal
-  const handleEditAddress = (address) => {
-    setAddressModal({
-      isOpen: true,
-      isEdit: true,
-      addressData: {
-        name: address.name,
-        contact_person: address.contact_person,
-        address_line1: address.address_line1,
-        address_line2: address.address_line2 || '',
-        city: address.city,
-        state: address.state,
-        country: address.country,
-        pincode: address.pincode,
-        phone: address.phone,
-        alternate_phone: address.alternate_phone || '',
-        email: address.email || '',
-        landmark: address.landmark || '',
-        address_type: address.address_type
-      },
-      addressId: address.id
-    });
-  };
-
 
 
 
@@ -1418,11 +1127,11 @@ const [addressModal, setAddressModal] = useState({
                         <input type="checkbox" className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.order_number}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.user_name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.user.name}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {new Date(order.order_date).toLocaleDateString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹{order.amount.toLocaleString()}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹{order.financial_details.final_amount.toLocaleString()}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         {/* <button 
                             className="bg-green-50 text-green-600 px-3 py-1 rounded-md hover:bg-green-100"
@@ -1488,9 +1197,9 @@ const [addressModal, setAddressModal] = useState({
                       required
                     >
                       <option value="">Select a pickup address</option>
-                      {pickupAddresses.map(address => (
-                        <option key={address.id} value={address.id}>
-                          {address.name} - {address.city} ({address.is_default ? 'Default' : ''})
+                      {pickupAddresses.map((address , idx) => (
+                        <option key={idx} value={address.id}>
+                          {address.pickupName} - {address.addName} ({address.is_default ? 'Default' : ''})
                         </option>
                       ))}
                     </select>
@@ -1530,7 +1239,7 @@ const [addressModal, setAddressModal] = useState({
                     </div>
                   </div>
                   
-                  <div>
+                  {/* <div>
                     <label className="block text-sm font-medium text-gray-700">Product Name</label>
                     <input
                       type="text"
@@ -1541,7 +1250,7 @@ const [addressModal, setAddressModal] = useState({
                         formData: {...shipmentModal.formData, productName: e.target.value}
                       })}
                     />
-                  </div>
+                  </div> */}
                   
                   <div className="grid grid-cols-2 gap-4">
                     <div>
