@@ -470,6 +470,8 @@ const handleCreateShipment = async (e) => {
     console.log('shipment Data before sending -', shipmentData)
     const response = await createShipment(shipmentData);
     
+    console.log('Response received:', response);
+    
     if (response.success) {
       setNotification({
         type: 'success',
