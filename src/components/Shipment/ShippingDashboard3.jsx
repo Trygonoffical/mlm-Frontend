@@ -657,31 +657,61 @@ const handleTrackShipment = async (shipmentId, awbNumber) => {
   }
 };
 
-  // Handle cancel shipment
-  const handleCancelShipment = async (shipmentId) => {
-    if (!window.confirm('Are you sure you want to cancel this shipment?')) {
-      return;
-    }
+const handleCancelShipment = async (shipmentId) => {
+  // First confirm with the user
+  if (!window.confirm('Are you sure you want to cancel this shipment?')) {
+    return;
+  }
+  
+  // Prompt for cancellation reason
+  const reason = prompt('Please enter a reason for cancellation:', 'Order cancelled by customer');
+  
+  if (!reason) {
+    // User clicked cancel on the prompt
+    toast.info('Cancellation aborted');
+    return;
+  }
+  
+  try {
+    // Show loading toast
+    toast.loading('Cancelling shipment...', { id: 'cancel-shipment' });
     
-    const reason = prompt('Please enter a reason for cancellation:', 'Order cancelled by customer');
+    // Make the API request
+    const response = await fetch(`${API_BASE_URL}/shipments/${shipmentId}/cancel/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ reason })
+    });
     
-    if (reason) {
-      const response = await cancelShipment(shipmentId, reason);
+    // Parse the JSON response
+    const data = await response.json();
+    
+    // Dismiss the loading toast
+    toast.dismiss('cancel-shipment');
+    
+    if (response.ok && data.success) {
+      // Show success message
+      toast.success('Shipment cancelled successfully');
       
-      if (response.success) {
-        setNotification({
-          type: 'success',
-          message: 'Shipment cancelled successfully'
-        });
-        refreshData();
-      } else {
-        setNotification({
-          type: 'error',
-          message: response.message || 'Failed to cancel shipment'
-        });
-      }
+      // Refresh the data to update the UI
+      refreshData();
+    } else {
+      // Show error message
+      console.error('Shipment cancellation failed:', data);
+      toast.error(data.message || 'Failed to cancel shipment');
     }
-  };
+  } catch (error) {
+    // Dismiss the loading toast
+    toast.dismiss('cancel-shipment');
+    
+    // Show error message
+    console.error('Error cancelling shipment:', error);
+    toast.error(`Error cancelling shipment: ${error.message}`);
+  }
+};
 
   // Helper to convert status object to array
   const statusesToArray = (statusObj) => {
@@ -1186,13 +1216,16 @@ const [addressModal, setAddressModal] = useState({
                                 >
                                 Track
                                 </button>
-                                {shipment.status !== 'RETURNED' && (
-                                <button 
+                                {/* // Update the cancel button in the shipments list */}
+                                {shipment.status !== 'CANCELLED' && 
+                                shipment.status !== 'DELIVERED' && 
+                                shipment.status !== 'RETURNED' && (
+                                  <button 
                                     className="text-red-600 hover:text-red-900 mr-3"
                                     onClick={() => handleCancelShipment(shipment.id)}
-                                >
+                                  >
                                     Cancel
-                                </button>
+                                  </button>
                                 )}
                             </>
                             )}
@@ -1507,7 +1540,7 @@ const [addressModal, setAddressModal] = useState({
 
 
 
-// Updated Tracking Modal Component
+ {/* Updated Tracking Modal Component */}
 {trackingModal.isOpen && (
   <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
     <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
@@ -1758,7 +1791,10 @@ const [addressModal, setAddressModal] = useState({
                       Track
                     </button>
                     
-                    {detailsModal.shipment.status !== 'RETURNED' && (
+                    {/* // Update the cancel button in the details modal */}
+                    {detailsModal.shipment.status !== 'CANCELLED' && 
+                    detailsModal.shipment.status !== 'DELIVERED' && 
+                    detailsModal.shipment.status !== 'RETURNED' && (
                       <button 
                         className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700"
                         onClick={() => {
@@ -1766,7 +1802,7 @@ const [addressModal, setAddressModal] = useState({
                           handleCancelShipment(detailsModal.shipment.id);
                         }}
                       >
-                        Cancel
+                        Cancel Shipment
                       </button>
                     )}
                   </>
