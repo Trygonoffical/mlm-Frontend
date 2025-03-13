@@ -404,9 +404,301 @@
 
 
 // components/OrderTracking.jsx
+// 'use client';
+
+// import React, { useState } from 'react';
+// import { 
+//   TruckIcon, 
+//   MapPinIcon, 
+//   CheckCircleIcon, 
+//   ClockIcon, 
+//   XCircleIcon 
+// } from '@heroicons/react/24/outline';
+// import { toast } from 'react-hot-toast';
+
+// const OrderTracking = () => {
+//   const [orderNumber, setOrderNumber] = useState('');
+//   const [loading, setLoading] = useState(false);
+//   const [trackingInfo, setTrackingInfo] = useState(null);
+//   const [error, setError] = useState(null);
+
+//   // Function to track order
+//   const trackOrder = async (e) => {
+//     e.preventDefault();
+    
+//     if (!orderNumber.trim()) {
+//       toast.error('Please enter an order number');
+//       return;
+//     }
+    
+//     setLoading(true);
+//     setError(null);
+    
+//     try {
+//       const response = await fetch(
+//         `${process.env.NEXT_PUBLIC_API_URL}/orders/track/?order_number=${orderNumber}`, 
+//         {
+//           headers: {
+//             'Content-Type': 'application/json'
+//           }
+//         }
+//       );
+      
+//       if (!response.ok) {
+//         const errorData = await response.json();
+//         throw new Error(errorData.error || 'Failed to track order');
+//       }
+      
+//       const data = await response.json();
+//       setTrackingInfo(data);
+//     } catch (error) {
+//       setError(error.message);
+//       toast.error(error.message);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // Format date helper
+//   const formatDate = (dateString) => {
+//     if (!dateString) return 'N/A';
+//     const date = new Date(dateString);
+//     return date.toLocaleDateString('en-US', {
+//       year: 'numeric',
+//       month: 'long',
+//       day: 'numeric'
+//     });
+//   };
+
+//   // Render tracking status steps
+//   const renderTrackingSteps = () => {
+//     if (!trackingInfo) return null;
+    
+//     const steps = [
+//       { 
+//         label: 'Order Placed', 
+//         date: trackingInfo.order_date,
+//         active: true, 
+//         completed: true,
+//         icon: <ClockIcon className="h-6 w-6" />
+//       },
+//       { 
+//         label: 'Order Confirmed', 
+//         date: trackingInfo.confirmed_date,
+//         active: !!trackingInfo.confirmed_date, 
+//         completed: !!trackingInfo.confirmed_date,
+//         icon: <CheckCircleIcon className="h-6 w-6" />
+//       },
+//       { 
+//         label: 'Shipped', 
+//         date: trackingInfo.shipped_date,
+//         active: !!trackingInfo.shipped_date, 
+//         completed: !!trackingInfo.shipped_date,
+//         icon: <TruckIcon className="h-6 w-6" />
+//       },
+//       { 
+//         label: 'Delivered', 
+//         date: trackingInfo.delivered_date,
+//         active: !!trackingInfo.delivered_date, 
+//         completed: !!trackingInfo.delivered_date,
+//         icon: <MapPinIcon className="h-6 w-6" />
+//       }
+//     ];
+    
+//     return (
+//       <div className="flex flex-col md:flex-row justify-between my-8">
+//         {steps.map((step, index) => (
+//           <div key={index} className="flex flex-col items-center mb-4 md:mb-0">
+//             <div className={`p-3 rounded-full ${
+//               step.completed 
+//                 ? 'bg-green-100 text-green-600' 
+//                 : step.active 
+//                   ? 'bg-blue-100 text-blue-600' 
+//                   : 'bg-gray-100 text-gray-400'
+//             }`}>
+//               {step.icon}
+//             </div>
+//             <p className={`mt-2 text-sm font-medium ${
+//               step.completed 
+//                 ? 'text-green-600' 
+//                 : step.active 
+//                   ? 'text-blue-600' 
+//                   : 'text-gray-400'
+//             }`}>
+//               {step.label}
+//             </p>
+//             <p className="text-xs text-gray-500 mt-1">
+//               {formatDate(step.date)}
+//             </p>
+//             {index < steps.length - 1 && (
+//               <div className="hidden md:block h-0.5 w-full bg-gray-200 my-4" />
+//             )}
+//           </div>
+//         ))}
+//       </div>
+//     );
+//   };
+
+//   // Render shipment details
+//   const renderShipmentDetails = () => {
+//     if (!trackingInfo || !trackingInfo.shipments || trackingInfo.shipments.length === 0) {
+//       return null;
+//     }
+    
+//     const shipment = trackingInfo.shipments[0]; // Display first shipment
+    
+//     return (
+//       <div className="bg-gray-50 p-4 rounded-md my-4">
+//         <h3 className="font-medium text-gray-700">Shipment Details</h3>
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+//           <div>
+//             <p className="text-sm text-gray-500">Tracking Number</p>
+//             <p className="text-sm font-medium">{shipment.awb_number}</p>
+//           </div>
+//           <div>
+//             <p className="text-sm text-gray-500">Courier</p>
+//             <p className="text-sm font-medium">{shipment.courier}</p>
+//           </div>
+//           <div>
+//             <p className="text-sm text-gray-500">Weight</p>
+//             <p className="text-sm font-medium">{shipment.weight} kg</p>
+//           </div>
+//           <div>
+//             <p className="text-sm text-gray-500">Dimensions</p>
+//             <p className="text-sm font-medium">{shipment.dimensions}</p>
+//           </div>
+//         </div>
+        
+//         {shipment.tracking_url && (
+//           <a 
+//             href={shipment.tracking_url} 
+//             target="_blank" 
+//             rel="noopener noreferrer"
+//             className="inline-block mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm"
+//           >
+//             Track with Courier
+//           </a>
+//         )}
+        
+//         {shipment.status_history && shipment.status_history.length > 0 && (
+//           <div className="mt-6">
+//             <h4 className="font-medium text-gray-700 mb-2">Delivery Updates</h4>
+//             <div className="border rounded-md overflow-hidden">
+//               {shipment.status_history.map((update, index) => (
+//                 <div 
+//                   key={index} 
+//                   className={`p-3 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b last:border-b-0`}
+//                 >
+//                   <div className="flex justify-between items-start">
+//                     <div>
+//                       <p className="font-medium text-sm">{update.status}</p>
+//                       {update.details && (
+//                         <p className="text-xs text-gray-500 mt-1">{update.details}</p>
+//                       )}
+//                       {update.location && (
+//                         <p className="text-xs text-gray-500">{update.location}</p>
+//                       )}
+//                     </div>
+//                     <p className="text-xs text-gray-500">
+//                       {new Date(update.timestamp).toLocaleString()}
+//                     </p>
+//                   </div>
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     );
+//   };
+
+//   return (
+//     <div className="max-w-3xl mx-auto px-4 py-6">
+//       <h1 className="text-2xl font-bold mb-6">Order Tracking</h1>
+      
+//       <div className="bg-white p-6 shadow-md rounded-lg">
+//         <form onSubmit={trackOrder} className="flex flex-col md:flex-row gap-4">
+//           <div className="flex-grow">
+//             <label htmlFor="orderNumber" className="block text-sm font-medium text-gray-700 mb-1">
+//               Order Number
+//             </label>
+//             <input
+//               type="text"
+//               id="orderNumber"
+//               value={orderNumber}
+//               onChange={(e) => setOrderNumber(e.target.value)}
+//               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+//               placeholder="Enter your order number"
+//               disabled={loading}
+//             />
+//           </div>
+//           <button
+//             type="submit"
+//             disabled={loading}
+//             className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed md:self-end"
+//           >
+//             {loading ? (
+//               <span className="flex items-center">
+//                 <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+//                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+//                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+//                 </svg>
+//                 Tracking...
+//               </span>
+//             ) : 'Track Order'}
+//           </button>
+//         </form>
+        
+//         {error && (
+//           <div className="mt-6 p-4 bg-red-50 text-red-700 rounded-md">
+//             <p>{error}</p>
+//           </div>
+//         )}
+        
+//         {trackingInfo && (
+//           <div className="mt-6">
+//             <div className="p-4 bg-gray-50 rounded-md">
+//               <h2 className="text-lg font-medium">Order #{trackingInfo.order_number}</h2>
+//               <p className="text-sm text-gray-500 mt-1">Placed on {formatDate(trackingInfo.order_date)}</p>
+              
+//               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+//                 <div>
+//                   <p className="text-sm text-gray-500">Current Status</p>
+//                   <p className="text-sm font-medium">{trackingInfo.status}</p>
+//                 </div>
+//                 <div>
+//                   <p className="text-sm text-gray-500">Current Location</p>
+//                   <p className="text-sm font-medium">{trackingInfo.current_location || 'N/A'}</p>
+//                 </div>
+//                 <div>
+//                   <p className="text-sm text-gray-500">Expected Delivery</p>
+//                   <p className="text-sm font-medium">{trackingInfo.expected_delivery || 'N/A'}</p>
+//                 </div>
+//               </div>
+//             </div>
+            
+//             {renderTrackingSteps()}
+            
+//             {renderShipmentDetails()}
+            
+//             <div className="mt-6 p-4 bg-gray-50 rounded-md">
+//               <h3 className="font-medium text-gray-700">Shipping Address</h3>
+//               <p className="text-sm mt-1">{trackingInfo.shipping_address}</p>
+//             </div>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default OrderTracking;
+
+
+
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   TruckIcon, 
   MapPinIcon, 
@@ -415,18 +707,40 @@ import {
   XCircleIcon 
 } from '@heroicons/react/24/outline';
 import { toast } from 'react-hot-toast';
+import { useSearchParams } from 'next/navigation';
 
 const OrderTracking = () => {
+  const searchParams = useSearchParams();
   const [orderNumber, setOrderNumber] = useState('');
+  const [awbNumber, setAwbNumber] = useState('');
+  const [trackingMethod, setTrackingMethod] = useState('order'); // 'order' or 'awb'
   const [loading, setLoading] = useState(false);
   const [trackingInfo, setTrackingInfo] = useState(null);
   const [error, setError] = useState(null);
 
-  // Function to track order
-  const trackOrder = async (e) => {
-    e.preventDefault();
+  // Initialize from query parameters
+  useEffect(() => {
+    const orderNum = searchParams.get('order_number');
+    const awbNum = searchParams.get('awb_number');
     
-    if (!orderNumber.trim()) {
+    if (orderNum) {
+      setOrderNumber(orderNum);
+      setTrackingMethod('order');
+      trackOrder(null, orderNum);
+    } else if (awbNum) {
+      setAwbNumber(awbNum);
+      setTrackingMethod('awb');
+      trackShipment(null, awbNum);
+    }
+  }, [searchParams]);
+
+  // Function to track order by order number
+  const trackOrder = async (e, orderNum = null) => {
+    if (e) e.preventDefault();
+    
+    const orderToTrack = orderNum || orderNumber;
+    
+    if (!orderToTrack.trim()) {
       toast.error('Please enter an order number');
       return;
     }
@@ -436,7 +750,7 @@ const OrderTracking = () => {
     
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/orders/track/?order_number=${orderNumber}`, 
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/track/?order_number=${orderToTrack}`, 
         {
           headers: {
             'Content-Type': 'application/json'
@@ -447,6 +761,45 @@ const OrderTracking = () => {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to track order');
+      }
+      
+      const data = await response.json();
+      setTrackingInfo(data);
+    } catch (error) {
+      setError(error.message);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to track by AWB number
+  const trackShipment = async (e, awbNum = null) => {
+    if (e) e.preventDefault();
+    
+    const shipmentToTrack = awbNum || awbNumber;
+    
+    if (!shipmentToTrack.trim()) {
+      toast.error('Please enter an AWB number');
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/shipments/track-by-awb/?awb_number=${shipmentToTrack}`, 
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to track shipment');
       }
       
       const data = await response.json();
@@ -505,6 +858,17 @@ const OrderTracking = () => {
       }
     ];
     
+    // For returned orders, add a fifth step
+    if (trackingInfo.status === 'RETURNED') {
+      steps.push({ 
+        label: 'Returned', 
+        date: trackingInfo.returned_date,
+        active: !!trackingInfo.returned_date, 
+        completed: !!trackingInfo.returned_date,
+        icon: <RefreshCwIcon className="h-6 w-6" />
+      });
+    }
+    
     return (
       <div className="flex flex-col md:flex-row justify-between my-8">
         {steps.map((step, index) => (
@@ -545,69 +909,70 @@ const OrderTracking = () => {
       return null;
     }
     
-    const shipment = trackingInfo.shipments[0]; // Display first shipment
-    
     return (
-      <div className="bg-gray-50 p-4 rounded-md my-4">
-        <h3 className="font-medium text-gray-700">Shipment Details</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-          <div>
-            <p className="text-sm text-gray-500">Tracking Number</p>
-            <p className="text-sm font-medium">{shipment.awb_number}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Courier</p>
-            <p className="text-sm font-medium">{shipment.courier}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Weight</p>
-            <p className="text-sm font-medium">{shipment.weight} kg</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Dimensions</p>
-            <p className="text-sm font-medium">{shipment.dimensions}</p>
-          </div>
-        </div>
-        
-        {shipment.tracking_url && (
-          <a 
-            href={shipment.tracking_url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-block mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm"
-          >
-            Track with Courier
-          </a>
-        )}
-        
-        {shipment.status_history && shipment.status_history.length > 0 && (
-          <div className="mt-6">
-            <h4 className="font-medium text-gray-700 mb-2">Delivery Updates</h4>
-            <div className="border rounded-md overflow-hidden">
-              {shipment.status_history.map((update, index) => (
-                <div 
-                  key={index} 
-                  className={`p-3 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b last:border-b-0`}
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-medium text-sm">{update.status}</p>
-                      {update.details && (
-                        <p className="text-xs text-gray-500 mt-1">{update.details}</p>
-                      )}
-                      {update.location && (
-                        <p className="text-xs text-gray-500">{update.location}</p>
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-500">
-                      {new Date(update.timestamp).toLocaleString()}
-                    </p>
-                  </div>
+      <div>
+        {trackingInfo.shipments.map((shipment, shipmentIndex) => (
+          <div key={shipmentIndex} className="bg-gray-50 p-4 rounded-md my-4">
+            <h3 className="font-medium text-gray-700">
+              {shipment.is_return ? 'Return Shipment Details' : 'Shipment Details'}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+              <div>
+                <p className="text-sm text-gray-500">Tracking Number</p>
+                <p className="text-sm font-medium">{shipment.awb_number}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Courier</p>
+                <p className="text-sm font-medium">{shipment.courier}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Status</p>
+                <p className="text-sm font-medium">{shipment.status}</p>
+              </div>
+              {shipment.tracking_url && (
+                <div>
+                  <a 
+                    href={shipment.tracking_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-block px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-xs"
+                  >
+                    Track with Courier
+                  </a>
                 </div>
-              ))}
+              )}
             </div>
+            
+            {shipment.status_history && shipment.status_history.length > 0 && (
+              <div className="mt-4">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Delivery Updates</h4>
+                <div className="border rounded-md overflow-hidden">
+                  {shipment.status_history.map((update, index) => (
+                    <div 
+                      key={index} 
+                      className={`p-3 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b last:border-b-0`}
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium text-sm">{update.status}</p>
+                          {update.details && (
+                            <p className="text-xs text-gray-500 mt-1">{update.details}</p>
+                          )}
+                          {update.location && (
+                            <p className="text-xs text-gray-500">{update.location}</p>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-500">
+                          {new Date(update.timestamp).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        ))}
       </div>
     );
   };
@@ -617,18 +982,76 @@ const OrderTracking = () => {
       <h1 className="text-2xl font-bold mb-6">Order Tracking</h1>
       
       <div className="bg-white p-6 shadow-md rounded-lg">
-        <form onSubmit={trackOrder} className="flex flex-col md:flex-row gap-4">
-          <div className="flex-grow">
-            <label htmlFor="orderNumber" className="block text-sm font-medium text-gray-700 mb-1">
-              Order Number
-            </label>
-            <input
+        <div className="mb-4">
+          <div className="flex border border-gray-300 rounded-md overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setTrackingMethod('order')}
+              className={`flex-1 px-4 py-2 text-sm font-medium 
+                ${trackingMethod === 'order' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}
+            >
+              Track by Order Number
+            </button>
+            <button
+              type="button"
+              onClick={() => setTrackingMethod('awb')}
+              className={`flex-1 px-4 py-2 text-sm font-medium 
+                ${trackingMethod === 'awb' 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}
+            >
+              Track by AWB Number
+            </button>
+          </div>
+        </div>
+        
+        {trackingMethod === 'order' ? (
+          <form onSubmit={trackOrder} className="flex flex-col md:flex-row gap-4">
+            <div className="flex-grow">
+              <label htmlFor="orderNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                Order Number
+              </label>
+              <input
+                type="text"
+                id="orderNumber"
+                value={orderNumber}
+                onChange={(e) => setOrderNumber(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your order number"
+                disabled={loading}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed md:self-end"
+            >
+              {loading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Tracking...
+                </span>
+              ) : 'Track Order'}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={trackShipment} className="flex flex-col md:flex-row gap-4">
+            <div className="flex-grow">
+              <label htmlFor="awbNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                AWB Number
+              </label>
+              <input
               type="text"
-              id="orderNumber"
-              value={orderNumber}
-              onChange={(e) => setOrderNumber(e.target.value)}
+              id="awbNumber"
+              value={awbNumber}
+              onChange={(e) => setAwbNumber(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your order number"
+              placeholder="Enter AWB/tracking number"
               disabled={loading}
             />
           </div>
@@ -645,51 +1068,52 @@ const OrderTracking = () => {
                 </svg>
                 Tracking...
               </span>
-            ) : 'Track Order'}
+            ) : 'Track Shipment'}
           </button>
         </form>
-        
-        {error && (
-          <div className="mt-6 p-4 bg-red-50 text-red-700 rounded-md">
-            <p>{error}</p>
-          </div>
-        )}
-        
-        {trackingInfo && (
-          <div className="mt-6">
-            <div className="p-4 bg-gray-50 rounded-md">
-              <h2 className="text-lg font-medium">Order #{trackingInfo.order_number}</h2>
-              <p className="text-sm text-gray-500 mt-1">Placed on {formatDate(trackingInfo.order_date)}</p>
-              
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">Current Status</p>
-                  <p className="text-sm font-medium">{trackingInfo.status}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Current Location</p>
-                  <p className="text-sm font-medium">{trackingInfo.current_location || 'N/A'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Expected Delivery</p>
-                  <p className="text-sm font-medium">{trackingInfo.expected_delivery || 'N/A'}</p>
-                </div>
+      )}
+      
+      {error && (
+        <div className="mt-6 p-4 bg-red-50 text-red-700 rounded-md">
+          <p>{error}</p>
+        </div>
+      )}
+      
+      {trackingInfo && (
+        <div className="mt-6">
+          <div className="p-4 bg-gray-50 rounded-md">
+            <h2 className="text-lg font-medium">Order #{trackingInfo.order_number}</h2>
+            <p className="text-sm text-gray-500 mt-1">Placed on {formatDate(trackingInfo.order_date)}</p>
+            
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Current Status</p>
+                <p className="text-sm font-medium">{trackingInfo.status}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Current Location</p>
+                <p className="text-sm font-medium">{trackingInfo.current_location || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Expected Delivery</p>
+                <p className="text-sm font-medium">{trackingInfo.expected_delivery || 'N/A'}</p>
               </div>
             </div>
-            
-            {renderTrackingSteps()}
-            
-            {renderShipmentDetails()}
-            
-            <div className="mt-6 p-4 bg-gray-50 rounded-md">
-              <h3 className="font-medium text-gray-700">Shipping Address</h3>
-              <p className="text-sm mt-1">{trackingInfo.shipping_address}</p>
-            </div>
           </div>
-        )}
-      </div>
+          
+          {renderTrackingSteps()}
+          
+          {renderShipmentDetails()}
+          
+          <div className="mt-6 p-4 bg-gray-50 rounded-md">
+            <h3 className="font-medium text-gray-700">Shipping Address</h3>
+            <p className="text-sm mt-1">{trackingInfo.shipping_address}</p>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
 };
 
 export default OrderTracking;
