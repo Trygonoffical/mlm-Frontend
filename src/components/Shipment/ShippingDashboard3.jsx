@@ -32,16 +32,16 @@ const mockPendingOrders = [
   { id: 3, order: 'ORD765432', customer: 'Alice Johnson', date: '2023-08-15', amount: 1800 },
 ];
 
-const statusColors = {
-  'Pending': 'bg-yellow-100 text-yellow-800',
-  'Booked': 'bg-blue-100 text-blue-800',
-  'In Transit': 'bg-purple-100 text-purple-800',
-  'Out for Delivery': 'bg-indigo-100 text-indigo-800',
-  'Delivered': 'bg-green-100 text-green-800',
-  'Failed Delivery': 'bg-orange-100 text-orange-800',
-  'Returned': 'bg-red-100 text-red-800',
-  'Cancelled': 'bg-gray-100 text-gray-800',
-};
+// const statusColors = {
+//   'Pending': 'bg-yellow-100 text-yellow-800',
+//   'Booked': 'bg-blue-100 text-blue-800',
+//   'In Transit': 'bg-purple-100 text-purple-800',
+//   'Out for Delivery': 'bg-indigo-100 text-indigo-800',
+//   'Delivered': 'bg-green-100 text-green-800',
+//   'Failed Delivery': 'bg-orange-100 text-orange-800',
+//   'Returned': 'bg-red-100 text-red-800',
+//   'Cancelled': 'bg-gray-100 text-gray-800',
+// };
 
 const ShippingDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -67,6 +67,29 @@ const ShippingDashboard = () => {
   });
   const { token } = getTokens();
 
+  // New state for tracking and details modals
+  const [trackingModal, setTrackingModal] = useState({
+    isOpen: false,
+    shipmentId: null,
+    awbNumber: null,
+    trackingData: null,
+    loading: false
+  });
+  
+  const [detailsModal, setDetailsModal] = useState({
+    isOpen: false,
+    shipment: null
+  });
+  const [shipments, setShipments] = useState([]);
+
+  // Implement show details function
+  const handleShowDetails = (shipment) => {
+    console.log('shipment details - ', shipment)
+    setDetailsModal({
+      isOpen: true,
+      shipment
+    });
+  };
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;  // Adjust based on your API prefix
 
   
@@ -95,7 +118,7 @@ const ShippingDashboard = () => {
     recent_shipments: [],
     pending_orders: []
   });
-  const [shipments, setShipments] = useState([]);
+
   const [pendingOrders, setPendingOrders] = useState([]);
   const [configData, setConfigData] = useState({
     email: '',
@@ -189,22 +212,57 @@ useEffect(() => {
   // }, [activeTab]);
   
   // Load dashboard data
+  // const loadDashboardData = async () => {
+  //   setLoading(prev => ({ ...prev, dashboard: true }));
+  //   const data = await fetchShippingStats();
+  //   if (data && data.success) {
+  //     console.log('order data - ', data)
+  //     setDashboardData(data);
+  //   }
+  //   setLoading(prev => ({ ...prev, dashboard: false }));
+  // };
   const loadDashboardData = async () => {
     setLoading(prev => ({ ...prev, dashboard: true }));
     const data = await fetchShippingStats();
+    console.log('Dashboard data received:', data);
     if (data && data.success) {
-      console.log('order data - ', data)
-      setDashboardData(data);
+      // Ensure all expected properties exist
+      const safeData = {
+        status_stats: data.status_stats || {},
+        courier_stats: data.courier_stats || {},
+        recent_shipments: data.recent_shipments || [],
+        pending_orders: data.pending_orders || []
+      };
+      setDashboardData(safeData);
     }
     setLoading(prev => ({ ...prev, dashboard: false }));
   };
 
   // Load shipments based on filters
+  // const loadShipments = async () => {
+  //   setLoading(prev => ({ ...prev, shipments: true }));
+  //   const data = await fetchShipments(statusFilter, courierFilter, searchQuery);
+  //   if (data) {
+  //     setShipments(data.results || []);
+  //   }
+  //   setLoading(prev => ({ ...prev, shipments: false }));
+  // };
+
   const loadShipments = async () => {
     setLoading(prev => ({ ...prev, shipments: true }));
     const data = await fetchShipments(statusFilter, courierFilter, searchQuery);
+    console.log('Shipments data received:', data); // Add this
     if (data) {
-      setShipments(data.results || []);
+      // Check the structure of data
+      if (Array.isArray(data)) {
+        setShipments(data);
+      } else if (data.results && Array.isArray(data.results)) {
+        setShipments(data.results);
+      } else {
+        // Handle other possible structures or log error
+        console.error('Unexpected shipments data structure:', data);
+        setShipments([]);
+      }
     }
     setLoading(prev => ({ ...prev, shipments: false }));
   };
@@ -468,16 +526,28 @@ const handleCreateShipment = async (e) => {
   
   try {
     console.log('shipment Data before sending -', shipmentData)
-    const response = await createShipment(shipmentData);
-    
+    // const response = await createShipment(shipmentData);
+    const response = await fetch(`${API_BASE_URL}/shipments/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(shipmentData) // Using our simplified version for our API
+    });
+
     console.log('Response received:', response);
-    
-    if (response.success) {
+
+    if (response.ok) {
       setNotification({
         type: 'success',
         message: 'Shipment created successfully'
       });
       setShipmentModal({...shipmentModal, isOpen: false});
+      loadDashboardData();
+      loadShipments();
+      loadPendingOrders();
+      toast.success('Shipment created successfully');
       refreshData();
     } else {
       setNotification({
@@ -501,23 +571,91 @@ const handleCreateShipment = async (e) => {
 
   
 
-  // Handle track shipment
-  const handleTrackShipment = async (shipmentId) => {
-    const response = await trackShipment(shipmentId);
+// Define status colors including QuixGo-specific statuses
+const statusColors = {
+  'PENDING': 'bg-yellow-100 text-yellow-800',
+  'BOOKED': 'bg-blue-100 text-blue-800',
+  'PICKED_UP': 'bg-blue-100 text-blue-800',
+  'IN_TRANSIT': 'bg-purple-100 text-purple-800',
+  'OUT_FOR_DELIVERY': 'bg-indigo-100 text-indigo-800',
+  'DELIVERED': 'bg-green-100 text-green-800',
+  'FAILED_DELIVERY': 'bg-orange-100 text-orange-800',
+  'RETURNED': 'bg-red-100 text-red-800',
+  'CANCELLED': 'bg-gray-100 text-gray-800',
+  // QuixGo-specific statuses
+  'Manifested': 'bg-blue-100 text-blue-800',
+  'Picked Up': 'bg-blue-100 text-blue-800',
+  'In Transit': 'bg-purple-100 text-purple-800',
+  'Out For Delivery': 'bg-indigo-100 text-indigo-800',
+  'Delivered': 'bg-green-100 text-green-800',
+  'Undelivered': 'bg-orange-100 text-orange-800',
+  'RTO': 'bg-red-100 text-red-800',
+  'Cancelled': 'bg-gray-100 text-gray-800',
+};
+
+// Updated Track Shipment handler
+const handleTrackShipment = async (shipmentId, awbNumber) => {
+  // Show tracking modal with loading state
+  setTrackingModal({
+    isOpen: true,
+    shipmentId,
+    awbNumber,
+    trackingData: null,
+    loading: true
+  });
+  
+  try {
+    console.log(`Tracking shipment ID: ${shipmentId}, AWB: ${awbNumber}`);
     
-    if (response.success) {
-      setNotification({
-        type: 'success',
-        message: 'Shipment tracked successfully'
-      });
-      refreshData();
-    } else {
-      setNotification({
-        type: 'error',
-        message: response.message || 'Failed to track shipment'
-      });
+    // Make the API request
+    const response = await fetch(`${API_BASE_URL}/shipments/${shipmentId}/track/`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    // Check for HTTP errors
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Tracking API error: ${response.status} ${response.statusText}`);
+      console.error(`Error response: ${errorText}`);
+      throw new Error(`Failed to track shipment: ${response.statusText}`);
     }
-  };
+    
+    // Parse the JSON response
+    const data = await response.json();
+    console.log('Tracking API response:', data);
+    
+    // Update the modal with tracking data
+    setTrackingModal(prev => ({
+      ...prev,
+      trackingData: data,
+      loading: false
+    }));
+    
+    // Show success message (only if modal wasn't already open)
+    if (!trackingModal.isOpen) {
+      toast.success('Shipment tracking updated successfully');
+    }
+    
+    // Refresh the data to update any status changes
+    refreshData();
+    
+  } catch (error) {
+    console.error('Error tracking shipment:', error);
+    
+    // Update modal with error state
+    setTrackingModal(prev => ({
+      ...prev,
+      loading: false
+    }));
+    
+    // Show error message
+    toast.error(`Failed to track shipment: ${error.message}`);
+  }
+};
 
   // Handle cancel shipment
   const handleCancelShipment = async (shipmentId) => {
@@ -579,6 +717,26 @@ const fetchShippingStats = async () => {
   }
 };
 
+// const fetchShipments = async (status = null, courier = null, search = '') => {
+//   let queryParams = new URLSearchParams();
+//   if (status && status !== 'All') queryParams.append('status', status);
+//   if (courier && courier !== 'All') queryParams.append('courier', courier);
+//   if (search) queryParams.append('search', search);
+  
+//   try {
+//     const response = await fetch(`${API_BASE_URL}/shipments/?${queryParams}`, {
+//       headers: {
+//         'Authorization': `Bearer ${token}`
+//       }
+//     });
+//     if (!response.ok) throw new Error('Failed to fetch shipments');
+//     return await response.json();
+//   } catch (error) {
+//     console.error('Error fetching shipments:', error);
+//     return { results: [] };
+//   }
+// };
+
 const fetchShipments = async (status = null, courier = null, search = '') => {
   let queryParams = new URLSearchParams();
   if (status && status !== 'All') queryParams.append('status', status);
@@ -591,8 +749,17 @@ const fetchShipments = async (status = null, courier = null, search = '') => {
         'Authorization': `Bearer ${token}`
       }
     });
-    if (!response.ok) throw new Error('Failed to fetch shipments');
-    return await response.json();
+    
+    if (!response.ok) {
+      console.error(`Error fetching shipments: ${response.status} ${response.statusText}`);
+      const errorText = await response.text();
+      console.error(`Response body: ${errorText}`);
+      return { results: [] };
+    }
+    
+    const data = await response.json();
+    console.log('Raw shipments API response:', data);
+    return data;
   } catch (error) {
     console.error('Error fetching shipments:', error);
     return { results: [] };
@@ -891,13 +1058,13 @@ const [addressModal, setAddressModal] = useState({
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             <button 
                                 className="text-indigo-600 hover:text-indigo-900 mr-3"
-                                onClick={() => handleTrackShipment(shipment.id)}
+                                onClick={() => handleTrackShipment(shipment.id, shipment.awb_number)}
                             >
                                 Track
                             </button>
                             <button 
                                 className="text-gray-600 hover:text-gray-900"
-                                onClick={() => {/* Show details modal */}}
+                                onClick={() => handleShowDetails(shipment)}
                             >
                                 Details
                             </button>
@@ -1031,7 +1198,7 @@ const [addressModal, setAddressModal] = useState({
                             )}
                             <button 
                             className="text-gray-600 hover:text-gray-900"
-                            onClick={() => {/* Show details modal */}}
+                            onClick={() => handleShowDetails(shipment)}
                             >
                             Details
                             </button>
@@ -1337,6 +1504,287 @@ const [addressModal, setAddressModal] = useState({
               </div>
             </div>
           )}
+
+
+
+// Updated Tracking Modal Component
+{trackingModal.isOpen && (
+  <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-medium">
+          Tracking Details for AWB: {trackingModal.awbNumber || 'Unknown'}
+        </h3>
+        <button 
+          onClick={() => setTrackingModal({...trackingModal, isOpen: false})}
+          className="text-gray-400 hover:text-gray-500"
+        >
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      {trackingModal.loading ? (
+        // Loading state
+        <div className="py-10 text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <p className="mt-2 text-gray-500">Tracking shipment...</p>
+        </div>
+      ) : trackingModal.trackingData && trackingModal.trackingData.success ? (
+        // Successfully loaded tracking data
+        <div className="space-y-4">
+          {/* Current Status */}
+          <div className="bg-indigo-50 p-4 rounded-md">
+            <h4 className="font-medium">Current Status</h4>
+            <p className="text-lg font-semibold text-indigo-700 mt-1">
+              {trackingModal.trackingData.current_status || trackingModal.trackingData.status || 'Unknown'}
+            </p>
+            <p className="text-sm text-gray-600 mt-1">
+              Last Updated: {trackingModal.trackingData.last_updated ? 
+                new Date(trackingModal.trackingData.last_updated).toLocaleString() : 'N/A'}
+            </p>
+          </div>
+          
+          {/* Tracking Link */}
+          {trackingModal.trackingData.tracking_link && (
+            <div className="mt-2">
+              <a 
+                href={trackingModal.trackingData.tracking_link} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="inline-flex items-center text-indigo-600 hover:text-indigo-800"
+              >
+                Open courier tracking page <ExternalLink className="ml-1 h-4 w-4" />
+              </a>
+            </div>
+          )}
+          
+          {/* Status Timeline */}
+          <div className="mt-4">
+            <h4 className="font-medium mb-2">Status Timeline</h4>
+            {trackingModal.trackingData.status_history && 
+             trackingModal.trackingData.status_history.length > 0 ? (
+              <div className="border rounded-md divide-y">
+                {trackingModal.trackingData.status_history.map((update, idx) => (
+                  <div key={idx} className="p-3 hover:bg-gray-50">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          statusColors[update.status || update.statusName] || 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {update.status || update.statusName || 'Unknown'}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500">
+                        {update.timestamp ? new Date(update.timestamp).toLocaleString() : 
+                         update.updateDate ? new Date(update.updateDate).toLocaleString() : 'N/A'}
+                      </p>
+                    </div>
+                    <p className="mt-1 text-sm">{update.details || update.comment || 'No additional details'}</p>
+                    {(update.location || update.locationName) && (
+                      <div className="mt-1 flex items-center text-sm text-gray-600">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        {update.locationName || update.location || 'Unknown location'}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500">No status updates available</p>
+            )}
+          </div>
+        </div>
+      ) : (
+        // Error state or no data
+        <div className="py-8 text-center text-gray-500">
+          <AlertCircle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+          <p>Unable to fetch tracking information</p>
+          <p className="text-sm text-red-500 mt-2">
+            {trackingModal.trackingData?.message || 'No tracking data available'}
+          </p>
+          <button 
+            onClick={() => handleTrackShipment(trackingModal.shipmentId, trackingModal.awbNumber)}
+            className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+          >
+            Retry Tracking
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
+          {/* Shipment Details Modal */}
+      {detailsModal.isOpen && detailsModal.shipment && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">
+                Shipment Details
+              </h3>
+              <button 
+                onClick={() => setDetailsModal({...detailsModal, isOpen: false})}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              {/* Shipment Info */}
+              <div className="bg-gray-50 rounded-md p-4">
+                <h4 className="text-sm uppercase text-gray-500 font-medium mb-2">Shipment Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-500">AWB Number</p>
+                    <p className="font-medium">{detailsModal.shipment.awb_number || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Status</p>
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      statusColors[detailsModal.shipment.status] || 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {detailsModal.shipment.status || 'Unknown'}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Courier</p>
+                    <p className="font-medium">{detailsModal.shipment.courier_name || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Service Type</p>
+                    <p className="font-medium">
+                      {detailsModal.shipment.service_type === 'SF' ? 'Surface' : 
+                       detailsModal.shipment.service_type === 'EXP' ? 'Express' : 
+                       detailsModal.shipment.service_type || 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Created On</p>
+                    <p className="font-medium">
+                      {detailsModal.shipment.created_at ? 
+                        new Date(detailsModal.shipment.created_at).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Updated On</p>
+                    <p className="font-medium">
+                      {detailsModal.shipment.updated_at ? 
+                        new Date(detailsModal.shipment.updated_at).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Package Details */}
+              <div>
+                <h4 className="text-sm uppercase text-gray-500 font-medium mb-2">Package Details</h4>
+                <div className="bg-white border rounded-md p-4">
+                  <div className="grid grid-cols-4 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Weight</p>
+                      <p className="font-medium">{detailsModal.shipment.weight} kg</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Length</p>
+                      <p className="font-medium">{detailsModal.shipment.length} cm</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Width</p>
+                      <p className="font-medium">{detailsModal.shipment.width} cm</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Height</p>
+                      <p className="font-medium">{detailsModal.shipment.height} cm</p>
+                    </div>
+                  </div>
+                  
+                  {detailsModal.shipment.is_cod && (
+                    <div className="mt-3 pt-3 border-t">
+                      <p className="text-sm text-gray-500">COD Amount</p>
+                      <p className="font-medium">₹{detailsModal.shipment.cod_amount}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Order Information */}
+              {/* {detailsModal.shipment.order && (
+                <div>
+                  <h4 className="text-sm uppercase text-gray-500 font-medium mb-2">Order Information</h4>
+                  <div className="bg-white border rounded-md p-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-500">Order Number</p>
+                        <p className="font-medium">{detailsModal.shipment.order.order_number}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Order Date</p>
+                        <p className="font-medium">
+                          {new Date(detailsModal.shipment.order.order_date).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Order Status</p>
+                        <p className="font-medium">{detailsModal.shipment.order.status}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Order Amount</p>
+                        <p className="font-medium">₹{detailsModal.shipment.order.final_amount}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )} */}
+              
+              {/* Actions */}
+              <div className="flex justify-end space-x-3 pt-2">
+                {detailsModal.shipment.status !== 'CANCELLED' && 
+                 detailsModal.shipment.status !== 'DELIVERED' && (
+                  <>
+                    <button 
+                      className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                      onClick={() => {
+                        setDetailsModal({...detailsModal, isOpen: false});
+                        handleTrackShipment(detailsModal.shipment.id, detailsModal.shipment.awb_number);
+                        // handleTrackShipment(shipment.id, shipment.awb_number)}
+                      }}
+                    >
+                      <Truck className="h-4 w-4 mr-2" />
+                      Track
+                    </button>
+                    
+                    {detailsModal.shipment.status !== 'RETURNED' && (
+                      <button 
+                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700"
+                        onClick={() => {
+                          setDetailsModal({...detailsModal, isOpen: false});
+                          handleCancelShipment(detailsModal.shipment.id);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </>
+                )}
+                
+                <button 
+                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                  onClick={() => setDetailsModal({...detailsModal, isOpen: false})}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
       </div>
   );
 };
