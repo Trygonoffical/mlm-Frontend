@@ -24,7 +24,7 @@ const HomeAbout = () => {
                     <img
                       src={homeAbout.left_image}
                       alt="Herbal supplements with yellow flowers"
-                      className="w-full h-full  rounded-lg"
+                      className=" rounded-lg"
                     />
                   </div>
 
