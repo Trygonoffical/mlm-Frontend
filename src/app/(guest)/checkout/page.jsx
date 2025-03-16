@@ -51,12 +51,13 @@ const [formData, setFormData] = useState({
     subTotal, 
     totalGST,
     total,
+    shipping,
     totalBPPoints 
   } = useSelector((state) => state.cart);
 
   // Calculate shipping and final total
-  const shipping = subTotal > 1000 ? 0 : 0;
-  const finalTotal = total + shipping;
+  // const shipping = subTotal > 1000 ? 0 : 0;
+  const finalTotal = total + shipping.totalShippingCost;
 
   
 
@@ -348,9 +349,18 @@ const [formData, setFormData] = useState({
                   <span>GST</span>
                   <span>₹{totalGST}</span>
                 </div>
-                <div className="flex justify-between text-gray-600">
+                {/* <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
                   <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
+                </div> */}
+                <div className="flex justify-between py-2">
+                  <span>Shipping:</span>
+                  <span>
+                    {shipping.isFreeShipping 
+                      ? 'Free'
+                      : `₹${shipping.totalShippingCost.toFixed(2)}`
+                    }
+                  </span>
                 </div>
                 {/* {totalBPPoints > 0 && (
                   <div className="flex justify-between text-blue-600">

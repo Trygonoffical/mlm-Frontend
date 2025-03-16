@@ -1,10 +1,10 @@
 'use client'
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Minus, Plus, X, Truck, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeItemFromCart, updateQuantity } from '@/redux/slices/cartSlice';
+import { removeItemFromCart, updateQuantity, updateShippingConfig } from '@/redux/slices/cartSlice';
 import Image from 'next/image';
 import ShippingBenefits from '@/components/Fotterfeatures/ShippingBenefits';
 
@@ -16,13 +16,38 @@ const CartPage = () => {
     subTotal, 
     totalGST,
     total,
+    shipping,
     totalBPPoints 
   } = useSelector((state) => state.cart);
 
+
+  // Add to your Cart.js component - at the beginning of the component
+useEffect(() => {
+  // Fetch shipping configuration when cart page loads
+  const fetchShippingConfig = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public-shipping-rates/`);
+      if (response.ok) {
+        const data = await response.json();
+        // Update Redux store with shipping config
+        dispatch(updateShippingConfig({
+          isFreeShipping: data.is_free_shipping,
+          baseRate: data.shipping_cost,
+          taxPercentage: data.shipping_tax_percentage
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching shipping config:', error);
+    }
+  };
+  
+  fetchShippingConfig();
+}, [dispatch]);
+
   // Constants
   const FREE_SHIPPING_THRESHOLD = 0;
-  const shipping = subTotal > FREE_SHIPPING_THRESHOLD ? 0 : 0;
-  const finalTotal = total + shipping;
+  // const shipping = subTotal > FREE_SHIPPING_THRESHOLD ? 0 : 0;
+  const finalTotal = total + shipping.totalShippingCost;
 
   // Update quantity
   const handleQuantityChange = (itemId, selectedAttributes, change) => {
@@ -160,9 +185,19 @@ const CartPage = () => {
                   <span>GST</span>
                   <span>₹{totalGST}</span>
                 </div>
-                <div className="flex justify-between text-gray-600">
+                {/* <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
                   <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
+                </div> */}
+                {/* Add this to your cart summary */}
+                <div className="flex justify-between py-2">
+                  <span>Shipping:</span>
+                  <span>
+                    {shipping.isFreeShipping 
+                      ? 'Free'
+                      : `₹${shipping.totalShippingCost.toFixed(2)}`
+                    }
+                  </span>
                 </div>
                 {/* {totalBPPoints > 0 && (
                   <div className="flex justify-between text-blue-600">
@@ -177,7 +212,7 @@ const CartPage = () => {
                   </div>
                 </div>
 
-                {shipping === 0 ? (
+                {/* {shipping.isFreeShipping ? (
                   <div className="flex items-center gap-2 text-green-600 text-sm">
                     <Truck className="w-4 h-4" />
                     <span>Yay! You get free shipping</span>
@@ -186,7 +221,7 @@ const CartPage = () => {
                   <div className="text-sm text-gray-500">
                     Add ₹{FREE_SHIPPING_THRESHOLD - subTotal} more for free shipping
                   </div>
-                )}
+                )} */}
 
                 <Link 
                   href="/checkout"

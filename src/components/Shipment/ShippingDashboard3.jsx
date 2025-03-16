@@ -32,17 +32,6 @@ const mockPendingOrders = [
   { id: 3, order: 'ORD765432', customer: 'Alice Johnson', date: '2023-08-15', amount: 1800 },
 ];
 
-// const statusColors = {
-//   'Pending': 'bg-yellow-100 text-yellow-800',
-//   'Booked': 'bg-blue-100 text-blue-800',
-//   'In Transit': 'bg-purple-100 text-purple-800',
-//   'Out for Delivery': 'bg-indigo-100 text-indigo-800',
-//   'Delivered': 'bg-green-100 text-green-800',
-//   'Failed Delivery': 'bg-orange-100 text-orange-800',
-//   'Returned': 'bg-red-100 text-red-800',
-//   'Cancelled': 'bg-gray-100 text-gray-800',
-// };
-
 const ShippingDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
@@ -188,6 +177,8 @@ useEffect(() => {
     loadPendingOrders();
     loadPickupAddresses();
 
+  }else if (activeTab === 'shipping-config') {
+    loadShippingConfig();
   } else if (activeTab === 'settings') {
     loadConfigData();
     loadPickupAddresses();
@@ -817,94 +808,94 @@ const fetchPendingOrders = async (search = '') => {
   }
 };
 
-const saveShippingConfig = async (configData) => {
-  try {
-    // const response = await fetch(`${API_BASE_URL}/config/`, { https://dev.api.quixgo.com/clientApi/login
-      const response = await fetch(` https://dev.api.quixgo.com/clientApi/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(configData)
-    });
+// const saveShippingConfig = async (configData) => {
+//   try {
+//     // const response = await fetch(`${API_BASE_URL}/config/`, { https://dev.api.quixgo.com/clientApi/login
+//       const response = await fetch(` https://dev.api.quixgo.com/clientApi/login`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(configData)
+//     });
     
-    const data = await response.json();
-    if(response.ok) {
-      toast.success('Login successfully');
-      console.log('config data - ', data)
-      return data;
-    }else{
-      toast.error('Error');
-    }
-  } catch (error) {
-    console.error('Error saving shipping config:', error);
+//     const data = await response.json();
+//     if(response.ok) {
+//       toast.success('Login successfully');
+//       console.log('config data - ', data)
+//       return data;
+//     }else{
+//       toast.error('Error');
+//     }
+//   } catch (error) {
+//     console.error('Error saving shipping config:', error);
    
-    return { success: false, message: 'Network error' };
-  }
-};
+//     return { success: false, message: 'Network error' };
+//   }
+// };
 
 
 
-const createShipment = async (shipmentData) => {
-  console.log('shipmentData at create shipmentData -', shipmentData)
+// const createShipment = async (shipmentData) => {
+//   console.log('shipmentData at create shipmentData -', shipmentData)
 
-  try {
-    // Get pickup address details
-    // const pickupAddress = pickupAddresses.find(addr => addr.id === shipmentData.pickup_address);
-    // if (!pickupAddress) {
-    //   return { success: false, message: 'Pickup address not found' };
-    // }
+//   try {
+//     // Get pickup address details
+//     // const pickupAddress = pickupAddresses.find(addr => addr.id === shipmentData.pickup_address);
+//     // if (!pickupAddress) {
+//     //   return { success: false, message: 'Pickup address not found' };
+//     // }
     
-    // Make the API call
-    const response = await fetch(`${API_BASE_URL}/shipments/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(shipmentData) // Using our simplified version for our API
-    });
+//     // Make the API call
+//     const response = await fetch(`${API_BASE_URL}/shipments/`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${token}`
+//       },
+//       body: JSON.stringify(shipmentData) // Using our simplified version for our API
+//     });
     
-    return await response.json();
+//     return await response.json();
     
-  } catch (error) {
-    console.error('Error creating shipment:', error);
-    return { success: false, message: 'Network error' };
-  }
-};
-const trackShipment = async (shipmentId) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/shipments/${shipmentId}/track/`, {
-      method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-  });
+//   } catch (error) {
+//     console.error('Error creating shipment:', error);
+//     return { success: false, message: 'Network error' };
+//   }
+// };
+// const trackShipment = async (shipmentId) => {
+//   try {
+//     const response = await fetch(`${API_BASE_URL}/shipments/${shipmentId}/track/`, {
+//       method: 'POST',
+//         headers: {
+//           'Authorization': `Bearer ${token}`
+//         }
+//   });
     
-    return await response.json();
-  } catch (error) {
-    console.error('Error tracking shipment:', error);
-    return { success: false, message: 'Network error' };
-  }
-};
+//     return await response.json();
+//   } catch (error) {
+//     console.error('Error tracking shipment:', error);
+//     return { success: false, message: 'Network error' };
+//   }
+// };
 
-const cancelShipment = async (shipmentId, reason) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/shipments/${shipmentId}/cancel/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ reason })
-    });
+// const cancelShipment = async (shipmentId, reason) => {
+//   try {
+//     const response = await fetch(`${API_BASE_URL}/shipments/${shipmentId}/cancel/`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${token}`
+//       },
+//       body: JSON.stringify({ reason })
+//     });
     
-    return await response.json();
-  } catch (error) {
-    console.error('Error cancelling shipment:', error);
-    return { success: false, message: 'Network error' };
-  }
-};
+//     return await response.json();
+//   } catch (error) {
+//     console.error('Error cancelling shipment:', error);
+//     return { success: false, message: 'Network error' };
+//   }
+// };
 
 
   // Add state for the address modal
@@ -928,6 +919,66 @@ const [addressModal, setAddressModal] = useState({
     },
     addressId: null
   });
+
+  // Add state for shipping configuration
+const [shippingConfig, setShippingConfig] = useState({
+  isFreeShipping: false,
+  baseRate: 100,  // Default shipping rate (in rupees)
+  taxPercentage: 18,  // Default GST percentage for shipping
+  isActive: true
+});
+
+// Add a function to load the shipping configuration
+const loadShippingConfig = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/shipping-rates/`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setShippingConfig({
+        isFreeShipping: data.is_free_shipping || false,
+        baseRate: data.base_rate || 100,
+        taxPercentage: data.tax_percentage || 18,
+        isActive: data.is_active || true
+      });
+    }
+  } catch (error) {
+    console.error('Error loading shipping configuration:', error);
+    // Keep the default values
+  }
+};
+
+// Add function to save shipping configuration
+const saveShippingConfig = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/shipping-rates/`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        is_free_shipping: shippingConfig.isFreeShipping,
+        base_rate: shippingConfig.baseRate,
+        tax_percentage: shippingConfig.taxPercentage,
+        is_active: shippingConfig.isActive
+      })
+    });
+
+    if (response.ok) {
+      toast.success('Shipping configuration saved successfully');
+    } else {
+      toast.error('Failed to save shipping configuration');
+    }
+  } catch (error) {
+    console.error('Error saving shipping configuration:', error);
+    toast.error('An error occurred while saving');
+  }
+};
   
 
 
@@ -971,6 +1022,13 @@ const [addressModal, setAddressModal] = useState({
             onClick={() => setActiveTab('pending')}
           >
             Pending Orders
+          </button>
+
+          <button
+            className={`py-3 px-1 ${activeTab === 'shipping-config' ? 'border-b-2 border-indigo-500 text-indigo-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
+            onClick={() => setActiveTab('shipping-config')}
+          >
+            Shipping Rates
           </button>
           {/* <button
             className={`py-3 px-1 ${activeTab === 'settings' ? 'border-b-2 border-indigo-500 text-indigo-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
@@ -1366,6 +1424,143 @@ const [addressModal, setAddressModal] = useState({
         </div>
         )}
 
+      {/* // Now add the UI for the shipping-config tab */}
+      {activeTab === 'shipping-config' && (
+        <div className="bg-white rounded-lg shadow">
+          <div className="p-4 border-b border-gray-200">
+            <h3 className="text-lg font-medium">Shipping Rate Configuration</h3>
+            <p className="text-sm text-gray-500 mt-1">
+              Configure shipping rates and taxes that will apply to all customer orders
+            </p>
+          </div>
+          
+          <div className="p-6">
+            <div className="space-y-6">
+              {/* Free Shipping Toggle */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-base font-medium text-gray-900">Enable Free Shipping</h4>
+                  <p className="text-sm text-gray-500">When enabled, no shipping charges will be applied to orders</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={shippingConfig.isFreeShipping}
+                    onChange={() => setShippingConfig({
+                      ...shippingConfig,
+                      isFreeShipping: !shippingConfig.isFreeShipping
+                    })}
+                    className="sr-only peer" 
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+              
+              {/* Base Shipping Rate */}
+              <div className={shippingConfig.isFreeShipping ? 'opacity-50' : ''}>
+                <h4 className="text-base font-medium text-gray-900 mb-2">Base Shipping Rate</h4>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm">₹</span>
+                  </div>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    disabled={shippingConfig.isFreeShipping}
+                    className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                    placeholder="0.00"
+                    value={shippingConfig.baseRate}
+                    onChange={(e) => setShippingConfig({
+                      ...shippingConfig,
+                      baseRate: parseFloat(e.target.value) || 0
+                    })}
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm">INR</span>
+                  </div>
+                </div>
+                <p className="mt-1 text-sm text-gray-500">Base shipping rate before taxes</p>
+              </div>
+              
+              {/* Shipping Tax Percentage */}
+              <div className={shippingConfig.isFreeShipping ? 'opacity-50' : ''}>
+                <h4 className="text-base font-medium text-gray-900 mb-2">Shipping Tax Percentage</h4>
+                <div className="mt-1 relative rounded-md shadow-sm">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    disabled={shippingConfig.isFreeShipping}
+                    className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md"
+                    placeholder="0.00"
+                    value={shippingConfig.taxPercentage}
+                    onChange={(e) => setShippingConfig({
+                      ...shippingConfig,
+                      taxPercentage: parseFloat(e.target.value) || 0
+                    })}
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 sm:text-sm">%</span>
+                  </div>
+                </div>
+                <p className="mt-1 text-sm text-gray-500">GST or other tax applied to shipping</p>
+              </div>
+              
+              {/* Summary Card */}
+              <div className="bg-gray-50 p-4 rounded-md">
+                <h4 className="font-medium mb-2">Summary</h4>
+                <div className="space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Shipping Method:</span>
+                    <span className="font-medium">{shippingConfig.isFreeShipping ? 'Free Shipping' : 'Fixed Rate'}</span>
+                  </div>
+                  {!shippingConfig.isFreeShipping && (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Base Rate:</span>
+                        <span className="font-medium">₹{shippingConfig.baseRate.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Tax ({shippingConfig.taxPercentage}%):</span>
+                        <span className="font-medium">₹{(shippingConfig.baseRate * shippingConfig.taxPercentage / 100).toFixed(2)}</span>
+                      </div>
+                      <div className="pt-2 border-t border-gray-200 mt-2">
+                        <div className="flex justify-between font-medium">
+                          <span>Total Shipping Cost:</span>
+                          <span>₹{(shippingConfig.baseRate * (1 + shippingConfig.taxPercentage / 100)).toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+              
+              {/* Actions */}
+              <div className="pt-5 border-t border-gray-200 mt-8">
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onClick={loadShippingConfig}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    type="button"
+                    className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onClick={saveShippingConfig}
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
         {/* Shipment Creation Modal */}
           {shipmentModal.isOpen && (
             <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
@@ -1540,116 +1735,116 @@ const [addressModal, setAddressModal] = useState({
 
 
 
- {/* Updated Tracking Modal Component */}
-{trackingModal.isOpen && (
-  <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
-    <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium">
-          Tracking Details for AWB: {trackingModal.awbNumber || 'Unknown'}
-        </h3>
-        <button 
-          onClick={() => setTrackingModal({...trackingModal, isOpen: false})}
-          className="text-gray-400 hover:text-gray-500"
-        >
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      
-      {trackingModal.loading ? (
-        // Loading state
-        <div className="py-10 text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-          <p className="mt-2 text-gray-500">Tracking shipment...</p>
-        </div>
-      ) : trackingModal.trackingData && trackingModal.trackingData.success ? (
-        // Successfully loaded tracking data
-        <div className="space-y-4">
-          {/* Current Status */}
-          <div className="bg-indigo-50 p-4 rounded-md">
-            <h4 className="font-medium">Current Status</h4>
-            <p className="text-lg font-semibold text-indigo-700 mt-1">
-              {trackingModal.trackingData.current_status || trackingModal.trackingData.status || 'Unknown'}
-            </p>
-            <p className="text-sm text-gray-600 mt-1">
-              Last Updated: {trackingModal.trackingData.last_updated ? 
-                new Date(trackingModal.trackingData.last_updated).toLocaleString() : 'N/A'}
-            </p>
-          </div>
-          
-          {/* Tracking Link */}
-          {trackingModal.trackingData.tracking_link && (
-            <div className="mt-2">
-              <a 
-                href={trackingModal.trackingData.tracking_link} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="inline-flex items-center text-indigo-600 hover:text-indigo-800"
+      {/* Updated Tracking Modal Component */}
+      {trackingModal.isOpen && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">
+                Tracking Details for AWB: {trackingModal.awbNumber || 'Unknown'}
+              </h3>
+              <button 
+                onClick={() => setTrackingModal({...trackingModal, isOpen: false})}
+                className="text-gray-400 hover:text-gray-500"
               >
-                Open courier tracking page <ExternalLink className="ml-1 h-4 w-4" />
-              </a>
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-          )}
-          
-          {/* Status Timeline */}
-          {/* Status Timeline */}
-          {/* Status Timeline */}
-          <div className="mt-4">
-            <h4 className="font-medium mb-2">Status Timeline</h4>
-            {trackingModal.trackingData.status_history && 
-             trackingModal.trackingData.status_history.length > 0 ? (
-              <div className="border rounded-md divide-y">
-                {trackingModal.trackingData.status_history.map((update, idx) => (
-                  <div key={idx} className="p-3 hover:bg-gray-50">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          statusColors[update.status || update.statusName] || 'bg-gray-100 text-gray-800'
-                        }`}>
-                          {update.status || update.statusName || 'Unknown'}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-500">
-                        {update.timestamp ? new Date(update.timestamp).toLocaleString() : 
-                         update.updateDate ? new Date(update.updateDate).toLocaleString() : 'N/A'}
-                      </p>
-                    </div>
-                    <p className="mt-1 text-sm">{update.details || update.comment || 'No additional details'}</p>
-                    {(update.location || update.locationName) && (
-                      <div className="mt-1 flex items-center text-sm text-gray-600">
-                        <MapPin className="h-4 w-4 mr-1" />
-                        {update.locationName || update.location || 'Unknown location'}
-                      </div>
-                    )}
+            
+            {trackingModal.loading ? (
+              // Loading state
+              <div className="py-10 text-center">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                <p className="mt-2 text-gray-500">Tracking shipment...</p>
+              </div>
+            ) : trackingModal.trackingData && trackingModal.trackingData.success ? (
+              // Successfully loaded tracking data
+              <div className="space-y-4">
+                {/* Current Status */}
+                <div className="bg-indigo-50 p-4 rounded-md">
+                  <h4 className="font-medium">Current Status</h4>
+                  <p className="text-lg font-semibold text-indigo-700 mt-1">
+                    {trackingModal.trackingData.current_status || trackingModal.trackingData.status || 'Unknown'}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Last Updated: {trackingModal.trackingData.last_updated ? 
+                      new Date(trackingModal.trackingData.last_updated).toLocaleString() : 'N/A'}
+                  </p>
+                </div>
+                
+                {/* Tracking Link */}
+                {trackingModal.trackingData.tracking_link && (
+                  <div className="mt-2">
+                    <a 
+                      href={trackingModal.trackingData.tracking_link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="inline-flex items-center text-indigo-600 hover:text-indigo-800"
+                    >
+                      Open courier tracking page <ExternalLink className="ml-1 h-4 w-4" />
+                    </a>
                   </div>
-                ))}
+                )}
+                
+                {/* Status Timeline */}
+                {/* Status Timeline */}
+                {/* Status Timeline */}
+                <div className="mt-4">
+                  <h4 className="font-medium mb-2">Status Timeline</h4>
+                  {trackingModal.trackingData.status_history && 
+                  trackingModal.trackingData.status_history.length > 0 ? (
+                    <div className="border rounded-md divide-y">
+                      {trackingModal.trackingData.status_history.map((update, idx) => (
+                        <div key={idx} className="p-3 hover:bg-gray-50">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <span className={`px-2 py-1 text-xs rounded-full ${
+                                statusColors[update.status || update.statusName] || 'bg-gray-100 text-gray-800'
+                              }`}>
+                                {update.status || update.statusName || 'Unknown'}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-500">
+                              {update.timestamp ? new Date(update.timestamp).toLocaleString() : 
+                              update.updateDate ? new Date(update.updateDate).toLocaleString() : 'N/A'}
+                            </p>
+                          </div>
+                          <p className="mt-1 text-sm">{update.details || update.comment || 'No additional details'}</p>
+                          {(update.location || update.locationName) && (
+                            <div className="mt-1 flex items-center text-sm text-gray-600">
+                              <MapPin className="h-4 w-4 mr-1" />
+                              {update.locationName || update.location || 'Unknown location'}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">No status updates available</p>
+                  )}
+                </div>
               </div>
             ) : (
-              <p className="text-gray-500">No status updates available</p>
+              // Error state or no data
+              <div className="py-8 text-center text-gray-500">
+                <AlertCircle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                <p>Unable to fetch tracking information</p>
+                <p className="text-sm text-red-500 mt-2">
+                  {trackingModal.trackingData?.message || 'No tracking data available'}
+                </p>
+                <button 
+                  onClick={() => handleTrackShipment(trackingModal.shipmentId, trackingModal.awbNumber)}
+                  className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+                >
+                  Retry Tracking
+                </button>
+              </div>
             )}
           </div>
         </div>
-      ) : (
-        // Error state or no data
-        <div className="py-8 text-center text-gray-500">
-          <AlertCircle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-          <p>Unable to fetch tracking information</p>
-          <p className="text-sm text-red-500 mt-2">
-            {trackingModal.trackingData?.message || 'No tracking data available'}
-          </p>
-          <button 
-            onClick={() => handleTrackShipment(trackingModal.shipmentId, trackingModal.awbNumber)}
-            className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
-          >
-            Retry Tracking
-          </button>
-        </div>
       )}
-    </div>
-  </div>
-)}
 
           {/* Shipment Details Modal */}
       {detailsModal.isOpen && detailsModal.shipment && (

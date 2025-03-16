@@ -17,6 +17,12 @@ const initialState = {
         city: "West Delhi",
         pincode: "110015",
     },
+    shipping: {
+        isFreeShipping: false,
+        baseRate: 0,
+        taxPercentage: 0,
+        totalShippingCost: 0
+    },
     couponValue: '',
     afterCouponSubtotal: 0,
     couponMsg: '',
@@ -68,6 +74,24 @@ const cartSlice = createSlice({
             // Update cart totals, which will also update all individual item calculations
             updateCartTotals(state, mlmDiscountPercentage);
             state.isCartSidebarVisible = true;
+        },
+        updateShippingConfig: (state, action) => {
+            const { isFreeShipping, baseRate, taxPercentage } = action.payload;
+            
+            state.shipping.isFreeShipping = isFreeShipping;
+            state.shipping.baseRate = baseRate;
+            state.shipping.taxPercentage = taxPercentage;
+            
+            // Calculate shipping cost based on configuration
+            if (isFreeShipping) {
+                state.shipping.totalShippingCost = 0;
+            } else {
+                const shippingTax = parseFloat((baseRate * (taxPercentage / 100)).toFixed(2));
+                state.shipping.totalShippingCost = parseFloat((baseRate + shippingTax).toFixed(2));
+            }
+            
+            // Update total cart amount with shipping
+            updateCartTotals(state, state.cartItems[0]?.mlmDiscountPercentage || 0);
         },
 
         updateQuantity: (state, action) => {
@@ -163,6 +187,8 @@ function updateCartTotals(state, mlmDiscountPercentage = 0) {
     state.subTotal = parseFloat(
         state.cartItems.reduce((sum, item) => sum + (item.selling_price * item.qnt), 0).toFixed(2)
     );
+
+    
     
     // Calculate MLM discount if applicable
     if (mlmDiscountPercentage > 0) {
@@ -215,7 +241,10 @@ function updateCartTotals(state, mlmDiscountPercentage = 0) {
     state.totalBPPoints = state.cartItems.reduce((sum, item) => sum + (item.bp_value * item.qnt), 0);
     
     // Calculate final total (discounted subtotal + GST)
-    state.total = parseFloat((state.discountedSubTotal + state.totalGST).toFixed(2));
+    // state.total = parseFloat((state.discountedSubTotal + state.totalGST).toFixed(2));
+
+    // Calculate final total (discounted subtotal + GST + shipping)
+    state.total = parseFloat((state.discountedSubTotal + state.totalGST + state.shipping.totalShippingCost).toFixed(2));
     
     // Handle coupon if present
     if (state.coupon) {
@@ -233,6 +262,7 @@ export const {
     applyCoupon,
     clearCoupon,
     updateCartPrices,
+    updateShippingConfig,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
