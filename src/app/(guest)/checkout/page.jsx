@@ -56,8 +56,8 @@ const [formData, setFormData] = useState({
   } = useSelector((state) => state.cart);
 
   // Calculate shipping and final total
-  // const shipping = subTotal > 1000 ? 0 : 0;
-  const finalTotal = total + shipping.totalShippingCost;
+  // const shipping = subTotal > 1000 ? 0 : 0; + shipping.totalShippingCost;
+  const finalTotal = total ;
 
   
 

@@ -46,8 +46,8 @@ useEffect(() => {
 
   // Constants
   const FREE_SHIPPING_THRESHOLD = 0;
-  // const shipping = subTotal > FREE_SHIPPING_THRESHOLD ? 0 : 0;
-  const finalTotal = total + shipping.totalShippingCost;
+  // const shipping = subTotal > FREE_SHIPPING_THRESHOLD ? 0 : 0; + shipping.totalShippingCost;
+  const finalTotal = total  ;
 
   // Update quantity
   const handleQuantityChange = (itemId, selectedAttributes, change) => {
