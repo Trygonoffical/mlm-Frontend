@@ -363,6 +363,7 @@ import { addItemToCart } from '@/redux/slices/cartSlice';
 import SuccessAndReviews from '@/components/Stories/homestories';
 import FeatureProducts from '@/components/Products/FeatureProducts';
 import { notFound, useRouter } from 'next/navigation';
+import RichContentRenderer from '@/components/Editor/RichContentRenderer';
 
 const ProductDetail = ({params}) => {
     const slug = use(params).slug;
@@ -555,7 +556,11 @@ const ProductDetail = ({params}) => {
             {/* Desciption */}
             <div className="space-y-2">
               <div className="flex items-baseline gap-2">
-              <span dangerouslySetInnerHTML={{ __html: product.description }} />
+              {/* <span dangerouslySetInnerHTML={{ __html: product.description }} /> */}
+              <RichContentRenderer 
+                  content={product.description} 
+                  className="text-gray-700 leading-relaxed"
+                />
               </div>
               
             </div>
@@ -667,7 +672,11 @@ const ProductDetail = ({params}) => {
                 {selectedFaq === item.title && (
                   <div className="p-4 border-t prose max-w-none">
                     {/* {item.content} */}
-                    <div  dangerouslySetInnerHTML={{ __html: item.content }} />
+                    {/* <div  dangerouslySetInnerHTML={{ __html: item.content }} /> */}
+                    <RichContentRenderer 
+                      content={item.content} 
+                      className="text-gray-700 leading-relaxed"
+                    />
                   </div>
                 )}
               </div>
@@ -697,7 +706,11 @@ const ProductDetail = ({params}) => {
                   </button>
                   {selectedFaq === faq.id && (
                     <div className="pb-4">
-                      <span dangerouslySetInnerHTML={{ __html: faq.content }} />
+                      {/* <span dangerouslySetInnerHTML={{ __html: faq.content }} /> */}
+                      <RichContentRenderer 
+                      content={faq.content} 
+                      className="text-gray-700 leading-relaxed"
+                    />
                     </div>
                   )}
                 </div>

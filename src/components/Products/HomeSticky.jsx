@@ -3,6 +3,7 @@ import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/2
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
+import RichContentRenderer from '../Editor/RichContentRenderer';
 export default function HomeSticky() {
 
     // const products = [
@@ -39,10 +40,14 @@ export default function HomeSticky() {
             <div className="lg:pr-4">
               <div className="lg:max-w-lg">
                 <p className="text-base/7 font-semibold text-indigo-600">{homeSection.subtitle} </p>
-                <h1 className="mt-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                <h1 className="my-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
                 {homeSection.title}
                 </h1>
-                <div dangerouslySetInnerHTML={{ __html: homeSection.description }} />
+                {/* <div dangerouslySetInnerHTML={{ __html: homeSection.description }} /> */}
+                <RichContentRenderer 
+                    content={homeSection.description} 
+                    className="text-gray-700  whitespace-normal break-words w-full max-w-full leading-relaxed"
+                  />
                 
               </div>
             </div>

@@ -140,6 +140,7 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { Calendar, Clock, Share2, ArrowLeft, Facebook, Twitter, Linkedin, Copy, Check } from 'lucide-react';
 import PageHead from '@/components/Pagehead/PageHead';
+import RichContentRenderer from '@/components/Editor/RichContentRenderer';
 
 const BlogDetails = ({ params }) => {
   const [copied, setCopied] = useState(false);
@@ -313,7 +314,11 @@ const BlogDetails = ({ params }) => {
           
           {/* Content */}
           <div className="prose prose-lg max-w-none">
-            <div className='whitespace-normal break-words w-full max-w-full' dangerouslySetInnerHTML={{ __html: blog.content }} />
+            {/* <div className='whitespace-normal break-words w-full max-w-full' dangerouslySetInnerHTML={{ __html: blog.content }} /> */}
+            <RichContentRenderer 
+              content={blog.content} 
+              className="text-gray-700 whitespace-normal break-words w-full max-w-full leading-relaxed"
+            />
           </div>
           
           {/* Mobile share buttons */}

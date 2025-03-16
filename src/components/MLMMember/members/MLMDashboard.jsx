@@ -179,7 +179,7 @@ const MLMDashboard = () => {
       </div>
 
       {/* Live Commission Component */}
-      <MLMLiveCommissions memberId={dashboardData.member_id} />
+      <MLMLiveCommissions memberId={dashboardData.member_id} mlmData={dashboardData} />
 
       {/* Verification Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

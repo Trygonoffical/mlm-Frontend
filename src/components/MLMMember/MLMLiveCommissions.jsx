@@ -1298,7 +1298,7 @@ import {
   CreditCardIcon
 } from '@heroicons/react/24/outline';
 
-const MLMLiveCommissions = ({ memberId }) => {
+const MLMLiveCommissions = ({ memberId , mlmData=null }) => {
   const [commissionData, setCommissionData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -1339,7 +1339,7 @@ const MLMLiveCommissions = ({ memberId }) => {
       if (!data.status) {
         throw new Error(data.message || 'Failed to load commission data');
       }
-      
+      console.log('commistion data - ', data.commission_data)
       setCommissionData(data.commission_data);
       setCalculationTime(new Date().toLocaleTimeString());
     } catch (error) {

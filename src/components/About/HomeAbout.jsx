@@ -2,6 +2,7 @@
 
 import { ArrowRight } from 'lucide-react';
 import { useHomeData } from '@/hooks/useHomeData';
+import RichContentRenderer from '../Editor/RichContentRenderer';
 
 const HomeAbout = () => {
       const about = useHomeData('about');
@@ -33,8 +34,11 @@ const HomeAbout = () => {
                       {homeAbout.title}
                     </h2>
                     
-                    <div className="text-gray-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: homeAbout.content }} />
-                    
+                    {/* <div className="text-gray-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: homeAbout.content }} /> */}
+                    <RichContentRenderer 
+                      content={homeAbout.content} 
+                      className="text-gray-700 leading-relaxed"
+                    />
 
                     <a href='/about' className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-slate-700 to-green-800 text-white rounded-md hover:opacity-90 transition-opacity">
                       Start you business
@@ -45,7 +49,11 @@ const HomeAbout = () => {
 
                 {/* Key Segments */}
                 <div className="space-y-8">
-                  <div  dangerouslySetInnerHTML={{ __html: homeAbout.feature_content}} />
+                  {/* <div  dangerouslySetInnerHTML={{ __html: homeAbout.feature_content}} /> */}
+                  <RichContentRenderer 
+                    content={homeAbout.feature_content} 
+                    className="text-gray-700 leading-relaxed"
+                  />
                 </div>
           </div>
         )

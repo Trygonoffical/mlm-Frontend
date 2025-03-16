@@ -3,6 +3,7 @@
 import { Target, Eye } from 'lucide-react';
 import { useHomeData } from '@/hooks/useHomeData';
 import styles from './About.module.css'; 
+import RichContentRenderer from '../Editor/RichContentRenderer';
 const AboutUs = () => {
     const about = useHomeData('about');
     
@@ -38,7 +39,11 @@ const AboutUs = () => {
             <h2 className="text-3xl font-bold text-gray-800">
             {homeAbout.title}
             </h2>
-            <div  className={` space-y-4 text-gray-600 ${styles.aboutcontent}`}  dangerouslySetInnerHTML={{ __html: homeAbout.content }}  />
+            {/* <div  className={` space-y-4 text-gray-600 ${styles.aboutcontent}`}  dangerouslySetInnerHTML={{ __html: homeAbout.content }}  /> */}
+            <RichContentRenderer 
+              content={homeAbout.content} 
+              className="text-gray-700 leading-relaxed"
+            />
              
           </div>
         </div>
@@ -53,8 +58,11 @@ const AboutUs = () => {
               </div>
               <h3 className="text-2xl font-bold">Vision</h3>
             </div>
-            <div className={`text-white/90 ${styles.aboutcontent}`}  dangerouslySetInnerHTML={{ __html: homeAbout.vision_description }}   />
-              
+            {/* <div className={`text-white/90 ${styles.aboutcontent}`}  dangerouslySetInnerHTML={{ __html: homeAbout.vision_description }}   /> */}
+            <RichContentRenderer 
+              content={homeAbout.vision_description} 
+              className="text-white/90 leading-relaxed"
+            />
           </div>
 
           {/* Mission Card */}
@@ -65,7 +73,11 @@ const AboutUs = () => {
               </div>
               <h3 className="text-2xl font-bold">Mission</h3>
             </div>
-            <div className={`text-white/90 ${styles.aboutcontent}`}  dangerouslySetInnerHTML={{ __html: homeAbout.mission_description}}  />
+            {/* <div className={`text-white/90 ${styles.aboutcontent}`}  dangerouslySetInnerHTML={{ __html: homeAbout.mission_description}}  /> */}
+            <RichContentRenderer 
+              content={homeAbout.mission_description} 
+              className="text-white/90 leading-relaxed"
+            />
           </div>
         </div>
 
@@ -73,8 +85,11 @@ const AboutUs = () => {
         <div className="mt-16">
           <h2 className="text-3xl font-bold text-gray-800 mb-8">Our Business Objectives</h2>
           <div className="space-y-6 text-gray-600">
-            <div className={`text-gray-600 ${styles.aboutcontent}`}  dangerouslySetInnerHTML={{ __html: homeAbout.objective_content}}  />
-            
+            {/* <div className={`text-gray-600 ${styles.aboutcontent}`}  dangerouslySetInnerHTML={{ __html: homeAbout.objective_content}}  /> */}
+            <RichContentRenderer 
+              content={homeAbout.objective_content} 
+              className="text-gray-700 leading-relaxed"
+            />
           </div>
         </div>
       </div>
