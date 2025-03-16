@@ -281,6 +281,7 @@ import React, { useEffect, useState } from 'react';
 import { Mail, Phone, Truck, Send, MapPin } from 'lucide-react';
 import PageHead from '@/components/Pagehead/PageHead';
 import { toast } from 'react-hot-toast';
+import ShippingBenefits from '@/components/Fotterfeatures/ShippingBenefits';
 
 const ContactUs = () => {
   const [companyInfo, setCompanyInfo] = useState({
@@ -376,11 +377,11 @@ const ContactUs = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div >
       <PageHead title={'Contact Us'} />
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 pt-16 pb-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Contact Information */}
           <div className="space-y-8">
@@ -512,7 +513,7 @@ const ContactUs = () => {
         </div>
 
         {/* Shipping Benefits */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
           {shippingBenefits.map((benefit) => (
             <div
               key={benefit.id}
@@ -527,9 +528,12 @@ const ContactUs = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
+       
       </div>
+      <ShippingBenefits />
     </div>
+    
   );
 };
 

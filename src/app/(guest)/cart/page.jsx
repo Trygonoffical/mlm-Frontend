@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeItemFromCart, updateQuantity } from '@/redux/slices/cartSlice';
 import Image from 'next/image';
+import ShippingBenefits from '@/components/Fotterfeatures/ShippingBenefits';
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ const CartPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className=" bg-gray-50 py-12">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
 
@@ -205,6 +206,7 @@ const CartPage = () => {
           </div>
         </div>
       </div>
+       <ShippingBenefits />
     </div>
   );
 };

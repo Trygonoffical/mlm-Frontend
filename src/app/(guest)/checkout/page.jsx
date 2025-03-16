@@ -16,6 +16,7 @@ import { getTokens } from '@/utils/cookies';
 import AddressManager from '@/components/Profile/AddressManager';
 import PaymentHandler from '@/components/PaymentButton/PaymentHandler';
 import CustomerProfile from '@/components/Profile/CustomerProfile';
+import ShippingBenefits from '@/components/Fotterfeatures/ShippingBenefits';
 
 const CheckoutPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -404,6 +405,8 @@ const [formData, setFormData] = useState({
           </div>
         </div>
       </div>
+      <ShippingBenefits />
+
     </div>
   );
 };

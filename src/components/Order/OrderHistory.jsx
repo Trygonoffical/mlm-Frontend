@@ -253,6 +253,7 @@ const OrderHistory = () => {
       }
 
       const data = await response.json();
+      console.log('all order data - ', data)
       setOrders(data);
     } catch (error) {
       toast.error('Failed to load orders');
