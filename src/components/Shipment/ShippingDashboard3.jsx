@@ -1788,8 +1788,7 @@ const saveShippingConfig = async () => {
                   </div>
                 )}
                 
-                {/* Status Timeline */}
-                {/* Status Timeline */}
+                
                 {/* Status Timeline */}
                 <div className="mt-4">
                   <h4 className="font-medium mb-2">Status Timeline</h4>
