@@ -1,0 +1,39 @@
+.testimonial-slider .slick-track {
+    display: flex !important;
+    padding: 2rem 0;
+  }
+  .testimonial-slider .slick-slide {
+    height: inherit !important;
+    
+  }
+  .testimonial-slider .slick-slide div {
+      height: 100%;
+    }
+  .testimonial-slider .slick-dots li button:before {
+    font-size: 8px;
+    color: #f97316;
+  }
+  .testimonial-slider .slick-dots li.slick-active button:before {
+    color: #f97316;
+  }
+  .testimonial-slider .slick-prev,
+  .testimonial-slider .slick-next {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1;
+    transition: all 0.3s ease;
+  }
+  .testimonial-slider .slick-prev:hover,
+  .testimonial-slider .slick-next:hover {
+    background: #f97316;
+    color: white;
+  }
+  .testimonial-slider .slick-prev {
+    left: -50px;
+  }
+  .testimonial-slider .slick-next {
+    right: -50px;
+  }
