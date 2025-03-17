@@ -28,6 +28,7 @@ import {
   BarChart,
   Bar
 } from 'recharts';
+import AdminCommissionCalculator from '../Wallet/AdminCommissionCalculator';
 
 const AdminDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -278,6 +279,11 @@ const AdminDashboard = () => {
 
         </div>
 
+        {/* Commisio Activities */}
+        <div className="bg-white shadow-md rounded-lg p-6 mt-8">
+          <AdminCommissionCalculator />
+        </div>
+
         {/* Recent Activities */}
         <div className="bg-white shadow-md rounded-lg p-6 mt-8">
           <h3 className="text-lg font-semibold mb-4 flex items-center">
@@ -308,6 +314,10 @@ const AdminDashboard = () => {
             ))}
           </div>
         </div>
+
+
+
+
       </div>
     </div>
   );

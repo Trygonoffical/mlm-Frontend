@@ -30,7 +30,7 @@ const MLMAds = () => {
   return (
     <>
         {fullAdvertisements.map((ad )=>(
-            <div className="max-w-7xl mx-auto py-8" key={ad.id}>
+            <div className="max-w-7xl mx-auto " key={ad.id}>
                 <Link href={ad.link} > 
                     <Image src={ad.image} width={1144} height={45} className="w-full wx-auto " alt={ad.title} />
                 </Link>

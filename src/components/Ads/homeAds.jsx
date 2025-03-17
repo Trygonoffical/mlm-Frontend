@@ -20,7 +20,7 @@ const HomeAds = () => {
             const response2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/advertisements/?position=FULL_WIDTH`);
             const data = await response.json();
             const data2 = await response2.json();
-            console.log('aads - ' , data)
+            console.log('aads - ' , data);
             setAdvertisements(data);
             setFullAdvertisements(data2);
         } catch (error) {
