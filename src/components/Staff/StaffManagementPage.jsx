@@ -1,7 +1,8 @@
 // pages/admin/staff/index.js
+'use client'
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import AdminLayout from '@/components/layouts/AdminLayout';
+// import AdminLayout from '@/components/layouts/AdminLayout';
 import { getTokens } from '@/utils/cookies';
 import { toast } from 'react-hot-toast';
 import { 
@@ -173,7 +174,7 @@ const StaffManagementPage = () => {
   };
   
   return (
-    <AdminLayout>
+    // <AdminLayout>
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800">Staff Management</h1>
@@ -362,7 +363,7 @@ const StaffManagementPage = () => {
           )}
         </div>
       </div>
-    </AdminLayout>
+    // </AdminLayout>
   );
 };
 

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Minus, Plus, X, Truck, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeItemFromCart, updateQuantity, updateCartPrices } from '@/redux/slices/cartSlice';
+import { removeItemFromCart, updateQuantity, updateShippingConfig } from '@/redux/slices/cartSlice';
 import Image from 'next/image';
 
 const CartPage = () => {
@@ -18,14 +18,38 @@ const CartPage = () => {
     totalGST,
     total,
     totalBPPoints,
+    shipping,
     mlmDiscount 
   } = useSelector((state) => state.cart);
   
   const { userInfo } = useSelector((state) => state.auth);
 
+  // Add to your Cart.js component - at the beginning of the component
+  useEffect(() => {
+    // Fetch shipping configuration when cart page loads
+    const fetchShippingConfig = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public-shipping-rates/`);
+        if (response.ok) {
+          const data = await response.json();
+          // Update Redux store with shipping config
+          dispatch(updateShippingConfig({
+            isFreeShipping: data.is_free_shipping,
+            baseRate: data.shipping_cost,
+            taxPercentage: data.shipping_tax_percentage
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching shipping config:', error);
+      }
+    };
+    
+    fetchShippingConfig();
+  }, [dispatch]);
+  
   // Constants
   const FREE_SHIPPING_THRESHOLD = 0;
-  const shipping = subTotal > FREE_SHIPPING_THRESHOLD ? 0 : 0;
+  // const shipping = subTotal > FREE_SHIPPING_THRESHOLD ? 0 : 0;
   
   // Calculate MLM discount if user is an MLM member
 
@@ -44,7 +68,7 @@ const CartPage = () => {
   };
 
   // Calculate total after all discounts
-  const finalTotal = total + shipping
+  const finalTotal = total ;
   //  - (userInfo?.role === 'MLM_MEMBER' ? mlmDiscount : 0);
 
   // Update quantity
@@ -204,9 +228,14 @@ const CartPage = () => {
                   <span>₹{totalGST}</span>
                 </div>
 
-                <div className="flex justify-between text-gray-600">
-                  <span>Shipping</span>
-                  <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
+                <div className="flex justify-between py-2">
+                  <span>Shipping:</span>
+                  <span>
+                    {shipping.isFreeShipping 
+                      ? 'Free'
+                      : `₹${shipping.totalShippingCost.toFixed(2)}`
+                    }
+                  </span>
                 </div>
 
                 {totalBPPoints > 0 && (
