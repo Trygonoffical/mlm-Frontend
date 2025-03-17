@@ -25,6 +25,8 @@ const MLMDashboard = () => {
   const [loading, setLoading] = useState(true);
   const { token } = getTokens();
   const { userInfo } = useSelector((state) => state.auth);
+    const [activeTab, setActiveTab] = useState('featured');
+  
   useEffect(() => {
     fetchDashboardData();
   }, []);
