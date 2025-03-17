@@ -48,6 +48,7 @@ const [formData, setFormData] = useState({
     totalGST,
     total,
     totalBPPoints ,
+    shipping,
     mlmDiscount
   } = useSelector((state) => state.cart);
 
