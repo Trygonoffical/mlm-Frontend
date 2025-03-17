@@ -1,23 +1,26 @@
-// pages/admin/staff/add.js
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import AdminLayout from '@/components/layouts/AdminLayout';
 import { getTokens } from '@/utils/cookies';
 import { toast } from 'react-hot-toast';
-import { ChevronLeft, Save, Check } from '@mui/icons-material';
+import { ChevronLeft, Save } from '@mui/icons-material';
 
 const AddStaffPage = () => {
   const router = useRouter();
   const { token } = getTokens();
+  
+  // Loading states
   const [loading, setLoading] = useState(false);
-  const [roles, setRoles] = useState([]);
-  const [permissions, setPermissions] = useState({});
-  const [supervisors, setSupervisors] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
   
-  // Form state
+  // State for dropdown data
+  const [roles, setRoles] = useState([]);
+  const [modulePermissions, setModulePermissions] = useState({});
+  const [supervisors, setSupervisors] = useState([]);
+  
+  // Form data state
   const [formData, setFormData] = useState({
-    // Personal info
+    // Personal Information
     first_name: '',
     last_name: '',
     email: '',
@@ -27,36 +30,48 @@ const AddStaffPage = () => {
     employee_id: '',
     department: '',
     
-    // Role & permissions
+    // Role and Organizational Details
     role_id: '',
     supervisor_id: '',
-    permissions: {},
+    is_active: true,
+
+    // Module-specific Permissions
+    user_management_permissions: [],
+    order_management_permissions: [],
+    product_management_permissions: [],
+    kyc_management_permissions: [],
+    report_management_permissions: [],
+    wallet_management_permissions: [],
+    settings_management_permissions: [],
     
-    // Status
-    is_active: true
+    // Custom Permissions
+    custom_permission_ids: []
   });
   
-  // Error state
+  // Form validation errors
   const [errors, setErrors] = useState({});
   
+  // Fetch initial data when component mounts
   useEffect(() => {
     if (token) {
       Promise.all([
         fetchRoles(),
-        fetchPermissions(),
+        fetchModulePermissions(),
         fetchSupervisors()
       ]).then(() => {
         setLoadingData(false);
       }).catch(error => {
         console.error('Error loading form data:', error);
+        toast.error('Failed to load form data');
         setLoadingData(false);
       });
     }
   }, [token]);
   
+  // Fetch staff roles
   const fetchRoles = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/staff-roles?is_active=true`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/staff-roles?is_active=true`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -67,13 +82,13 @@ const AddStaffPage = () => {
       }
       
       const data = await response.json();
-      setRoles(data.results || data);
+      setRoles(data);
       
       // Set default role if available
-      if ((data.results || data).length > 0) {
+      if (data.length > 0) {
         setFormData(prev => ({
           ...prev,
-          role_id: (data.results || data)[0].id
+          role_id: data[0].id
         }));
       }
     } catch (error) {
@@ -82,40 +97,31 @@ const AddStaffPage = () => {
     }
   };
   
-  const fetchPermissions = async () => {
+  // Fetch module-specific permissions
+  const fetchModulePermissions = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/staff-permissions/module_permissions`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/staff-permissions/module_permissions`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       
       if (!response.ok) {
-        throw new Error('Failed to fetch permissions');
+        throw new Error('Failed to fetch module permissions');
       }
       
       const data = await response.json();
-      setPermissions(data);
-      
-      // Initialize permissions object in form data
-      const initialPermissions = {};
-      Object.keys(data).forEach(module => {
-        initialPermissions[module] = [];
-      });
-      
-      setFormData(prev => ({
-        ...prev,
-        permissions: initialPermissions
-      }));
+      setModulePermissions(data);
     } catch (error) {
-      console.error('Error fetching permissions:', error);
+      console.error('Error fetching module permissions:', error);
       toast.error('Failed to load permissions');
     }
   };
   
+  // Fetch supervisors
   const fetchSupervisors = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/staff-members`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/staff-members`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -126,62 +132,54 @@ const AddStaffPage = () => {
       }
       
       const data = await response.json();
-      setSupervisors(data.results || data);
+      setSupervisors(data);
     } catch (error) {
       console.error('Error fetching supervisors:', error);
       toast.error('Failed to load supervisors');
     }
   };
   
+  // Handle input changes for text fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value
-    });
+    }));
     
-    // Clear error when field is changed
+    // Clear corresponding error when field is changed
     if (errors[name]) {
-      setErrors({
-        ...errors,
+      setErrors(prev => ({
+        ...prev,
         [name]: ''
-      });
+      }));
     }
   };
   
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: checked
-    });
-  };
-  
+  // Handle permission checkbox changes
   const handlePermissionChange = (module, permissionId, checked) => {
-    const modulePermissions = [...(formData.permissions[module] || [])];
+    const moduleKey = `${module}_permissions`;
     
-    if (checked) {
-      // Add permission if not already there
-      if (!modulePermissions.includes(permissionId)) {
-        modulePermissions.push(permissionId);
-      }
-    } else {
-      // Remove permission
-      const index = modulePermissions.indexOf(permissionId);
-      if (index !== -1) {
-        modulePermissions.splice(index, 1);
-      }
-    }
-    
-    setFormData({
-      ...formData,
-      permissions: {
-        ...formData.permissions,
-        [module]: modulePermissions
+    setFormData(prev => {
+      const currentPermissions = prev[moduleKey] || [];
+      
+      if (checked) {
+        // Add permission if not already there
+        return {
+          ...prev,
+          [moduleKey]: [...new Set([...currentPermissions, permissionId])]
+        };
+      } else {
+        // Remove permission
+        return {
+          ...prev,
+          [moduleKey]: currentPermissions.filter(id => id !== permissionId)
+        };
       }
     });
   };
   
+  // Form validation
   const validateForm = () => {
     const newErrors = {};
     
@@ -198,12 +196,12 @@ const AddStaffPage = () => {
       newErrors.email = 'Please enter a valid email';
     }
     
-    // Username validation (minimum length)
+    // Username validation
     if (formData.username && formData.username.length < 4) {
       newErrors.username = 'Username must be at least 4 characters';
     }
     
-    // Password validation (minimum length)
+    // Password validation
     if (formData.password && formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
@@ -217,6 +215,7 @@ const AddStaffPage = () => {
     return Object.keys(newErrors).length === 0;
   };
   
+  // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -228,30 +227,37 @@ const AddStaffPage = () => {
     setLoading(true);
     
     try {
-      // Prepare permission data
-      const permissionData = {};
-      Object.entries(formData.permissions).forEach(([module, ids]) => {
-        const fieldName = `${module}_permissions`;
-        permissionData[fieldName] = ids;
-      });
-      
-      // Create request payload
+      // Prepare payload for API
       const payload = {
+        // Personal Info
         username: formData.username,
         password: formData.password,
         email: formData.email,
         first_name: formData.first_name,
-        last_name: formData.last_name,
-        phone_number: formData.phone_number,
+        last_name: formData.last_name || '',
+        phone_number: formData.phone_number || '',
+        
+        // Role & Organizational Details
         role_id: formData.role_id,
         supervisor_id: formData.supervisor_id || null,
-        department: formData.department,
-        employee_id: formData.employee_id,
+        department: formData.department || '',
+        employee_id: formData.employee_id || '',
         is_active: formData.is_active,
-        ...permissionData
+        
+        // Module-specific Permissions
+        user_management_permissions: formData.user_management_permissions,
+        order_management_permissions: formData.order_management_permissions,
+        product_management_permissions: formData.product_management_permissions,
+        kyc_management_permissions: formData.kyc_management_permissions,
+        report_management_permissions: formData.report_management_permissions,
+        wallet_management_permissions: formData.wallet_management_permissions,
+        settings_management_permissions: formData.settings_management_permissions,
+        
+        // Custom Permissions (if any)
+        custom_permission_ids: formData.custom_permission_ids
       };
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/staff-members/`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/staff-members/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -275,10 +281,29 @@ const AddStaffPage = () => {
     }
   };
   
-  const goBack = () => {
-    router.push('/admin/staff');
+  // Render permission checkboxes for a module
+  const renderModulePermissions = (moduleName) => {
+    const modulePerms = modulePermissions[moduleName] || [];
+    const moduleKey = `${moduleName}_permissions`;
+    
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+        {modulePerms.map(perm => (
+          <label key={perm.id} className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={(formData[moduleKey] || []).includes(perm.id)}
+              onChange={(e) => handlePermissionChange(moduleName, perm.id, e.target.checked)}
+              className="form-checkbox text-blue-600"
+            />
+            <span className="text-sm">{perm.name}</span>
+          </label>
+        ))}
+      </div>
+    );
   };
   
+  // If data is still loading, show loading spinner
   if (loadingData) {
     return (
       <AdminLayout>
@@ -294,7 +319,7 @@ const AddStaffPage = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center mb-6">
           <button 
-            onClick={goBack}
+            onClick={() => router.push('/admin/staff')}
             className="mr-4 text-gray-600 hover:text-gray-900"
           >
             <ChevronLeft />
@@ -325,25 +350,27 @@ const AddStaffPage = () => {
                   <p className="mt-1 text-sm text-red-500">{errors.first_name}</p>
                 )}
               </div>
-              
               {/* Last Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Last Name
+                Last Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   name="last_name"
                   value={formData.last_name}
                   onChange={handleInputChange}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className={`w-full p-2 border ${errors.last_name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                 />
+                {errors.last_name && (
+                  <p className="mt-1 text-sm text-red-500">{errors.last_name}</p>
+                )}
               </div>
-              
+
               {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email <span className="text-red-500">*</span>
+                Email <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -356,29 +383,26 @@ const AddStaffPage = () => {
                   <p className="mt-1 text-sm text-red-500">{errors.email}</p>
                 )}
               </div>
-              
               {/* Phone Number */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number
+                Phone Number <span className="text-red-500">*</span>
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   name="phone_number"
                   value={formData.phone_number}
                   onChange={handleInputChange}
-                  placeholder="10-digit mobile number"
                   className={`w-full p-2 border ${errors.phone_number ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                 />
                 {errors.phone_number && (
                   <p className="mt-1 text-sm text-red-500">{errors.phone_number}</p>
                 )}
               </div>
-              
               {/* Username */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Username <span className="text-red-500">*</span>
+                Username <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -391,13 +415,95 @@ const AddStaffPage = () => {
                   <p className="mt-1 text-sm text-red-500">{errors.username}</p>
                 )}
               </div>
-              
-              {/* Password */}
+              {/* Username */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password <span className="text-red-500">*</span>
+                Department <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="department"
+                  value={formData.department}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border ${errors.department ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+                />
+                {errors.department && (
+                  <p className="mt-1 text-sm text-red-500">{errors.department}</p>
+                )}
+              </div>
+              {/* Username */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="password"
                   name="password"
-                  value={formData
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={`w-full p-2 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+                />
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+                )}
+              </div>
+              
+              {/* Other form fields similar to first name */}
+              {/* Add remaining fields for Last Name, Email, Phone, etc. */}
+            </div>
+          </div>
+          
+          {/* Role and Permissions Section */}
+          <div className="bg-white rounded-lg shadow-md">
+            <div className="px-6 py-4 bg-gray-50 border-b">
+              <h2 className="text-lg font-medium">Role and Permissions</h2>
+            </div>
+            <div className="p-6">
+              {/* Roles Dropdown */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="role_id"
+                  value={formData.role_id}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border border-gray-300 rounded-lg"
+                >
+                  {roles.map(role => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Module Permissions */}
+              {Object.keys(modulePermissions).map(module => (
+                <div key={module} className="mb-6">
+                  <h3 className="text-md font-semibold mb-3 capitalize">
+                    {module.replace('_', ' ')} Permissions
+                  </h3>
+                  {renderModulePermissions(module)}
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Form Submission Button */}
+          <div className="flex justify-end">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center"
+            >
+              {loading ? 'Creating...' : 'Create Staff Member'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export default AddStaffPage;
