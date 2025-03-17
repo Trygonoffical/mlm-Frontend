@@ -561,16 +561,22 @@ const SuccessAndReviews = () => {
   return (
     <div className="container mx-auto px-4 py-16 space-y-16">
       {/* Success Stories Section */}
-      <section>
+      {successStories.length > 0 && (
+        <section>
         <h2 className="text-3xl font-bold text-center mb-10">Success Stories</h2>
         {renderSlider(successStories, currentSuccessSlide, 'success', successSliderRef)}
-      </section>
+        </section>
+      ) }
+     
 
       {/* Customer Reviews Section */}
-      <section>
-        <h2 className="text-3xl font-bold text-center mb-10">Customer Picks & Reviews</h2>
-        {renderSlider(reviews, currentReviewSlide, 'review', reviewSliderRef)}
-      </section>
+      {reviews.length > 0 && (
+         <section>
+         <h2 className="text-3xl font-bold text-center mb-10">Customer Picks & Reviews</h2>
+         {renderSlider(reviews, currentReviewSlide, 'review', reviewSliderRef)}
+       </section>
+      ) }
+     
 
       {/* Video Modal */}
       <Dialog open={!!selectedVideo} onOpenChange={() => setSelectedVideo(null)}>
