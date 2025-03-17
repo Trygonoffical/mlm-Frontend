@@ -252,7 +252,7 @@ const CartPage = () => {
                   </div>
                 </div>
 
-                {shipping === 0 ? (
+                {/* {shipping === 0 ? (
                   <div className="flex items-center gap-2 text-green-600 text-sm">
                     <Truck className="w-4 h-4" />
                     <span>Yay! You get free shipping</span>
@@ -261,7 +261,7 @@ const CartPage = () => {
                   <div className="text-sm text-gray-500">
                     Add ₹{FREE_SHIPPING_THRESHOLD - subTotal} more for free shipping
                   </div>
-                )}
+                )} */}
 
                 <Link 
                   href="/mu/dashboard/checkout"
