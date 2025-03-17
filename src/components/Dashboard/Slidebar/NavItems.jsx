@@ -21,7 +21,7 @@ import {
   export const sidebarPrefredItems = [
     { icon: Home, label: 'Dashboard', active: true, bgColor: 'bg-[#DEB887]', href : '/'},
     { icon: ShoppingCart, label: 'Shop Now', href : 'shop'},
-    { icon: UserPlus, label: 'Become MLM Member' , href : 'become-member'},
+    { icon: UserPlus, label: 'Become Associate' , href : 'become-member'},
     // { icon: Wallet, label: 'Wallet' , href : 'wallet'},
     { icon: FileText, label: 'KYC', href : 'kyc' },
     // { icon: FileText, label: 'Reports' , href : 'reports'},

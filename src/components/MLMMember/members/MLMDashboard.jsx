@@ -281,7 +281,7 @@ const MLMDashboard = () => {
               ? 'Your KYC verification was rejected. Please submit again.'
               : 'Your KYC verification is pending.'}
           </div>
-          <Link href="/mlm/profile/kyc" className="block mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">
+          <Link href="/mu/dashboard/kyc" className="block mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">
             {dashboardData.kyc_status === 'VERIFIED' ? 'View details' : 'Submit/Update KYC'}
           </Link>
         </div>
@@ -293,7 +293,7 @@ const MLMDashboard = () => {
               ? 'Your bank account has been verified.'
               : 'Your bank account verification is pending.'}
           </div>
-          <Link href="/mlm/profile/bank-details" className="block mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">
+          <Link href="/mu/dashboard/profile" className="block mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">
             {dashboardData.bank_verification_status === 'VERIFIED' ? 'View details' : 'Update bank details'}
           </Link>
         </div>
