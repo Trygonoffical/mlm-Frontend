@@ -110,10 +110,14 @@ const ProductMlmCard = ({ product , styleval}) => {
                     {/* Price Display */}
                     <div className="flex items-center gap-2">
                         {parseFloat(product.regular_price) > parseFloat(product.selling_price) ? (
+                            // <>
+                            //     <span className="text-gray-400 line-through">₹{product.regular_price}</span> 
+                            //     <span className="font-bold text-lg">₹{product.selling_price}</span>
+                            // </>
                             <>
-                                <span className="text-gray-400 line-through">₹{product.regular_price}</span> 
-                                <span className="font-bold text-lg">₹{product.selling_price}</span>
-                            </>
+                            <span className="text-gray-400 line-through">₹{parseFloat(product.regular_price) + (parseFloat(product.regular_price) * (parseFloat(product.gst_percentage)/100))}</span> 
+                            <span className="font-bold text-lg">₹{parseFloat(product.selling_price) + + (parseFloat(product.selling_price) * (parseFloat(product.gst_percentage)/100))}</span>
+                        </>
                         ):(
                             <span className="font-bold text-lg">₹{totlePrice.toFixed(2)}</span>
                         )}

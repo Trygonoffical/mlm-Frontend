@@ -1304,7 +1304,7 @@ const MLMLiveCommissions = ({ memberId , mlmData=null }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [calculationTime, setCalculationTime] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
-  const [activeTab, setActiveTab] = useState('levels'); // 'levels', 'topPerformers', 'transactions'
+  const [activeTab, setActiveTab] = useState('transactions'); // 'levels', 'topPerformers', 'transactions'
   const { token } = getTokens();
 
   useEffect(() => {
@@ -1484,12 +1484,12 @@ const MLMLiveCommissions = ({ memberId , mlmData=null }) => {
           {showDetails && (
             <div className="mt-2 p-3 bg-white rounded border border-blue-100">
               <ul className="list-disc list-inside space-y-1 text-gray-700">
-                <li>Your commissions are calculated based on the <strong>difference</strong> in position discount percentages</li>
-                <li>If your downline has an equal or higher position than yours, you earn <strong>zero commission</strong> from them</li>
-                <li>At the end of each month, all your downline's BP points are added to your total</li>
-                <li>Position upgrades happen automatically when you have enough BP points</li>
-                <li>You must maintain your monthly quota to earn commissions from your downline</li>
-                <li>You earn a special ₹1,000 bonus when your directly sponsored members make their first qualifying purchase</li>
+                <li>Your commissions are calculated based on the <strong>difference</strong> in position discount percentages.</li>
+                <li>If your downline has an equal or higher position than yours, you earn <strong>zero commission</strong> from them.</li>
+                <li>At the end of each month, all your downline's BP points are added to your total.</li>
+                <li>Position upgrades happen automatically when you have enough BP points.</li>
+                <li>You must maintain your monthly quota to earn commissions from your downline.</li>
+                <li>You earn a special ₹1,000 bonus when your directly sponsored members make their first qualifying purchase.</li>
               </ul>
             </div>
           )}
@@ -1567,22 +1567,14 @@ const MLMLiveCommissions = ({ memberId , mlmData=null }) => {
           {/* Tabs Navigation */}
           <div className="border-b border-gray-200">
             <nav className="flex -mb-px space-x-8">
-              <button
+              {/* <button
                 onClick={() => setActiveTab('levels')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'levels' 
                   ? 'border-blue-500 text-blue-600' 
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
               >
                 Level Breakdown
-              </button>
-              <button
-                onClick={() => setActiveTab('topPerformers')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'topPerformers' 
-                  ? 'border-blue-500 text-blue-600' 
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-              >
-                Top Performers
-              </button>
+              </button> */}
               <button
                 onClick={() => setActiveTab('transactions')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'transactions' 
@@ -1591,13 +1583,23 @@ const MLMLiveCommissions = ({ memberId , mlmData=null }) => {
               >
                 Recent Transactions
               </button>
+
+              <button
+                onClick={() => setActiveTab('topPerformers')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'topPerformers' 
+                  ? 'border-blue-500 text-blue-600' 
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+              >
+                Top Performers
+              </button>
+              
             </nav>
           </div>
 
           {/* Tab Content */}
           <div className="mt-4">
             {/* Levels Tab */}
-            {activeTab === 'levels' && (
+            {/* {activeTab === 'levels' && (
               <div className="bg-white border border-gray-200 rounded-lg">
                 <div className="border-b border-gray-200 bg-gray-50 px-4 py-3 flex items-center">
                   <ChartBarIcon className="h-5 w-5 text-gray-500 mr-2" />
@@ -1671,61 +1673,10 @@ const MLMLiveCommissions = ({ memberId , mlmData=null }) => {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
 
-            {/* Top Performers Tab */}
-            {activeTab === 'topPerformers' && (
-              <div className="bg-white border border-gray-200 rounded-lg">
-                <div className="border-b border-gray-200 bg-gray-50 px-4 py-3">
-                  <h3 className="font-medium text-gray-700">Top Performing Members</h3>
-                </div>
-                <div className="divide-y divide-gray-100">
-                  {commissionData.top_performers && commissionData.top_performers.length > 0 ? (
-                    commissionData.top_performers.map((performer, index) => (
-                      <div key={index} className="p-4 flex items-start justify-between">
-                        <div>
-                          <div className="flex items-center">
-                            <div className="text-sm font-medium text-gray-900">{performer.name}</div>
-                            <div className="ml-2 text-xs text-gray-500">({performer.member_id})</div>
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            Level {performer.level} • {performer.position} • BP: {performer.total_bp || 0}
-                          </div>
-                          <div className="text-xs mt-1 flex items-center">
-                            <span>Your %: {performer.your_percentage || 0}% • </span>
-                            <span>Their %: {performer.position_percentage || 0}% • </span>
-                            <span>Diff: </span>
-                            <span className={getColorForDifference(performer.difference)}>
-                              {performer.difference || 0}%
-                            </span>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm font-medium text-gray-900">{formatCurrency(performer.total_purchases)}</div>
-                          <div className="text-xs text-green-600 mt-1">{formatCurrency(performer.your_commission)} commission</div>
-                          {performer.bp_earned && (
-                            <div className="text-xs text-blue-500 mt-1">+{performer.bp_earned} BP to you</div>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="p-6 text-center text-gray-500">
-                      No top performers data available yet. This could be because your downline members haven't made any purchases this month.
-                    </div>
-                  )}
-                </div>
-                <div className="p-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
-                  <div className="flex items-start">
-                    <InformationCircleIcon className="h-4 w-4 text-gray-400 mr-1 mt-0.5 flex-shrink-0" />
-                    <span>Members are ranked based on the commission they generate for you. The "Diff" percentage shows the difference between your position percentage and theirs.</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Recent Transactions Tab */}
-            {activeTab === 'transactions' && (
+{/* Recent Transactions Tab */}
+{activeTab === 'transactions' && (
               <div className="bg-white border border-gray-200 rounded-lg">
                 <div className="border-b border-gray-200 bg-gray-50 px-4 py-3">
                   <h3 className="font-medium text-gray-700">Recent Downline Purchases</h3>
@@ -1777,6 +1728,58 @@ const MLMLiveCommissions = ({ memberId , mlmData=null }) => {
                 </div>
               </div>
             )}
+            {/* Top Performers Tab */}
+            {activeTab === 'topPerformers' && (
+              <div className="bg-white border border-gray-200 rounded-lg">
+                <div className="border-b border-gray-200 bg-gray-50 px-4 py-3">
+                  <h3 className="font-medium text-gray-700">Top Performing Members</h3>
+                </div>
+                <div className="divide-y divide-gray-100">
+                  {commissionData.top_performers && commissionData.top_performers.length > 0 ? (
+                    commissionData.top_performers.map((performer, index) => (
+                      <div key={index} className="p-4 flex items-start justify-between">
+                        <div>
+                          <div className="flex items-center">
+                            <div className="text-sm font-medium text-gray-900">{performer.name}</div>
+                            <div className="ml-2 text-xs text-gray-500">({performer.member_id})</div>
+                          </div>
+                          <div className="text-xs text-gray-500 mt-1">
+                            Level {performer.level} • {performer.position} • BP: {performer.total_bp || 0}
+                          </div>
+                          <div className="text-xs mt-1 flex items-center">
+                            <span>Your %: {performer.your_percentage || 0}% • </span>
+                            <span>Their %: {performer.position_percentage || 0}% • </span>
+                            <span>Diff: </span>
+                            <span className={getColorForDifference(performer.difference)}>
+                              {performer.difference || 0}%
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-medium text-gray-900">{formatCurrency(performer.total_purchases)}</div>
+                          <div className="text-xs text-green-600 mt-1">{formatCurrency(performer.your_commission)} commission</div>
+                          {performer.bp_earned && (
+                            <div className="text-xs text-blue-500 mt-1">+{performer.bp_earned} BP to you</div>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-6 text-center text-gray-500">
+                      No top performers data available yet. This could be because your downline members haven't made any purchases this month.
+                    </div>
+                  )}
+                </div>
+                <div className="p-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
+                  <div className="flex items-start">
+                    <InformationCircleIcon className="h-4 w-4 text-gray-400 mr-1 mt-0.5 flex-shrink-0" />
+                    <span>Members are ranked based on the commission they generate for you. The "Diff" percentage shows the difference between your position percentage and theirs.</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            
           </div>
 
           {/* First Purchase Bonuses */}

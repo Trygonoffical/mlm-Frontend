@@ -581,9 +581,15 @@ const ProductDetail = ({params}) => {
               <div className="flex items-baseline gap-2">
               {parseFloat(product.regular_price || 0) > parseFloat(product.sellingPrice || 0) ? (
                           <>
-                           <span className="text-2xl font-bold">₹{product.selling_price}</span>
-                           <span className="text-gray-500 line-through">₹{product.regular_price}</span>
+                           <span className="text-2xl font-bold">₹{parseFloat(product.selling_price) + + (parseFloat(product.selling_price) * (parseFloat(product.gst_percentage)/100))}</span>
+                           <span className="text-gray-500 line-through">₹{parseFloat(product.regular_price) + (parseFloat(product.regular_price) * (parseFloat(product.gst_percentage)/100))}</span>
+
+                           
                           </>
+                        //   <>
+                        //     <span className="text-gray-400 line-through">₹{parseFloat(product.regular_price) + (parseFloat(product.regular_price) * (parseFloat(product.gst_percentage)/100))}</span> 
+                        //     <span className="font-bold text-lg">₹{parseFloat(product.selling_price) + + (parseFloat(product.selling_price) * (parseFloat(product.gst_percentage)/100))}</span>
+                        // </>
 
                         ):(
                           <span className="text-2xl font-bold">₹{totlePrice.toFixed(2)}</span>
