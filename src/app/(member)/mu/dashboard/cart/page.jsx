@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Minus, Plus, X, Truck, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeItemFromCart, updateQuantity, updateShippingConfig } from '@/redux/slices/cartSlice';
+import { removeItemFromCart, updateQuantity, updateShippingConfig, updateCartPrices } from '@/redux/slices/cartSlice';
 import Image from 'next/image';
 
 const CartPage = () => {
@@ -46,7 +46,7 @@ const CartPage = () => {
     
     fetchShippingConfig();
   }, [dispatch]);
-  
+
   // Constants
   const FREE_SHIPPING_THRESHOLD = 0;
   // const shipping = subTotal > FREE_SHIPPING_THRESHOLD ? 0 : 0;
