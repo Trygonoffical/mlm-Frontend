@@ -14,6 +14,18 @@ import {
   QrCodeIcon,
   CalendarIcon
 } from '@heroicons/react/24/outline';
+import { 
+  DollarSign, 
+  ShoppingCart, 
+  TrendingUp, 
+  Users, 
+  Package, 
+  Award,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  AlertTriangle
+} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import MLMLiveCommissions from '../MLMLiveCommissions';
