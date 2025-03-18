@@ -303,46 +303,79 @@ const MLMMemberReports = () => {
           </div>
         );
 
-      case 'network_growth':
-        return (
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Network Growth Report</h2>
-              <button 
-                onClick={downloadReport}
-                className="flex items-center text-blue-600 hover:text-blue-800"
-              >
-                <Download className="mr-1 h-4 w-4" /> Download CSV
-              </button>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="py-3 px-4 text-left border-b">Period</th>
-                    <th className="py-3 px-4 text-left border-b">New Members</th>
-                    <th className="py-3 px-4 text-left border-b">Total Network Size</th>
-                    <th className="py-3 px-4 text-left border-b">Total BP</th>
-                    <th className="py-3 px-4 text-left border-b">Total Sales</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((item, index) => (
-                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
-                      <td className="py-2 px-4 border-b">{item.period}</td>
-                      <td className="py-2 px-4 border-b">{item.new_members}</td>
-                      <td className="py-2 px-4 border-b">{item.total_network_size}</td>
-                      <td className="py-2 px-4 border-b">{item.total_bp}</td>
-                      <td className="py-2 px-4 border-b">
-                        ₹{parseFloat(item.total_sales).toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
-                  </tbody>
-              </table>
-            </div>
-          </div>
-        );
+        case 'network_growth':
+          return (
+              <div>
+                  <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-lg font-semibold">Network Growth Report</h2>
+                      <button 
+                          onClick={downloadReport}
+                          className="flex items-center text-blue-600 hover:text-blue-800"
+                      >
+                          <Download className="mr-1 h-4 w-4" /> Download CSV
+                      </button>
+                  </div>
+                  <div className="overflow-x-auto">
+                      <table className="min-w-full bg-white">
+                          <thead className="bg-gray-100">
+                              <tr>
+                                  <th className="py-3 px-4 text-left border-b">Period</th>
+                                  <th className="py-3 px-4 text-left border-b">New Members</th>
+                                  <th className="py-3 px-4 text-left border-b">Total Network Size</th>
+                                  <th className="py-3 px-4 text-left border-b">Total BP</th>
+                                  <th className="py-3 px-4 text-left border-b">Total Sales</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {data.map((item, index) => (
+                                  <React.Fragment key={index}>
+                                      <tr className={index % 2 === 0 ? 'bg-gray-50' : ''}>
+                                          <td className="py-2 px-4 border-b">{item.period}</td>
+                                          <td className="py-2 px-4 border-b">{item.new_members}</td>
+                                          <td className="py-2 px-4 border-b">{item.total_network_size}</td>
+                                          <td className="py-2 px-4 border-b">{item.total_bp}</td>
+                                          <td className="py-2 px-4 border-b">
+                                              ₹{parseFloat(item.total_sales).toFixed(2)}
+                                          </td>
+                                      </tr>
+                                      {item.new_members_details && item.new_members_details.length > 0 && (
+                                          <tr>
+                                              <td colSpan="5" className="p-4">
+                                                  <div className="bg-gray-100 rounded-lg p-4">
+                                                      <h3 className="text-md font-semibold mb-2">New Members for {item.period}</h3>
+                                                      <table className="w-full">
+                                                          <thead>
+                                                              <tr>
+                                                                  <th className="text-left">Member ID</th>
+                                                                  <th className="text-left">Username</th>
+                                                                  <th className="text-left">Full Name</th>
+                                                                  <th className="text-left">Position</th>
+                                                                  <th className="text-left">Join Date</th>
+                                                              </tr>
+                                                          </thead>
+                                                          <tbody>
+                                                              {item.new_members_details.map((member, idx) => (
+                                                                  <tr key={idx} className="border-t">
+                                                                      <td>{member.member_id}</td>
+                                                                      <td>{member.username}</td>
+                                                                      <td>{member.full_name}</td>
+                                                                      <td>{member.position}</td>
+                                                                      <td>{new Date(member.join_date).toLocaleDateString()}</td>
+                                                                  </tr>
+                                                              ))}
+                                                          </tbody>
+                                                      </table>
+                                                  </div>
+                                              </td>
+                                          </tr>
+                                      )}
+                                  </React.Fragment>
+                              ))}
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          );
 
       default:
         return <p>No data to display</p>;
