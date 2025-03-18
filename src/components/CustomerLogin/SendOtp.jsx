@@ -24,6 +24,25 @@ export default function SendOtp({checkoutpage}) {
     const dispatch = useDispatch();
     const { userInfo } = useSelector((state) => state.auth);
 
+    const [canResend, setCanResend] = useState(false);
+    const [resendCountdown, setResendCountdown] = useState(30);
+
+    // Function to handle resend countdown
+    const startResendCountdown = () => {
+        setCanResend(false);
+        setResendCountdown(30);
+        const interval = setInterval(() => {
+            setResendCountdown((prev) => {
+                if (prev <= 1) {
+                    clearInterval(interval);
+                    setCanResend(true);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    };
+
     const startResendTimer = () => {
         setResendTimeout(30);
         const timer = setInterval(() => {
@@ -55,6 +74,7 @@ export default function SendOtp({checkoutpage}) {
         
         if (data.status) {
             setIsOtpSent(true);
+            startResendCountdown(); 
             setResendTimeout(30);
             toast.success('OTP sent successfully');
         } else {
@@ -159,6 +179,21 @@ export default function SendOtp({checkoutpage}) {
         }
     }, [userInfo]);
 
+
+
+    // Function to handle resend OTP
+    const handleResendOtp = async () => {
+        if (!canResend) return;
+        await handleSendOtp();
+    };
+
+    // Cleanup timer on unmount
+    useEffect(() => {
+        return () => {
+            setResendCountdown(30);
+            setCanResend(false);
+        };
+    }, []);
 
   return (
     <>
@@ -312,12 +347,31 @@ export default function SendOtp({checkoutpage}) {
                                             </button>
 
                                             {isOtpSent && (
-                                            <div className="text-center">
+                                            <div className="space-y-3 text-center">
+                                                <button
+                                                    onClick={handleResendOtp}
+                                                    disabled={!canResend || loading}
+                                                    className={`w-full py-2 px-4 text-sm font-medium rounded-md
+                                                        ${canResend 
+                                                            ? 'text-blue-600 hover:text-blue-700' 
+                                                            : 'text-gray-400 cursor-not-allowed'} 
+                                                        transition-colors duration-200`}
+                                                >
+                                                    {canResend 
+                                                        ? 'Resend OTP' 
+                                                        : `Resend OTP in ${resendCountdown}s`}
+                                                </button>
+
                                                 <button
                                                 onClick={() => {
+                                                    // setIsOtpSent(false);
+                                                    // setOtp('');
+                                                    // setError('');
                                                     setIsOtpSent(false);
                                                     setOtp('');
                                                     setError('');
+                                                    setCanResend(false);
+                                                    setResendCountdown(30);
                                                 }}
                                                 className="text-sm text-blue-600 hover:text-blue-500 font-medium"
                                                 >

@@ -175,6 +175,28 @@ const AdminMLMReports = () => {
   const renderReportFilters = () => {
     switch(reportType) {
       case 'level_wise':
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Start Date</label>
+            <input 
+              type="date" 
+              className="w-full border rounded-lg p-2"
+              value={filters.start_date}
+              onChange={(e) => setFilters({...filters, start_date: e.target.value})}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">End Date</label>
+            <input 
+              type="date" 
+              className="w-full border rounded-lg p-2"
+              value={filters.end_date}
+              onChange={(e) => setFilters({...filters, end_date: e.target.value})}
+            />
+          </div>
+        </div>
+      );
       case 'joining':
         return (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -322,95 +344,105 @@ const AdminMLMReports = () => {
             </div>
           </div>
         );
-        case 'sales':
-        return (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Start Date</label>
-              <input 
-                type="date" 
-                className="w-full border rounded-lg p-2"
-                value={filters.start_date}
-                onChange={(e) => setFilters({...filters, start_date: e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">End Date</label>
-              <input 
-                type="date" 
-                className="w-full border rounded-lg p-2"
-                value={filters.end_date}
-                onChange={(e) => setFilters({...filters, end_date: e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Category</label>
-              <select
-                className="w-full border rounded-lg p-2"
-                value={filters.category}
-                onChange={(e) => setFilters({...filters, category: e.target.value})}
-              >
-                <option value="">All Categories</option>
-                {categories.map((category) => (
-                  <option 
-                    key={category.id} 
-                    value={category.id}
-                  >
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Min Amount</label>
-              <input 
-                type="number" 
-                className="w-full border rounded-lg p-2"
-                placeholder="Minimum Amount"
-                value={filters.min_amount}
-                onChange={(e) => setFilters({...filters, min_amount: e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Max Amount</label>
-              <input 
-                type="number" 
-                className="w-full border rounded-lg p-2"
-                placeholder="Maximum Amount"
-                value={filters.max_amount}
-                onChange={(e) => setFilters({...filters, max_amount: e.target.value})}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Order Status</label>
-              <select
-                className="w-full border rounded-lg p-2"
-                value={filters.order_status}
-                onChange={(e) => setFilters({...filters, order_status: e.target.value})}
-              >
-                <option value="">All Statuses</option>
-                <option value="PENDING">Pending</option>
-                <option value="CONFIRMED">Confirmed</option>
-                <option value="SHIPPED">Shipped</option>
-                <option value="DELIVERED">Delivered</option>
-                <option value="CANCELLED">Cancelled</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Time Period</label>
-              <select
-                className="w-full border rounded-lg p-2"
-                value={filters.period}
-                onChange={(e) => setFilters({...filters, period: e.target.value})}
-              >
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-              </select>
-            </div>
+      case 'sales':
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Start Date</label>
+            <input 
+              type="date" 
+              className="w-full border rounded-lg p-2"
+              value={filters.start_date}
+              onChange={(e) => setFilters({...filters, start_date: e.target.value})}
+            />
           </div>
-        );
+          <div>
+            <label className="block text-sm font-medium mb-1">End Date</label>
+            <input 
+              type="date" 
+              className="w-full border rounded-lg p-2"
+              value={filters.end_date}
+              onChange={(e) => setFilters({...filters, end_date: e.target.value})}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Category</label>
+            <select
+              className="w-full border rounded-lg p-2"
+              value={filters.category}
+              onChange={(e) => setFilters({...filters, category: e.target.value})}
+            >
+              <option value="">All Categories</option>
+              {categories.map((category) => (
+                <option 
+                  key={category.id} 
+                  value={category.id}
+                >
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+          <label className="block text-sm font-medium mb-1">Product</label>
+          <input 
+            type="text" 
+            className="w-full border rounded-lg p-2"
+            placeholder="Product ID"
+            value={filters.product_id}
+            onChange={(e) => setFilters({...filters, product_id: e.target.value})}
+          />
+        </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Min Amount</label>
+            <input 
+              type="number" 
+              className="w-full border rounded-lg p-2"
+              placeholder="Minimum Amount"
+              value={filters.min_amount}
+              onChange={(e) => setFilters({...filters, min_amount: e.target.value})}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Max Amount</label>
+            <input 
+              type="number" 
+              className="w-full border rounded-lg p-2"
+              placeholder="Maximum Amount"
+              value={filters.max_amount}
+              onChange={(e) => setFilters({...filters, max_amount: e.target.value})}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Order Status</label>
+            <select
+              className="w-full border rounded-lg p-2"
+              value={filters.order_status}
+              onChange={(e) => setFilters({...filters, order_status: e.target.value})}
+            >
+              <option value="">All Statuses</option>
+              <option value="PENDING">Pending</option>
+              <option value="CONFIRMED">Confirmed</option>
+              <option value="SHIPPED">Shipped</option>
+              <option value="DELIVERED">Delivered</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Time Period</label>
+            <select
+              className="w-full border rounded-lg p-2"
+              value={filters.period}
+              onChange={(e) => setFilters({...filters, period: e.target.value})}
+            >
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+        </div>
+      );
       default:
         return null;
     }
@@ -443,6 +475,7 @@ const AdminMLMReports = () => {
                     <th className="py-3 px-4 text-left border-b">Total Earnings</th>
                     <th className="py-3 px-4 text-left border-b">Total BP</th>
                     <th className="py-3 px-4 text-left border-b">Avg Monthly Purchase</th>
+                    <th className="py-3 px-4 text-left border-b">Usernames</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -453,6 +486,17 @@ const AdminMLMReports = () => {
                       <td className="py-2 px-4 border-b">₹{item.total_earnings?.toFixed(2) || '0.00'}</td>
                       <td className="py-2 px-4 border-b">{item.total_bp}</td>
                       <td className="py-2 px-4 border-b">₹{item.avg_monthly_purchase?.toFixed(2) || '0.00'}</td>
+                      <td className="py-2 px-4 border-b">
+                        <div className="max-h-20 overflow-y-auto">
+                          {item.usernames && item.usernames.length > 0 ? (
+                            item.usernames.map((username, idx) => (
+                              <div key={idx} className="text-sm">{username}</div>
+                            ))
+                          ) : (
+                            'N/A'
+                          )}
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
