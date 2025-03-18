@@ -441,7 +441,7 @@ if (footerBg) {
     return (
         <>
             <footer style={footerStyle}>
-                <div className="bg-gradient-to-r from-slate-700 to-green-800 text-white pt-12 pb-4 opacity-90">
+                <div className="bg-gradient-to-r from-slate-700 to-green-900 text-white pt-12 pb-4 opacity-90">
                     {/* Need Help Section */}
                     <div className="container mx-auto px-4">
                         <h2 className="text-2xl font-semibold text-center mb-8">Need Help?</h2>
