@@ -280,7 +280,7 @@ const ProductCard = ({ product, styleval }) => {
                 {/* Rating with Staggered Animation */}
                 <div className="flex justify-between mb-2">
                     <div className="flex space-x-1">
-                        {[...Array(5)].map((_, i) => (
+                        {/* {[...Array(5)].map((_, i) => (
                             <Star 
                                 key={i} 
                                 className={`
@@ -291,7 +291,23 @@ const ProductCard = ({ product, styleval }) => {
                                     delay-${i * 50}
                                 `} 
                             />
-                        ))}
+                        ))} */}
+
+                    {[...Array(5)].map((_, i) => {
+                        const randomFillCount = Math.floor(Math.random() * 2) + 4; // Randomly 4 or 5
+                        return (
+                            <Star 
+                                key={i} 
+                                className={`
+                                    w-4 h-4 
+                                    ${i < randomFillCount ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+                                    transition-all duration-300 
+                                    group-hover:scale-110
+                                    delay-${i * 50}
+                                `} 
+                            />
+                        );
+                    })}
                     </div>
                 </div>
 

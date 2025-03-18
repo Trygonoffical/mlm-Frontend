@@ -378,7 +378,7 @@ const MLMDashboard = () => {
                         <div>
                           <p className="font-medium">{product.name}</p>
                           {product.price && (
-                            <p className="text-sm text-gray-500">₹{product.price}</p>
+                            <p className="text-sm text-gray-500">₹{parseFloat(product.price) + (parseFloat(product.price) * (parseFloat(product.gst)/100))}</p>
                           )}
                         </div>
                       </div>
@@ -394,8 +394,8 @@ const MLMDashboard = () => {
             ) : (
               // Recent Purchases Tab
               <div>
-                {recentPurchases.length > 0 ? (
-                  recentPurchases.map((product) => (
+                {dashboardData.recent_purchases.length > 0 ? (
+                  dashboardData.recent_purchases.map((product) => (
                     <div 
                       key={product.id} 
                       className="flex items-center justify-between border-b py-3 last:border-b-0"
@@ -412,7 +412,8 @@ const MLMDashboard = () => {
                             <p className="text-sm text-gray-500">Purchased: {new Date(product.purchase_date).toLocaleDateString()}</p>
                           )}
                           {product.price && (
-                            <p className="text-sm text-gray-500">₹{product.price}</p>
+                            <p className="text-sm text-gray-500">₹{product.price}
+                            </p>
                           )}
                         </div>
                       </div>

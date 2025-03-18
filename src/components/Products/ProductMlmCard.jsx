@@ -121,9 +121,24 @@ const ProductMlmCard = ({ product , styleval}) => {
                     <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
                 </Link>
                 <div className="flex mb-2">
-                    {[...Array(5)].map((_, i) => (
+                    {/* {[...Array(5)].map((_, i) => (
                         <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
+                    ))} */}
+                    {[...Array(5)].map((_, i) => {
+                        const randomFillCount = Math.floor(Math.random() * 2) + 4; // Randomly 4 or 5
+                        return (
+                            <Star 
+                                key={i} 
+                                className={`
+                                    w-4 h-4 
+                                    ${i < randomFillCount ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+                                    transition-all duration-300 
+                                    group-hover:scale-110
+                                    delay-${i * 50}
+                                `} 
+                            />
+                        );
+                    })}
                 </div>
                 
                 <div className="space-y-2">
