@@ -25,7 +25,7 @@ const fetchMenuItems = async () => {
     }
 };
   return (
-    <div className='hidden md:block w-full bg-[#FCF4E7]'>
+    <div className='hidden lg:block w-full bg-[#FCF4E7]'>
         <div className='mx-auto flex max-w-7xl py-2 px-4 lg:px-8 space-x-4'>
           {menuItems && menuItems.map(list=>(
             <Link key={list.position} href={`/category/${list.category_details.slug}`}>{list.category_name}</Link>

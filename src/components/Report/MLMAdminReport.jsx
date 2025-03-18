@@ -98,7 +98,7 @@ const AdminMLMReports = () => {
     fetchPositions();
   }, [token]);
 
-
+  
   const fetchReport = async () => {
     if (!reportType) {
       toast.error('Please select a report type');
