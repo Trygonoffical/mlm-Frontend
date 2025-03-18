@@ -26,22 +26,61 @@ const MLMMemberReports = () => {
 
   const { token } = getTokens();
 
+  // const fetchReport = async () => {
+  //   if (!reportType) {
+  //     toast.error('Please select a report type');
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   try {
+  //     // Construct query parameters
+  //     const queryParams = new URLSearchParams({
+  //       type: reportType,
+  //       ...Object.fromEntries(
+  //         Object.entries(filters).filter(([_, v]) => v != null && v !== '')
+  //       )
+  //     });
+
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/mlm/member-reports/?${queryParams}`,
+  //       {
+  //         headers: {
+  //           'Authorization': `Bearer ${token}`,
+  //           'Content-Type': 'application/json'
+  //         }
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to fetch report');
+  //     }
+
+  //     const data = await response.json();
+  //     setReportData(data);
+  //     toast.success('Report generated successfully');
+  //   } catch (error) {
+  //     toast.error('Error generating report');
+  //     console.error(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const fetchReport = async () => {
     if (!reportType) {
       toast.error('Please select a report type');
       return;
     }
-
+  
     setLoading(true);
     try {
-      // Construct query parameters
       const queryParams = new URLSearchParams({
         type: reportType,
         ...Object.fromEntries(
           Object.entries(filters).filter(([_, v]) => v != null && v !== '')
         )
       });
-
+  
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/mlm/member-reports/?${queryParams}`,
         {
@@ -51,17 +90,22 @@ const MLMMemberReports = () => {
           }
         }
       );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch report');
-      }
-
+  
       const data = await response.json();
+  
+      if (!response.ok) {
+        // More detailed error handling
+        const errorMessage = data.error || 'Failed to fetch report';
+        toast.error(errorMessage);
+        console.error('Report Error:', data);
+        return;
+      }
+  
       setReportData(data);
       toast.success('Report generated successfully');
     } catch (error) {
-      toast.error('Error generating report');
-      console.error(error);
+      console.error('Fetch Report Error:', error);
+      toast.error('An unexpected error occurred while generating the report');
     } finally {
       setLoading(false);
     }
@@ -276,7 +320,7 @@ const MLMMemberReports = () => {
               <table className="min-w-full bg-white">
                 <thead className="bg-gray-100">
                   <tr>
-                    <th className="py-3 px-4 text-left border-b">Level</th>
+                    <th className="py-3 px-4 text-left border-b">Tree</th>
                     <th className="py-3 px-4 text-left border-b">Members</th>
                     <th className="py-3 px-4 text-left border-b">Total Sales</th>
                     <th className="py-3 px-4 text-left border-b">Total Commissions</th>
@@ -286,7 +330,7 @@ const MLMMemberReports = () => {
                 <tbody>
                   {data.map((item, index) => (
                     <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
-                      <td className="py-2 px-4 border-b">Level {item.level}</td>
+                      <td className="py-2 px-4 border-b">Tree {item.level}</td>
                       <td className="py-2 px-4 border-b">{item.total_members}</td>
                       <td className="py-2 px-4 border-b">
                         ₹{parseFloat(item.total_sales).toFixed(2)}
