@@ -85,7 +85,7 @@ const BestSelling = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
-      <h2 className="text-3xl font-bold text-center mb-8">Best Selling</h2>
+      <h2 className="text-3xl font-bold text-center mb-8 font-jost">Best Selling</h2>
       
       <div className="relative">
         {/* Add a wrapper div with specific width */}

@@ -438,7 +438,7 @@ const MLMWalletDashboard = () => {
       </div>
 
       {/* BP Points Section */}
-      <div className="bg-white rounded-lg shadow-md mt-6 p-6">
+      {/* <div className="bg-white rounded-lg shadow-md mt-6 p-6">
         <div className="mb-4">
           <h2 className="text-xl font-semibold">BP Points Information</h2>
         </div>
@@ -464,7 +464,7 @@ const MLMWalletDashboard = () => {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Withdrawal Modal */}
       {showWithdrawalModal && (
