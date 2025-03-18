@@ -5,7 +5,7 @@ const Breadcrumb = ({title}) => {
   return (
     <section className='w-full py-8  '>
             <div className="text-center py-10">
-                <h2 className='font-bold  text-3xl'>
+                <h2 className='uppercase font-bold  text-3xl'>
                     {title}
                 </h2>
                 <span className='text-sm mt-3 flex justify-between mx-auto max-w-fit'>

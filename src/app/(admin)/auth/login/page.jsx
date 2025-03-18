@@ -105,7 +105,7 @@ const LoginPage = () => {
 
           {/* Title */}
           <h1 className="text-2xl font-bold text-center mb-8">
-            MLM Login
+            Member Login
           </h1>
 
           {/* Customer Login Link */}

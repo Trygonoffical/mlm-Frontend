@@ -19,7 +19,7 @@ const AboutUs = () => {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-[#8B6D4D] to-[#517B54] py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-white text-center">
+          <h1 className="uppercase text-4xl md:text-5xl font-bold text-white text-center">
             About Us
           </h1>
         </div>

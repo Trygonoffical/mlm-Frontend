@@ -476,7 +476,7 @@ if (footerBg) {
                         </div>
 
                         <div className="text-center mb-12">
-                            <h3 className="text-xl font-semibold mb-4">Stay Connected</h3>
+                            <h3 className="text-2xl font-semibold mb-4">Stay Connected</h3>
                             <div className="flex justify-center">
                                 <form onSubmit={handleSubscribe} className="flex mx-auto">
                                     <input
@@ -502,8 +502,8 @@ if (footerBg) {
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                             {/* Organization Column */}
                             <div>
-                                <h4 className="font-semibold mb-4">Usefull Links</h4>
-                                <ul className="space-y-2">
+                                <h4 className="font-semibold text-xl mb-4">Usefull Links</h4>
+                                <ul className="space-y-2 text-xl">
                                     <li><a href="/about" className="hover:text-gray-300">About Us</a></li>
                                     <li><a href="/contact" className="hover:text-gray-300">Contact Us</a></li>
                                     <li><a href="/shop" className="hover:text-gray-300">Shop</a></li>
@@ -520,8 +520,8 @@ if (footerBg) {
 
                             {/* Userfull Tools Column */}
                             <div>
-                                <h4 className="font-semibold mb-4">Categories</h4>
-                                <ul className="space-y-2">
+                                <h4 className="font-semibold  text-2xl mb-4">Categories</h4>
+                                <ul className="space-y-2 text-xl">
                                     {categories && categories.map(cats => (
                                         <li key={cats.id}><Link href={`/category/${cats.slug}`} className="hover:text-gray-300">{cats.name}</Link></li>
                                     ))}
@@ -530,9 +530,9 @@ if (footerBg) {
 
                             {/* Connect With Us Column */}
                             <div>
-                                <h4 className="font-semibold mb-4">CONNECT WITH US</h4>
-                                <p className="mb-4 whitespace-normal break-words w-full max-w-full">{companyInfo.full_address}</p>
-                                <h5 className="font-semibold mb-3">Follow Us On</h5>
+                                <h4 className="font-semibold  text-xl mb-4">CONNECT WITH US</h4>
+                                <p className="mb-4 whitespace-normal break-words w-full max-w-full ">{companyInfo.full_address}</p>
+                                <h5 className="font-semibold mb-3 text-2xl">Follow Us On</h5>
                                 <div className="flex gap-4">
                                     {socialLinks.map((social, idx) => (
                                         <a 
@@ -561,7 +561,7 @@ if (footerBg) {
 
                         {/* Copyright */}
                         <div className="text-center border-t border-gray-600 pt-4">
-                            <p className="mb-4">© Copyright 2024. All Rights Reserved by Herbal Power Marketing Pvt Ltd.</p>
+                            <p className="mb-4 ">© Copyright {new Date().getFullYear()} . All Rights Reserved by Herbal Power Marketing Private Limited.</p>
                             <p className="text-xs text-gray-400">
                                 Disclaimer: Herbal Power Product are not intended to diagnose, treat, cure or prevent any disease, illness or pain. In compliance with applicable Laws. These results are not typical; individual results may vary from person to person.
                             </p>
