@@ -434,7 +434,7 @@ if (footerBg) {
     footerStyle.backgroundImage = 'url(' + footerBg + ')';
     footerStyle.backgroundRepeat = 'no-repeat';
     footerStyle.backgroundSize = 'cover';
-    footerStyle.backgroundPosition= 'right top';
+    footerStyle.backgroundPosition= 'center center';
     
 }
 

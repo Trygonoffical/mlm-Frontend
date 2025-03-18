@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 const ProductMlmCard = ({ product , styleval}) => {
     const [totlePrice , setTotalPrice] = useState(0)
     const dispatch = useDispatch();
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const { userInfo } = useSelector((state) => state.auth);
     const [mlmDiscountPercentage , setMlmDiscountPercentage] = useState(0)
     const handleAddToCart = () => {
@@ -64,12 +65,31 @@ const ProductMlmCard = ({ product , styleval}) => {
         
     }, [product , userInfo]);
     
+    const handleMouseEnter = () => {
+        // Change to next image if multiple images exist
+        if (product.images.length > 1) {
+            setCurrentImageIndex((prevIndex) => 
+                (prevIndex + 1) % product.images.length
+            );
+        }
+    };
+
+    const handleMouseLeave = () => {
+        // Reset to first image
+        setCurrentImageIndex(0);
+    };
+
     return (
         <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow flex my-2" style={styleval}>
-            <div className="aspect-square relative">
+            <div className="aspect-square relative"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            >
                 <Link href={`/product/${product.slug}`}>
                     <Image
-                        src={product.images[0].image}
+                        // src={product.images[0].image}
+                        src={product.images[currentImageIndex].image}
+
                         alt={product.name}
                         width={250}
                         height={250}

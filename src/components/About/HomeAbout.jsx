@@ -24,7 +24,7 @@ const HomeAbout = () => {
                     <img
                       src={homeAbout.left_image}
                       alt="Herbal supplements with yellow flowers"
-                      className=" rounded-lg"
+                      className=" rounded-lg transition-transform duration-300 hover:scale-105"
                     />
                   </div>
 

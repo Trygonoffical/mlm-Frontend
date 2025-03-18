@@ -116,7 +116,7 @@ const HomeBlogSlider = () => {
                         src={blog.feature_image_url}
                         alt={blog.title}
                         fill
-                        className="object-cover"
+                        className="object-cover transition-transform duration-300 hover:scale-105"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-green-400 to-blue-500">
