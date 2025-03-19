@@ -53,6 +53,15 @@ const TestimonialForm = ({ testimonial, setRefreshKey, onClose }) => {
                 setRefreshKey(old => old + 1);
                 setIsOpen(false);
                 if (onClose) onClose();
+                setFormData({
+                    name: '',
+                    designation: '',
+                    content: '',
+                    rating:  5,
+                    is_active: true,
+                    image: null
+                })
+                setPreviewUrl(null)
             } else {
                 const data = await response.json();
                 toast.error(data.message || `Error ${testimonial ? 'updating' : 'creating'} testimonial`);
