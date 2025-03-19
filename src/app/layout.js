@@ -19,31 +19,7 @@ const jost = Jost({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
 });
 
-// const caslon = localFont({
-//   src: [
-//     {
-//       path: 'public/fonts/ITC Caslon 224 Std Book.ttf',
-//       weight: '400',
-//       style: 'normal',
-//     },
-//     {
-//       path: 'public/fonts/ITC Caslon 224 Std Bold.ttf',
-//       weight: '700',
-//       style: 'normal',
-//     },
-//     {
-//       path: 'public/fonts/ITC Caslon 224 Std Book Italic.ttf',
-//       weight: '400',
-//       style: 'italic',
-//     },
-//     {
-//       path: 'public/fonts/ITC Caslon 224 Std Bold Italic.ttf',
-//       weight: '700',
-//       style: 'italic',
-//     },
-//   ],
-//   variable: '--font-caslon',
-// }); ${caslon.variable}
+
 
 export const metadata = { 
   title: "Herbal Power India",
