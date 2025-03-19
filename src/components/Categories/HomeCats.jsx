@@ -75,7 +75,7 @@ const HomeCats = () => {
                   <Image
                     src={category.image}
                     alt={category.name}
-                    className=" mx-auto"
+                    className=" mx-auto transition-transform duration-300 hover:scale-105"
                     width={150}
                     height={150}
                   />

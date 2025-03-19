@@ -26,12 +26,13 @@ const fetchMenuItems = async () => {
 };
   return (
     <div className='hidden lg:block w-full bg-[#FCF4E7]'>
-        <div className='mx-auto flex max-w-7xl py-2 px-4 lg:px-8 space-x-4'>
+        <div className='mx-auto flex max-w-7xl py-2 px-4 lg:px-8 space-x-4 font-semibold' style={{fontSize: "17px"}}>
+          <Link href='/shop'>Shop</Link>
           {menuItems && menuItems.map(list=>(
             <Link key={list.position} href={`/category/${list.category_details.slug}`}>{list.category_name}</Link>
           ))}
             
-            <Link href='/shop'>Shop</Link>
+           
             {/* <Link href='#'>Menu</Link> */}
             {/* <Link href='#'>Menu</Link>
             <Link href='#'>Menu</Link>

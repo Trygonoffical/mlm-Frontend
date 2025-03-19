@@ -135,7 +135,7 @@ function CartArea() {
                                                         <div>
                                                             <h3 className="text-sm font-medium">{item.name}</h3>
                                                             <p className="mt-1 text-sm text-gray-500">
-                                                                ₹{item.standard_price}
+                                                                ₹{item.standard_price.toFixed(2)}
                                                             </p>
                                                         </div>
 
