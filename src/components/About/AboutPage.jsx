@@ -28,11 +28,12 @@ const AboutUs = () => {
       {/* Welcome Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="relative h-[400px] md:h-[500px]">
+        {/* h-[400px] md:h-[500px] */}
+          <div className="relative ">
             <img
               src={homeAbout.left_image}
               alt="Welcome to Herbal Power"
-              className="w-full h-full object-cover rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105"
+              className="w-full h-full rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105"
             />
           </div>
           <div className="space-y-6">

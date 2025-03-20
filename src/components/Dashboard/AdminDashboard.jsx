@@ -280,9 +280,9 @@ const AdminDashboard = () => {
         </div>
 
         {/* Commisio Activities */}
-        <div className="bg-white shadow-md rounded-lg p-6 mt-8">
+        {/* <div className="bg-white shadow-md rounded-lg p-6 mt-8">
           <AdminCommissionCalculator />
-        </div>
+        </div> */}
 
         {/* Recent Activities */}
         <div className="bg-white shadow-md rounded-lg p-6 mt-8">
