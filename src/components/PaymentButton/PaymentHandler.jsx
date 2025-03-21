@@ -1219,6 +1219,7 @@ const PaymentHandler = ({ amount }) => {
         <button
           type="button"
           onClick={() => setPaymentMethod('cod')}
+          disabled
           className={`flex flex-col items-center justify-center p-4 border rounded-md
             ${paymentMethod === 'cod' 
               ? 'border-[#6B8E5F] bg-[#f0f7ed] text-[#6B8E5F]' 

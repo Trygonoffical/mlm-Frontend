@@ -478,7 +478,7 @@ const KYCMemberDashboard = () => {
   };
 
   return (
-    <div className="py-12 ">
+    <div className="md:py-12 ">
       <div className="max-w-4xl mx-auto">
         <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
           <div className="flex">

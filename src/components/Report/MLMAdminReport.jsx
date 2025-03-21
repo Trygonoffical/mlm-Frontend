@@ -1527,7 +1527,7 @@ const AdminMLMReports = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="md:p-6 max-w-7xl mx-auto">
       {/* The existing return content remains unchanged */}
       <div className="flex justify-between items-center mb-6">
          <h1 className="text-2xl font-bold flex items-center">

@@ -312,7 +312,7 @@ const MLMMemberNetworkView = () => {
   const filteredTree = filterTree(memberTree);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="md:p-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">My Network</h1>
       
       {/* Search and Filter */}

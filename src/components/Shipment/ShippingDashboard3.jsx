@@ -859,7 +859,7 @@ const saveShippingConfig = async () => {
 
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="md:p-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Shipping Dashboard</h1>
         <div className="flex items-center space-x-2">
@@ -879,7 +879,7 @@ const saveShippingConfig = async () => {
 
       {/* Tabs */}
       <div className="border-b border-gray-200 mb-6">
-        <nav className="flex space-x-6">
+        <nav className="flex space-x-6 overflow-x-scroll">
           <button
             className={`py-3 px-1 ${activeTab === 'dashboard' ? 'border-b-2 border-indigo-500 text-indigo-600 font-medium' : 'text-gray-500 hover:text-gray-700'}`}
             onClick={() => setActiveTab('dashboard')}

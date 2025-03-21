@@ -115,7 +115,7 @@ const MLMNotifications = () => {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="md:p-6 max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-2">
           <h2 className="text-2xl font-bold">Notifications</h2>

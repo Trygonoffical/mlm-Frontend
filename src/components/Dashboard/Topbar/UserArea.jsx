@@ -30,7 +30,7 @@ const UserArea = ({admin=false}) => {
         
         router.push('/');
         // Redirect to home page
-        //window.location.reload(); // Force reload to update all states
+        window.location.reload(); // Force reload to update all states
         
       } catch (error) {
         console.error('Logout error:', error);

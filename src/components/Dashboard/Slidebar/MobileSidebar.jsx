@@ -68,7 +68,8 @@ const MobileSidebar = ({admin=false}) => {
                   flex items-center px-4 py-3 text-white hover:bg-[#34495E] cursor-pointer
                   ${item.active ? item.bgColor || 'bg-[#34495E]' : ''}`
                 }
-                href={`/auth/dashboard/${item.href}`}
+                // href={`/auth/dashboard/${item.href}`}
+                href={admin ? `/auth/dashboard/${item.href}` : `/mu/dashboard/${item.href}`}
                 onClick={() => setIsOpen(false)}
               >
                 <item.icon className="w-6 h-6" />
