@@ -150,11 +150,11 @@ const ProductMlmCard = ({ product , styleval}) => {
                             //     <span className="font-bold text-lg">₹{product.selling_price}</span>
                             // </>
                             <>
-                            <span className="text-gray-400 line-through">₹{parseFloat(product.regular_price) + (parseFloat(product.regular_price) * (parseFloat(product.gst_percentage)/100))}</span> 
-                            <span className="font-bold text-lg">₹{parseFloat(product.selling_price) + (parseFloat(product.selling_price) * (parseFloat(product.gst_percentage)/100))}</span>
+                            <span className="text-gray-400 line-through">₹{parseFloat(parseFloat(product.regular_price) + (parseFloat(product.regular_price) * (parseFloat(product.gst_percentage)/100))).toFixed(0)}</span> 
+                            <span className="font-bold text-lg">₹{parseFloat(parseFloat(product.selling_price) + (parseFloat(product.selling_price) * (parseFloat(product.gst_percentage)/100))).toFixed(0)}</span>
                         </>
                         ):(
-                            <span className="font-bold text-lg">₹{totlePrice.toFixed(2)}</span>
+                            <span className="font-bold text-lg">₹{totlePrice.toFixed(0)}</span>
                         )}
                         {/* <span className="text-gray-400 line-through">₹{product.regular_price}</span>
                         <span className="font-bold text-lg">₹{product.selling_price}</span> */}

@@ -223,8 +223,8 @@ const ProductCard = ({ product, styleval }) => {
                 bg-white rounded-2xl overflow-hidden shadow-lg 
                 transform transition-all duration-300 ease-in-out
                 hover:scale-[1.02] hover:shadow-2xl 
-                group relative
-                border border-gray-100
+                group relative my-5
+                border border-gray-100 
                 ${isHovered ? 'scale-[1.02]' : ''}
             `}
             style={styleval}
@@ -236,27 +236,6 @@ const ProductCard = ({ product, styleval }) => {
              onMouseEnter={handleMouseEnter}
              onMouseLeave={handleMouseLeave}
             >
-                {/* <Link href={`/product/${product.slug}`}>
-                    <div className="relative w-full h-full overflow-hidden">
-                        <Image
-                            src={product.images[0].image}
-                            alt={product.name}
-                            width={300}
-                            height={300}
-                            className={`
-                                w-full h-full object-cover 
-                                transition-transform duration-500 ease-in-out
-                                group-hover:scale-110
-                            `}
-                        />
-                        
-                        <div className={`
-                            absolute inset-0 bg-black/0 
-                            group-hover:bg-black/10 
-                            transition-all duration-300 ease-in-out
-                        `}></div>
-                    </div>
-                </Link> */}
                  <Link href={`/product/${product.slug}`}>
                     <Image
                         src={product.images[currentImageIndex].image}
@@ -280,19 +259,7 @@ const ProductCard = ({ product, styleval }) => {
                 {/* Rating with Staggered Animation */}
                 <div className="flex justify-between mb-2">
                     <div className="flex space-x-1">
-                        {/* {[...Array(5)].map((_, i) => (
-                            <Star 
-                                key={i} 
-                                className={`
-                                    w-4 h-4 
-                                    ${i < 4 ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
-                                    transition-all duration-300 
-                                    group-hover:scale-110
-                                    delay-${i * 50}
-                                `} 
-                            />
-                        ))} */}
-
+                        
                     {[...Array(5)].map((_, i) => {
                         const randomFillCount = Math.floor(Math.random() * 2) + 4; // Randomly 4 or 5
                         return (
@@ -327,15 +294,15 @@ const ProductCard = ({ product, styleval }) => {
                         {parseFloat(product.regular_price) > parseFloat(product.selling_price) ? (
                             <>
                                 <span className="text-gray-400 line-through opacity-70">
-                                    ₹{(parseFloat(product.regular_price) + (parseFloat(product.regular_price) * (parseFloat(product.gst_percentage)/100))).toFixed(2)}
+                                    ₹{(parseFloat(product.regular_price) + (parseFloat(product.regular_price) * (parseFloat(product.gst_percentage)/100))).toFixed(0)}
                                 </span> 
                                 <span className="font-bold text-lg text-green-600">
-                                    ₹{(parseFloat(product.selling_price) + (parseFloat(product.selling_price) * (parseFloat(product.gst_percentage)/100))).toFixed(2)}
+                                    ₹{(parseFloat(product.selling_price) + (parseFloat(product.selling_price) * (parseFloat(product.gst_percentage)/100))).toFixed(0)}
                                 </span>
                             </>
                         ):(
                             <span className="font-bold text-lg text-green-600">
-                                ₹{totlePrice.toFixed(2)}
+                                ₹{totlePrice.toFixed(0)}
                             </span>
                         )}
                     </div>

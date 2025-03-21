@@ -334,9 +334,9 @@ const TestimonialSection = () => {
   
   return (
     <div className="bg-gray-50 py-16">
-      <div className="max-w-7xl mx-auto px-8">
+      <div className="max-w-7xl mx-auto md:px-8">
         {/* Section Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 px-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
             What Our Customers Say
           </h2>
@@ -344,7 +344,7 @@ const TestimonialSection = () => {
         </div>
         
         {/* Testimonial Slider */}
-        <div className="testimonial-slider relative px-6">
+        <div className="testimonial-slider relative md:px-6">
           <Slider {...settings}>
             {testimonials.map((testimonial, idx) => (
               <TestimonialCard 
