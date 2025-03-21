@@ -334,7 +334,7 @@ const [formData, setFormData] = useState({
                         </p>
                       )} */}
                     </div>
-                    <span className="font-semibold">₹{item.total_price}</span>
+                    <span className="font-semibold">₹{item.total_price.toFixed(0)}</span>
                   </div>
                 ))}
               </div>
@@ -343,7 +343,7 @@ const [formData, setFormData] = useState({
               <div className="space-y-4">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span>₹{subTotal}</span>
+                  <span>₹{subTotal.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>GST</span>

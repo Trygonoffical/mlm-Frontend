@@ -69,6 +69,14 @@ const SuccessStoryForm = ({ successStory, setRefreshKey, onClose }) => {
 
             if (response.ok) {
                 toast.success(`Success story ${successStory ? 'updated' : 'created'} successfully`);
+                setFormData({
+                    title: '',
+                    youtube_link: '',
+                    description:'',
+                    position:'',
+                    is_active:true,
+                    thumbnail: null
+                });
                 setRefreshKey(old => old + 1);
                 setIsOpen(false);
                 if (onClose) onClose();

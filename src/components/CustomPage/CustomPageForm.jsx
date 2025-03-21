@@ -45,6 +45,15 @@ const CustomPageForm = ({ page, setRefreshKey, onClose }) => {
             if (response.ok) {
                 toast.success(`Page ${page ? 'updated' : 'created'} successfully`);
                 setRefreshKey(old => old + 1);
+                setFormData({
+                    title: '',
+                    slug:  '',
+                    content:  '',
+                    show_in_footer:  false,
+                    show_in_header: false,
+                    order:  0,
+                    is_active: true
+                })
                 setIsOpen(false);
                 if (onClose) onClose();
             } else {

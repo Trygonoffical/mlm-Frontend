@@ -126,11 +126,11 @@ const MLMMemberForm = ({ setRefreshKey }) => {
                 Add New Member
             </button>
 
-            <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+            <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50 ">
                 <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
-                <div className="fixed inset-0 flex items-center justify-center p-4">
-                    <DialogPanel className="mx-auto max-w-md rounded bg-white p-6 w-full">
+                <div className="fixed inset-0 flex items-center justify-center p-4 ">
+                    <DialogPanel className="mx-auto max-w-md rounded bg-white p-6 w-full max-h-[95vh] overflow-y-scroll">
                         <div className="flex justify-between items-center mb-4">
                             <DialogTitle className="text-lg font-medium">Create MLM Member</DialogTitle>
                             <button onClick={() => setIsOpen(false)}>

@@ -148,9 +148,9 @@ const CartPage = () => {
                       </Link>
                       <div className="flex items-center justify-center sm:justify-start mt-1 space-x-2">
                         {parseFloat(item.regular_price) > parseFloat(item.selling_price) && (
-                          <span className="text-gray-400 line-through">₹{item.regular_price}</span>
+                          <span className="text-gray-400 line-through">₹{item.regular_price.toFixed(0)}</span>
                         )}
-                        <span className="text-lg font-bold">₹{item.standard_price}</span>
+                        <span className="text-lg font-bold">₹{item.standard_price.toFixed(0)}</span>
                       </div>
 
                       {/* MLM Discount */}
@@ -191,7 +191,7 @@ const CartPage = () => {
                     {/* Price and Remove */}
                     <div className="mt-4 sm:mt-0 text-center sm:text-right">
                       {/* <p className="font-semibold text-lg">₹{calculateFinalPrice(item)}</p> */}
-                      <p className="font-semibold text-lg">₹{item.standard_price}</p>
+                      <p className="font-semibold text-lg">₹{item.standard_price.toFixed(0)}</p>
                       <button
                         onClick={() => handleRemoveItem(item.id, item.selectedAttributes)}
                         className="mt-2 text-red-500 hover:text-red-700 transition-colors"

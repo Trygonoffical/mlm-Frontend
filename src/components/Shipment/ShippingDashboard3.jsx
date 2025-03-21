@@ -184,34 +184,7 @@ useEffect(() => {
     loadPickupAddresses();
   }
 }, [activeTab]);
-  // Load initial data
-  // useEffect(() => {
-  //   // Check and refresh token first
-  // checkAndRefreshToken();
-
-  //   if (activeTab === 'dashboard') {
-  //     loadDashboardData();
-  //     loadPickupAddresses();
-  //   } else if (activeTab === 'shipments') {
-  //     loadShipments();
-  //   } else if (activeTab === 'pending') {
-  //     loadPendingOrders();
-  //   // } else if (activeTab === 'settings') {
-  //   //   loadConfigData();
-  //   //   loadPickupAddresses();
-  //   }
-  // }, [activeTab]);
   
-  // Load dashboard data
-  // const loadDashboardData = async () => {
-  //   setLoading(prev => ({ ...prev, dashboard: true }));
-  //   const data = await fetchShippingStats();
-  //   if (data && data.success) {
-  //     console.log('order data - ', data)
-  //     setDashboardData(data);
-  //   }
-  //   setLoading(prev => ({ ...prev, dashboard: false }));
-  // };
   const loadDashboardData = async () => {
     setLoading(prev => ({ ...prev, dashboard: true }));
     const data = await fetchShippingStats();
@@ -229,15 +202,6 @@ useEffect(() => {
     setLoading(prev => ({ ...prev, dashboard: false }));
   };
 
-  // Load shipments based on filters
-  // const loadShipments = async () => {
-  //   setLoading(prev => ({ ...prev, shipments: true }));
-  //   const data = await fetchShipments(statusFilter, courierFilter, searchQuery);
-  //   if (data) {
-  //     setShipments(data.results || []);
-  //   }
-  //   setLoading(prev => ({ ...prev, shipments: false }));
-  // };
 
   const loadShipments = async () => {
     setLoading(prev => ({ ...prev, shipments: true }));
@@ -464,7 +428,7 @@ const handleShowShipmentModal = (order) => {
                                (pickupAddresses.length > 0 ? pickupAddresses[0] : null);
   
   console.log("Selected default address:", defaultPickupAddress);
-  // console.log("Selected default order:", order);
+  console.log("Selected default order:", order);
 
   setShipmentModal({
     isOpen: true,
@@ -807,95 +771,6 @@ const fetchPendingOrders = async (search = '') => {
     return [];
   }
 };
-
-// const saveShippingConfig = async (configData) => {
-//   try {
-//     // const response = await fetch(`${API_BASE_URL}/config/`, { https://dev.api.quixgo.com/clientApi/login
-//       const response = await fetch(` https://dev.api.quixgo.com/clientApi/login`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(configData)
-//     });
-    
-//     const data = await response.json();
-//     if(response.ok) {
-//       toast.success('Login successfully');
-//       console.log('config data - ', data)
-//       return data;
-//     }else{
-//       toast.error('Error');
-//     }
-//   } catch (error) {
-//     console.error('Error saving shipping config:', error);
-   
-//     return { success: false, message: 'Network error' };
-//   }
-// };
-
-
-
-// const createShipment = async (shipmentData) => {
-//   console.log('shipmentData at create shipmentData -', shipmentData)
-
-//   try {
-//     // Get pickup address details
-//     // const pickupAddress = pickupAddresses.find(addr => addr.id === shipmentData.pickup_address);
-//     // if (!pickupAddress) {
-//     //   return { success: false, message: 'Pickup address not found' };
-//     // }
-    
-//     // Make the API call
-//     const response = await fetch(`${API_BASE_URL}/shipments/`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': `Bearer ${token}`
-//       },
-//       body: JSON.stringify(shipmentData) // Using our simplified version for our API
-//     });
-    
-//     return await response.json();
-    
-//   } catch (error) {
-//     console.error('Error creating shipment:', error);
-//     return { success: false, message: 'Network error' };
-//   }
-// };
-// const trackShipment = async (shipmentId) => {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/shipments/${shipmentId}/track/`, {
-//       method: 'POST',
-//         headers: {
-//           'Authorization': `Bearer ${token}`
-//         }
-//   });
-    
-//     return await response.json();
-//   } catch (error) {
-//     console.error('Error tracking shipment:', error);
-//     return { success: false, message: 'Network error' };
-//   }
-// };
-
-// const cancelShipment = async (shipmentId, reason) => {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/shipments/${shipmentId}/cancel/`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': `Bearer ${token}`
-//       },
-//       body: JSON.stringify({ reason })
-//     });
-    
-//     return await response.json();
-//   } catch (error) {
-//     console.error('Error cancelling shipment:', error);
-//     return { success: false, message: 'Network error' };
-//   }
-// };
 
 
   // Add state for the address modal

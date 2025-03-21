@@ -52,6 +52,15 @@ const BlogForm = ({ blog, onSuccess, onClose }) => {
             if (response.ok) {
                 toast.success(`Blog ${blog ? 'updated' : 'created'} successfully`);
                 onSuccess?.();
+                setFormData({
+                    title:  '',
+                    content: '',
+                    feature_image: null,
+                    is_active: true,
+                    show_in_slider: false,
+                    order: 0
+                })
+                setPreviewUrl(null)
                 handleClose();
             } else {
                 const error = await response.json();

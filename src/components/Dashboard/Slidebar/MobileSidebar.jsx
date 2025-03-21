@@ -7,18 +7,25 @@ import {
 } from 'lucide-react';
 import { sidebarItems } from './NavItems';
 import { sidebarItemsAdmin } from './AdminNavItem'; 
+import { sidebarPrefredItems } from './NavItems';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 
 
 const MobileSidebar = ({admin=false}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [sideItems , setSideItems] = useState([])
-
+  const { userInfo } = useSelector((state) => state.auth);
   useEffect(()=>{
+        console.log('sidebar userinfo - ' , userInfo
+        )
         if(admin){
           setSideItems(sidebarItemsAdmin)
+        }else if(userInfo.user_data.position.name == 'Preferred Customer') {
+          setSideItems(sidebarPrefredItems)
         }else{
           setSideItems(sidebarItems)
+  
         }
       } , [admin])
 
@@ -53,7 +60,7 @@ const MobileSidebar = ({admin=false}) => {
             <X className="w-6 h-6" />
           </button>
 
-          <div className="pt-16">
+          <div className="pt-16 max-h-[100vh] overflow-y-auto">
             {sideItems.map((item, index) => (
               <Link 
                 key={index} 

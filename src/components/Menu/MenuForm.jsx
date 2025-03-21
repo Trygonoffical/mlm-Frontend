@@ -70,6 +70,11 @@ const MenuForm = ({ menuItem = null, onClose, onSave }) => {
             }
 
             toast.success(`Menu item ${menuItem ? 'updated' : 'created'} successfully`);
+            setFormData({
+                category: '',
+                position: 0,
+                is_active: true
+            })
             if (onSave) onSave();
             if (onClose) onClose();
         } catch (error) {

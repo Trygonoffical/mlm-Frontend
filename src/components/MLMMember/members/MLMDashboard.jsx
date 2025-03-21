@@ -378,7 +378,7 @@ const MLMDashboard = () => {
                         <div>
                           <p className="font-medium">{product.name}</p>
                           {product.price && (
-                            <p className="text-sm text-gray-500">₹{parseFloat(product.price) + (parseFloat(product.price) * (parseFloat(product.gst)/100))}</p>
+                            <p className="text-sm text-gray-500">₹{parseFloat(parseFloat(product.price) + (parseFloat(product.price) * (parseFloat(product.gst)/100))).toFixed(0)}</p>
                           )}
                         </div>
                       </div>
@@ -412,7 +412,7 @@ const MLMDashboard = () => {
                             <p className="text-sm text-gray-500">Purchased: {new Date(product.purchase_date).toLocaleDateString()}</p>
                           )}
                           {product.price && (
-                            <p className="text-sm text-gray-500">₹{product.price}
+                            <p className="text-sm text-gray-500">₹{product.price.toFixed(0)}
                             </p>
                           )}
                         </div>

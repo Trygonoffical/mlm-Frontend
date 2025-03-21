@@ -74,6 +74,14 @@ const CustomerPickForm = ({ customerPick, setRefreshKey, onClose }) => {
 
             if (response.ok) {
                 toast.success(`Customer pick ${customerPick ? 'updated' : 'created'} successfully`);
+                setFormData({
+                    title: '',
+                    youtube_link: '',
+                    description: '',
+                    position:'',
+                    is_active: true,
+                    thumbnail: null
+                });
                 setRefreshKey(old => old + 1);
                 setIsOpen(false);
                 if (onClose) onClose();

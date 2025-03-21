@@ -116,12 +116,12 @@ useEffect(() => {
                         {/* <span className="text-gray-400 line-through">₹{item.regular_price}</span> */}
                         {parseFloat(item.regular_price) > parseFloat(item.sellingPrice) ? (
                           <>
-                            <span className="text-gray-400 line-through">₹{item.regular_price}</span> 
-                            <span className="text-lg font-bold">₹{item.selling_price}</span>
+                            <span className="text-gray-400 line-through">₹{item.regular_price.toFixed(0)}</span> 
+                            <span className="text-lg font-bold">₹{item.selling_price.toFixed(0)}</span>
                           </>
 
                         ):(
-                          <span className="text-lg font-bold">₹{item.total_price }</span>
+                          <span className="text-lg font-bold">₹{item.total_price.toFixed(0) }</span>
                         )
                       }
                         
@@ -157,7 +157,7 @@ useEffect(() => {
 
                     {/* Price and Remove */}
                     <div className="mt-4 sm:mt-0 text-center sm:text-right">
-                      <p className="font-semibold text-lg">₹{item.total_price}</p>
+                      <p className="font-semibold text-lg">₹{item.total_price.toFixed(0)}</p>
                       <button
                         onClick={() => handleRemoveItem(item.id, item.selectedAttributes)}
                         className="mt-2 text-red-500 hover:text-red-700 transition-colors"
