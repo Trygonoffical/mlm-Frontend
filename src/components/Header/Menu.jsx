@@ -31,12 +31,6 @@ const fetchMenuItems = async () => {
           {menuItems && menuItems.map(list=>(
             <Link key={list.position} href={`/category/${list.category_details.slug}`}>{list.category_name}</Link>
           ))}
-            
-           
-            {/* <Link href='#'>Menu</Link> */}
-            {/* <Link href='#'>Menu</Link>
-            <Link href='#'>Menu</Link>
-            <Link href='#'>Menu</Link> */}
         </div>
     </div>
   )

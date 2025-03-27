@@ -3,12 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
+import { use } from 'react';
+
 import { getTokens } from '@/utils/cookies';
 import { ArrowLeftIcon, PencilIcon, TrashIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import StaffMemberForm from './StaffMemberForm';
 
 export default function StaffDetail({ params }) {
-    const staffId = params.id;
+    const staffId = use(params).id;
     const [staff, setStaff] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -63,6 +65,7 @@ export default function StaffDetail({ params }) {
                 }
                 
                 const data = await response.json();
+                console.log('sraff details - ', data)
                 setStaff(data);
             } catch (err) {
                 console.error("Error fetching staff details:", err);
@@ -205,7 +208,7 @@ export default function StaffDetail({ params }) {
                         </div>
                         <div className="ml-6">
                             <h2 className="text-xl font-semibold">
-                                {staff.user?.first_name} {staff.user?.last_name}
+                                {staff.first_name} {staff.last_name}
                                 <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                                     staff.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                 }`}>
@@ -225,17 +228,17 @@ export default function StaffDetail({ params }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-gray-500">Username</p>
-                            <p>{staff.user?.username}</p>
+                            <p>{staff.username}</p>
                         </div>
 
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-gray-500">Email</p>
-                            <p>{staff.user?.email || 'Not Provided'}</p>
+                            <p>{staff.email || 'Not Provided'}</p>
                         </div>
 
                         <div className="space-y-1">
                             <p className="text-sm font-medium text-gray-500">Phone Number</p>
-                            <p>{staff.user?.phone_number || 'Not Provided'}</p>
+                            <p>{staff.phone_number || 'Not Provided'}</p>
                         </div>
 
                         <div className="space-y-1">

@@ -6,8 +6,9 @@ import { createColumnHelper } from '@tanstack/react-table';
 import Cookies from 'js-cookie';
 import { PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/20/solid';
 import { toast } from 'react-hot-toast';
-import StaffMemberForm from './StaffMemberForm';
+// import StaffMemberForm from './StaffMemberForm';
 import { getTokens } from '@/utils/cookies';
+import StaffMemberForm from './StaffMemberForm';
 
 const columnHelper = createColumnHelper();
 
@@ -24,32 +25,32 @@ const StaffList = () => {
             header: 'Employee ID',
             cell: info => info.getValue() || 'N/A',
         }),
-        columnHelper.accessor('user', {
+        columnHelper.accessor('full_name', {
             header: 'Name',
             cell: info => {
-                const user = info.getValue();
-                if (!user) return 'N/A';
-                return `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.username || 'N/A';
+                // const user = info.getValue();
+                // if (!user) return 'N/A';
+                return `${info.getValue() || 'N/A'} `;
             },
         }),
-        columnHelper.accessor('user', {
-            id: 'username', 
+        columnHelper.accessor('username', {
+            // id: 'username', 
             header: 'Username',
-            cell: info => info.getValue()?.username || 'N/A',
+            cell: info => info.getValue() || 'N/A',
         }),
-        columnHelper.accessor('user', {
-            id: 'email',
+        columnHelper.accessor('email', {
+            // id: 'email',
             header: 'Email',
-            cell: info => info.getValue()?.email || 'N/A',
+            cell: info => info.getValue() || 'N/A',
         }),
         columnHelper.accessor('user', {
             id: 'phone',
             header: 'Phone',
             cell: info => info.getValue()?.phone_number || 'N/A',
         }),
-        columnHelper.accessor('role', {
+        columnHelper.accessor('role_name', {
             header: 'Role',
-            cell: info => info.getValue()?.name || 'N/A',
+            cell: info => info.getValue() || 'N/A',
         }),
         columnHelper.accessor('department', {
             header: 'Department',

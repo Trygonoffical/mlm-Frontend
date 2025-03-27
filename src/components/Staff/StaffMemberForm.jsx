@@ -12,6 +12,7 @@ const StaffMemberForm = ({ isOpen, onClose, staffData, roles, setRefreshKey }) =
     const [errors, setErrors] = useState({});
     const [staffMembers, setStaffMembers] = useState([]);
     const [departments, setDepartments] = useState([]);
+
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -26,6 +27,7 @@ const StaffMemberForm = ({ isOpen, onClose, staffData, roles, setRefreshKey }) =
         is_active: true,
         custom_permissions: []
     });
+    
     const [availablePermissions, setAvailablePermissions] = useState([]);
     const [permissionsByModule, setPermissionsByModule] = useState({});
 
@@ -97,11 +99,11 @@ const StaffMemberForm = ({ isOpen, onClose, staffData, roles, setRefreshKey }) =
     useEffect(() => {
         if (staffData) {
             setFormData({
-                username: staffData.user?.username || '',
-                email: staffData.user?.email || '',
-                phone_number: staffData.user?.phone_number || '',
-                first_name: staffData.user?.first_name || '',
-                last_name: staffData.user?.last_name || '',
+                username: staffData.username || '',
+                email: staffData.email || '',
+                phone_number: staffData.phone_number || '',
+                first_name: staffData.first_name || '',
+                last_name: staffData.last_name || '',
                 role: staffData.role?.id || '',
                 supervisor: staffData.supervisor?.id || '',
                 department: staffData.department || '',
